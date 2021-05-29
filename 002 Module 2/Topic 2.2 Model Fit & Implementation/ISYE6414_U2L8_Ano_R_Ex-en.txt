@@ -1,0 +1,135 @@
+This is regression analysis scores.
+My name is Nicoleta Serban.
+I'm a professor in the School of Industrial and System Engineering.
+This lesson concludes unit two.
+And I will illustrate ANOVA with a specific example using
+the R statistical software.
+In this example, interested in the number of survival days for
+patients with different types of cancers that were treated with ascorbate.
+The response variable is the number of survivor days for each patient for
+different types of cancer.
+j again is the index for a patient and i is an index for
+the type of cancer or the group in this example.
+We have five different groups that means K is equals to 5.
+Each group corresponds to a cancer for different organ stomach, colon, ovary,
+breast and so on.
+There are different samples sizes across the five groups.
+In fact, the group with ovarian cancer has only 6 observations.
+A first step in any data analysis is to perform an exploratory data analysis.
+First, we're going to read the data in R using the read.table() command where we
+need to specify the name of the file, and whether the columns have a header or not.
+Then we need to extract the individual variable of interest the response
+variable in survival days.
+We can extract it from the data by specifying the name of the matrix
+cancer_data and the name of the column with a dollar sign in between.
+Our first step is to analyze whether the response variable has an approximately
+normal distribution using a histogram with the R command hist().
+Do not forget to specify the x-axis and
+the y-axis labels when you use plotting functions in R.
+The histogram of the survival response data is on this slide.
+What we see here is that the response variable has a skewed distribution
+an indication that the normality assumption does not hold.
+We'll need to transform the data to normalize it.
+A common transformation to normalize when there is a strong skewness
+is to use a log transformation.
+After taking this transformation you can see that we don't have that long tail
+on the right anymore and the distribution looks relatively symmetric.
+We're now looking for perfect normality or symmetric distribution here.
+In fact, if you remember from the data structure in the ANOVA
+table the data come from multi normal distributions.
+What we should expect is to see a multi model distribution where the modes
+correspond to each individual group.
+After transformation, we do see two modes in this distribution but
+the shape of the distribution is symmetry.
+For this study we're going to use the log transform not the original data.
+For the ANOVA implementation we need two variables.
+One is going to be their response variable.
+In this case, the response variable is a log of the survival number of days.
+And the second variable is the label corresponding to the type of cancer.
+Recall the response variable consists of all the stacked response data and
+now we have to specify which response observation corresponds to
+what category or cancer type.
+However, we need to assure that R identifies this as a categorical variable.
+For this we need to convert into a factor using the as.factor() command.
+By doing so R will know that this is a categorical variable and
+when we apply the side by side box plot and
+the AOV command the labels are identified as categorical.
+The side by side box plot of the log of survival data versus
+the cancer type is on the slide.
+You see here that there are differences in the means between the groups.
+For example, if you compare those patients with breast cancer versus other
+cancers the number survival days will be much larger for
+those with breast cancer compared to those not with breast cancer.
+We can also see that the variability within each group is slightly different,
+but that may be also because some groups have more observations than others.
+For example, the group of patients that have ovary cancer has a very small sample
+size, and this will have much larger variability as well.
+When we study the side by side box plots we compare the within-variability to
+the between-variability.
+I'll remind you that the within variability is the variability within their groups.
+The between variability are variability of the means between the groups.
+We'll next perform an analysis of variance on the log survival days versus a cancer.
+The output of the ANOVA or the aov() command in R consist of the ANOVA table
+which provides information about a sum of squared errors residuals as for
+the sum of square for treatments.
+The degrees of freedom mean sum of squares the F test and
+the p value for the test of equal means.
+The first column in the ANOVA table consists of the degrees of freedom for
+each source of variability, the treatment cancer type in this case, and
+the residuals.
+They're four degrees of freedom for
+the cancer type because there are five different cancer types.
+The next column correspond to the sum of squares.
+The sum of square for treatment is 24.49, and
+the sum of square of residuals is 84.27.
+The F values used for the F test for performing the test for
+equality of the means.
+The F values 4.286 and the P value of the test is 0.004.
+The other set of output is provided by the model.tables() command where we
+input the fitted model.
+This output provide us with the overall mean across all groups,
+and the means of the log survival days for the individual groups.
+For example, the estimated mean for the group that has breast cancer the average
+log survival rate is 6.56, and the number of patients in this group is 11.
+Recall that we are performing ANOVA in order to test whether the means are equal
+across the groups, across the cancer types in this example.
+Since we reject the null hypothesis of equal means we can ask the next question.
+Which means are statically significantly different?
+To answer this question we perform a pairwise comparison.
+We'll use the TukeyHSD() command in R which will provide the confidence intervals for
+the difference in means for all possible combination of the pairs of the means.
+We see that there are only two pairs of means that have statistically
+significantly different means.
+The first one, when we compare the means of the log of the numbers of hour
+of days between patients with the bronchus cancer versus those with breast cancer.
+The other one is the pair of means between stomach cancer and breast cancer.
+In both cases, the confidence intervals include only negative values which
+means that the log mean of the number of survival days for those with breast cancer
+is significantly larger than the log mean of the survival days for
+those with other two cancer types.
+All the other pairs are not statistically significantly different which means that
+it's possible that a number of survival days across all the other types of cancers
+is similar.
+It's also important to validate assumptions via residual analysis meaning
+evaluating the goodness of fit of the model.
+This is important since without a good fit we cannot rely on the statistical
+inference we made using the hypothesis testing procedures on the equal means and
+the pairwise comparison.
+I'll remind you that the three assumptions in ANOVA are the constant variance,
+independence, and normality.
+The first two plots, the quantile normal plot and
+the histogram are used to evaluate normality.
+The next two plots can be used to evaluate the other two assumptions constant variance and
+uncorrelated errors.
+The normality plot and histogram look reasonably well which
+is an indication that distribution of the residuals is approximately normal.
+Also, we don't see any patterns in the residuals.
+Using the ANOVA, the analysis of variance for this particular example we've
+learned from this example that there is strong evidence for
+differences in the survival days across the five types of cancer.
+And the survival time is statistically different for
+those patients with breast cancer versus two other cancer types.
+I'll conclude here the example that I used to illustrate the ANOVA model and
+I'll conclude here also unit two.
+Thank you.
+[MUSIC]

@@ -1,0 +1,81 @@
+This is the Regression Analysis course, my name is Nicoleta Serban.
+I'm a Professor in the School of Industrial and Systems Engineering.
+Here in this lesson,
+I will introduce the basic concept of the analysis of variance or ANOVA.
+And I will cover the simplest version of ANOVA, the one-way ANOVA.
+The data in an analysis of variance or briefly ANOVA consists of
+multiple samples of data for a response variable of interest,
+differentiated in groups or subpopulations described by a category or label.
+The simple model is so called, one-way ANOVA.
+In one-way ANOVA, we have k different populations or groups.
+And for each population we observe a sample of data for
+the response variable Y.
+We assume that the true mean and variance for the response variable are mu1 and
+sigma 1 squared for the first population, mu2 and sigma 2 squared for
+the second population, muk and sigma k squared for the kth population.
+Based on the data sample of the response variable, we can obtain
+the estimates for the mean and variance parameters for each population.
+The mean estimate is the sample mean denoted by y bar, and
+the variance estimate is the sample variance denoted as s squared.
+The overarching objective in the ANOVA is to compare the means across the k
+subpopulations.
+Are the mean equal?
+Which pairs of the means are different?
+Suicide is a worldwide phenomena and occurs across all population groups.
+Gaining an understanding of the underlying causes,
+allows policymakers to develop strategies that might reduce or
+minimize suicide in populations that are negatively impacted.
+In this first illustrative example of one-way ANOVA,
+the population of interest consists of population across multiple countries for
+which we observe the rate of suicide for the population within each country.
+The countries included in this analysis are grouped by region.
+One can examine how suicide rates vary by region across the world.
+One approach to evaluate or
+study the response variable with respect to a categorical variable,
+in this case, the region of the countries, is to use the side-by-side boxplot.
+That is, for each category plot a single boxplot of the response variable.
+And we compare the boxplots across all categories,
+in this example, across all regions.
+Because we have multiple categories in this example, we have multiple boxplots.
+We may be interested to address the following question.
+Is there a difference in the suicide rate by region of the country?
+Which regions have lower suicide rates?
+To answer these questions, we compare whether the mean suicide rates across
+all regions are different, particularly in ANOVA.
+We will compare the within variability to the between variability of
+the response data.
+The within variability is the variability within the regions,
+visually can be assessed by the variability within each boxplot.
+The between variability is the variability between the means across the groups
+proxy by the middle lines in the boxplot.
+We'll find significant difference across the means
+if the between variability is larger than within variability.
+In a second example,
+we're interested in the typing speed of three computer keyboards
+layouts by determining whether there are differences in the respective mean speed.
+Is there a difference in the time taken to perform a test across the three layouts?
+Which layout is more effective?
+If we compare the three layouts using the side-by-side boxblots, we can see that
+the second layout has a much higher mean speed as compared to layouts 1 and 3.
+But this comparison based on the boxplot is only a visual assessment and
+it doesn't provide statistical statements whether those differences
+are statistically significant.
+In ANOVA, the primary objectives are as follows.
+Analyze the variability in the data using the ANOVA table.
+That means, we compare the variability within
+each group to the variability between the means.
+We represent all the information in a table,
+laying out all the components needed to make this comparison.
+We also use this analysis of variance in order to test whether the means are equal.
+Specifically we'll test the null hypothesis that all means are equal
+versus the alternative that at least two of the means are not equal.
+The third objective is to estimate confidence intervals for
+all the pairs of means in order to identify which of the means are not
+equal or which of the means are statistically significantly different.
+Specifically we'll consider hypothesis testing procedure for
+each of the pairs of means with the null hypothesis that
+the means in the pair are equal versus the alternative that they are not equal.
+We'll perform all the hypothesis test across all pairs jointly.
+In summary, in this lesson, I introduced the basics of ANOVA.
+Thank you.
+[SOUND]

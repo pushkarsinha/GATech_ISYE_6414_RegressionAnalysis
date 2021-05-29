@@ -1,0 +1,105 @@
+This is a regression analysis course.
+My name is Nicoleta Serban.
+I'm a professor in the School of Industrial and Systems Engineering.
+This lesson is Regression Concepts: Regression Line and Prediction.
+Specifically, I will cover the estimation
+of statistical inference regression line focusing also on providing
+an understanding of the difference between estimation and prediction.
+Prediction is however a main objective of regression analysis.
+Prediction can be in time, geography, or just simply for
+other settings of the predicting variables.
+But prediction is not the same as estimation.
+This is not only due to the interpretation, but
+also due to the uncertainty level of the predicted mean response.
+Particularly, the uncertainty in estimation comes from estimation alone.
+Whereas for prediction,
+the uncertainty comes from the estimation of the regression parameters and
+from the newness of the observation as I'll provide more details later.
+Let's distinguish between the concepts of prediction and
+estimation further. Let's say that we are interested on
+the mean response evaluated at this predicting value x-star.
+Under estimation, x-star can be one of the observed values that we fitted a model.
+The interpretation of this value, x-star, is that the estimated
+regression line is the average estimated mean response for
+all settings under which the predicting variable is equal to x-star.
+Thus, it's true really an average across all
+possible settings when we could observe x-star.
+Prediction at this value, x-star,
+is when x-star is considered an observation under a new setting.
+The predicted regression line is interpreted as the estimated mean response
+for one setting under which the predicting variable is equal to x-star.
+While in estimation, we're averaging across all possible situations,
+for prediction, we focus on one particular setting.
+When we estimate a regression line, it's a very simple formula.
+We plug in x-star in the regression line, and
+this is going to be the estimator of the regression line.
+Because the estimator of the two coefficients, β0-hat and
+β1-hat are normally distributed, so is y-hat, given x-star.
+y-hat has a normal distribution and
+the expectation of y-hat is very easy to derive.
+It's equal to β0 plus β1 x-star.
+So this is actually the true regression line,
+meaning that the regression line is an unbiased estimator just
+like the estimators of the regression coefficients.
+The variance is also of the y-hat given x-star is also on the slide.
+We can see that the variances increase
+as x-star the value for which we're interested to predict or
+estimate of the response moves away from the range of
+the average of the predicting variable values.
+This means that the variance is going
+to be smaller at the center of the average and
+is going to increase as we go away from the average.
+The uncertainty in the estimated ratio line is going
+to be higher as the predicted value from x-star is away from the average.
+If we want to construct a confidence interval for the new response it's very
+similar to one we did before for the estimated regression coefficients.
+We centered the estimated regression line plus or minus the t-critical point,
+times the standard deviation of the estimated regression line.
+Similarly, because the variance changes with x-star,
+the confidence interval also will be wider,
+the farther x-star is from the mean, x-bar.
+If we take several values of x-star and we construct such confidence intervals,
+we get what we call the confidence band.
+I will show an example in the next lesson.
+In contrast to estimation, prediction contains two sources of uncertainty.
+Due to the new observation and
+due to the parameter estimation.
+The second source of uncertainty comes also in estimation of
+the response for x-star.
+But the first source of uncertainty is because we
+are predicting the response under a new setting.
+So how does that translate into uncertainty of
+the prediction of a new response?
+The variation due to the estimation is similar to
+the variation of the estimated regression line.
+But now we're adding the variation due to new measurement, which is sigma squared.
+If we add those up, this is what the formula looks like.
+Practically, the difference is that we are adding the sigma
+squared to the variance of the estimated regression line.
+Now we see that if we combine these two will get a sigma squared times
+one plus  1/n plus the difference between x-star and x-bar squared, divided by Sxx.
+As a reminder, the formula for
+Sxx is the sum of the differences between the Xs and
+the average squared differences.
+If we want to obtain a prediction interval for a future value y,
+this is again very similar for the estimation of the new response.
+It is centered at the predicted response, plus or
+minus the critical point times the standard error.
+The standard error is different again from the standard error from
+the confidence interval for the regression line under estimation,
+because we have this additional one that we're adding.
+This is due primarily to the adding the sigma square to the variance.
+Note that a predicted regression line is the same as the estimated regression line.
+What is different here again is the standard error.
+I'll highlight once more.
+The prediction interval should not be confused with a confidence
+interval estimated under the estimation.
+The prediction interval is used to provide an interval estimate for
+the prediction of y, for one specific x-star, for a new setting.
+The confidence interval underestimation is used to provide
+an interval estimate for the value for the average value of y.
+For all members of the population with a particular value x-star,
+I'll conclude here that the introduction of prediction and
+estimation of the media response.
+Thank you.
+[MUSIC]

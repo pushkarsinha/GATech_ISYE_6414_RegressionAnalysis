@@ -1,0 +1,169 @@
+This is the regression analysis course, I'm Nicoleta Serban,
+professor in the School of Industrial, and
+System Engineering, and this is regression concept estimation.
+Specifically, I will cover in this lesson the modeling framework for
+this simple linear regression model, and the estimation approach.
+In simple linear regression, the objective is to feed another non agonistic
+linear model between the predicted variable x and the response variable y,
+which is equivalent to estimating the parameters beta 0 and beta 1.
+For beta 0, is the intercept parameter or
+the parameter that the value at which the line intersects the y axis, and
+beta 1 the slope parameter, which is a slope of the line we are trying to feed.
+In this model formulation,
+epsilon are the deviances of the data from the linear model.
+The goal is to find the line that describes a linear relationship
+that is to find beta 0 and beta 1 such that we fit this model.
+How can we do that?
+If we plot the x and y using a scatter-plot
+we would like to identify a line that fits the scattered data points,
+where we can fit many such lines, the question is how to find the best line?
+What criteria to use to find the best like, what means baseline?
+Based on what criteria shall we identify a baseline?
+Here we'll learn above the modeling framework for
+the simple linear regression.
+This is a general framework that you should use for
+other models, not only for the simple linear regression model.
+First we start with identifying the data structure, for example,
+in simple linear regression we have pairs of data consisting of a value for
+the response variable and the value for the predictive variable and we have n such
+pairs, with a model formulation to relate x and y in this case in a linear fashion.
+Another important aspect in the modelling framework is
+clearly stating the model assumptions.
+For simple linear regression those assumptions consist of Linearity or
+Mean Zero Assumption which means that expectation of the deviances is zero.
+Constant Variance Assumption which means that the variance,
+represented in statistics by the Greek letter sigma square, and
+this is the variance of the error terms or
+deviances is constant for the given population.
+And the independence assumption which means that the deviance is
+are independent random variables.
+Later, we will also assume that epsilon's are normally distributed.
+Let's go back to the assumptions and digest each one at a time.
+The linearity or mean zero assumption means that the expected value of the error
+is 0, that is, it cannot be true that for certain subgroups in the population,
+the model is consistently too low while for others, it's consistently too high.
+A violation of this assumption will lead to difficulties in estimating beta 0 and
+means that your model does not include unnecessary systematic component.
+Cost and variance assumption is that it cannot be true that the model
+is more accurate for some parts of the population, unless accurate for
+other parts of the population.
+A violation of this assumption means that the estimates are not as efficient as they
+could be in estimating the true parameters and better estimates can be calculated.
+It also results in poorly calibrated predicting intervals.
+The assumption of independence means that the deviance is in fact the response
+variable or independently drunk from the data generating process,
+that is, it cannot be true that knowing that the model under predicts wide y for
+one particular case tells you anything at all about what it does for any other case.
+This violation most often occurs in data that order in time,
+like in time series data.
+Violations of this assumption can lead to misleading assessment
+of the strength of the regression.
+The errors also are assumed to be normally distributed, and
+this assumption is needed for statistical inference.
+For example, when we built a raw estimated confidence or prediction intervals and
+perform hypothesis testing.
+If this assumption is violated hypothesis test and covenants and
+prediction intervals can be misleading.
+The goal of modeling is identifying the model parameters
+that are to be estimated using the observed data.
+In the linear regression model,
+in addition to the intercept parameter beta 0 and the slope parameter beta 1,
+there is a third parameter the variance of the error terms.
+This is thus a simple linear regression we have three parameters to estimate.
+What do we mean by parameters and statistics?
+Model parameters are unknown quantities and
+they stay unknown regardless how much data are observed.
+We estimate those parameters given the model assumptions and
+the data, but through an estimation approach, and
+then which will give us estimates, not the true parameters.
+We're just estimating approximates of the true parameters.
+But how can we get estimates of the regression coefficients or
+parameters in the linear regression analysis?
+One approach is to minimize the sum of squared residuals or
+errors with respect to beta 0 and beta 1.
+Specifically, we minimize the sum of the squared differences between data and
+the model as provided on the slide.
+This translates into finding the line such that
+the total squared deviances from the line is minimal.
+This is an optimization problem with respect to beta 0 and beta 1,
+and the solution to this optimization or
+minimization problem gives the estimators for beta 0 and beta 1.
+We put a hat on top of those estimators to differentiate between the estimate and
+the true coefficients or parameters.
+So beta 0 hat is different with the beta 0, and
+beta 1 hat is different than beta one or the true slope parameter.
+Let's take a closer look at the derivation of those estimators.
+Again, what we're interested is to minimize the so called sum
+of least squares or the sum of squared errors, with respect to beta 0 and beta 1.
+We'll perform this optimization problem by first taking our first
+order derivatives of the objective function and equate those to 0.
+We now have a system of two equations and two unknowns.
+Once we take the first order derivatives, we will have a set of
+two linear equations with two parameters, beta 0 and beta 1.
+Solving these equations or
+the system of equations will give us a beta 0 hat and beta 1 hat.
+We define the fitted values to be the regression line where
+the parameters are replaced by the estimated values of the parameters.
+The residuals are simply the difference between observed response and
+fitted values, and there are proxies of the error terms in the regression model.
+The estimator for sigma square is the sigma square hat,
+and is the sum of the squared residuals divided by n minus 2.
+This is also called the mean squared error or abbreviated MSE.
+The sampling distribution of the estimator of the variance is chi square
+with n minus 2 degrees of freedom.
+This is under the assumption of normality of the error terms.
+We use the epsilon i hat as proxies for the deviances of the error terms.
+We don't have the deviances because we don't have beta 0 and beta 1, but
+if replaced beta 0 and beta 1 with beta 0 hat and beta 1 hat, we get the deviances
+with a hat and now we're estimating sigma square based on those residuals.
+The estimator of the variance of the error terms is now the sample variance.
+I will review here the sample variance estimation approach.
+We start with Z's that are normally distributed variables with mu,
+the mean and sigma squared the variance.
+We often use the notation s square representing the sum of
+the Zis minus their average squared divided by n minus 1.
+From basic statistics the sampling distribution of s
+square is the chi square distribution with n minus 1 degrees of freedom.
+Why n minus 1 degrees of freedom?
+We lose a degree of freedom because we replace the true parameter mu with
+the average over Z.
+Now, let's go back to the estimator of sigma square under simple
+linear regression, our estimator loose just like the sample variance estimator,
+except that we use n minus 2 degrees of freedom.
+Why is that?
+This is because we've replaced the deviances or the error terms of the model
+with the residuals, we have 2 degrees of freedom because we placed
+the two parameters beta 0 and beta 1 with their estimators to obtain the residuals.
+In this case, we're using the two degrees of freedom, each one degree of freedom for
+each parameter.
+Under the normality assumption,
+the sample distribution of the variance estimator is now
+a chi square distribution with n minus 2 degrees of freedom.
+Thus, the variance estimator which is the mean square error,
+has a chi square distribution with n minus 2 degrees of freedom.
+This is called the sampling distribution of the variance estimator.
+In simple linear regression, we're interested in the behavior of beta 1,
+we can expect beta 1 to be positive, negative or in fact close to 0.
+If we have a positive value for beta 1, then that's consistent with a direct
+relationship between the predictive variable x and the response variable y.
+For example,
+higher values of height are associated with higher values of weight, and look at
+the values of beta 1 is consistent with an inverse relationship between x and y.
+For example, low inflation rate is associated with a higher savings rate.
+But we also have situations when the value of beta 1 is close to 0.
+In that case, we interpret that there is not a significant association
+between the predicting variable x and the responsive variable y.
+We'll interpret the least squares estimated coefficients as follows.
+Beta 1 hat is the estimated expected change in the response
+variable associated with one unit of change in the predictive variable.
+Beta 0 hat is the estimate expected value of the response variable
+when the predictive variable equals 0.
+When we interpret whether the relationship between x and
+y is positive or negative, or there is no relationship we use beta 1 hat.
+However, when we make statistical statements about the relationship,
+we always have to mention the statistically significance,
+whether the statistically significantly positive,
+statistically significantly negative, or no statistical significance.
+I will conclude this lesson and I will continue with our
+data example to illustrate estimation of simple linear regression.
+Thank you

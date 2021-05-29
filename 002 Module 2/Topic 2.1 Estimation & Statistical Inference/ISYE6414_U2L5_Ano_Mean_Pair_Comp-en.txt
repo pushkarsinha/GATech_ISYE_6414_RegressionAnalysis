@@ -1,0 +1,109 @@
+The study regression analysis course, and my name is Nicoleta Serban.
+I'm a professor in the School of Industrial and System Engineering.
+In this lesson I'll introduce the pairwise comparison of the means in ANOVA.
+One primary goal of ANOVA might be to determine which treatment
+means are bigger or smaller.
+One way to do this is to compare all possible pairs.
+They're k(k- 1)/2 unique pairs of treatments.
+This is called a pairwise comparison.
+To begin, we estimate the difference in the means for
+a pair mui and muj, specifically mui hat and muj hat.
+However, whether the difference is smaller or
+larger than 0 is not telling us much, since a variable
+than the difference between the estimated means is important also.
+Thus, we use confidence intervals for differences to make statements,
+statistical statements about pairs of means.
+The confidence interval is going to be centered at the estimated
+mean difference plus or minus a critical point
+times the standard deviation of the estimated difference in the means.
+Here, the critical point is now the alpha percentile of the studentized
+range distribution, not the critical point of the t distribution, which would
+be suggested by the sampling distribution of the difference in the estimated means.
+Why do we use the q critical point rather than the t critical point?
+The reason is that we want to correct for simultaneous or joint inference.
+The q critical point allows for correcting for
+multiplicity which means that the intervals are wider.
+To compensate for the fact that we are making simultaneous
+comparisons among the pairs of means.
+When we perform a joint inference confidence intervals,
+the confidence of the confidence intervals will decrease,
+if we do not perform such a correction.
+Consider calculating a 95% confidence interval for
+two population means based on two independent samples.
+Here we're not interested in the confidence intervals for
+each individual populations separately.
+We're interested on the simultaneous inference on both together.
+This means that their significance level is
+(0.95)(0.95) or approximately 90%.
+Not the 90% as we initially wanted.
+Now, imagine we're analyzing three populations and
+we want 95 confidence intervals that are jointly estimated.
+If we multiply 0.95 three times we get 0.86, not 95%.
+The q critical point for
+the pair comparison in ANOVA are not easy to compute.
+There are some tables in some of the textbooks,
+but I will suggest to use the statistical software to get the confidence intervals.
+The R statistical software does have a command that you can
+use called the Tukey method developed by the statisticians John Tukey.
+Let's illustrate the implementation of the comparison with the first example.
+Which suicide rates across the country regions are statistically different?
+Recall that we rejected the hypothesis, that the means are equal for
+this example, meaning that at least two of the means are statistically different.
+There R command you can use to obtain
+the pairwise confidence intervals is called TukeyHSD().
+For this, you need to input the fitted ANOVA model.
+If you want to use a confidence level different than 95%, which is the default
+for this command, you need to specify that specific confidence level.
+The partial output for this command is on the slide.
+I didn't put all the comparisons, since we have a large number of regions,
+a large number of groups, hence a large number of pairwise comparisons.
+I also discarded from this analysis,
+those regions with only one country with only one observation.
+The way we interpret this output is as follows.
+The first column provides the information of the pairs
+of the groups that we're comparing.
+The second column will provide the differences in the estimated means.
+The next columns provide the law or an upper bounds
+of the confidence intervals for the differences in the means.
+The last column provides the adjusted p value which gives
+us information whether we reject or not the null hypothesis for
+each of the pairs of means.
+So how can I use this output?
+First, you must look at the lower and upper bounds and
+identify the confidence intervals that include the 0 value.
+For those confidence intervals it's possible for the difference to be 0.
+So for example if you look at the difference between them means
+we set rates for the first pair, the lower bound is -0.86.
+And the upper bound is 15.11.
+This confidence interval includes 0,
+meaning that the means of those two groups could be possibly equal to 0.
+You can also see that the probability or
+the p-value adjusted is 0.12, which
+indicates that the means of suicide rates between these two regions could be equal.
+For this specific p value, we do not reject the null hypothesis of equal means.
+Another aspect that we'll look into when evaluating the pairwise
+comparisons is identifying the confidence intervals that
+have only positive values or only negative values.
+For example, the confidence interval comparing the Latin America versus
+Eastern Europe only includes negative values suggesting that the mean of
+the suicide rates for the countries in Latin America is lower than the mean
+of suicide rates for the countries in Eastern Europe.
+Let's go back to the second example where we want to compare
+the means of the typing speed of the three keyboard layout.
+Which mean typing speed for
+the three keyboard layouts are statistically different.
+Again we can perform a pairwise comparison using the Tukey method.
+We have only three pairs, 2 and 1, 3 and 1, and 3 and 2.
+For the pair 3 and 1, the third and
+the first layout, the confidence interval includes 0.
+Which means that the means of the typing speed
+of the two layouts is possible is similar.
+When we compare layouts 1 and 2 and layouts 3 and
+2 respectively, we can see statistically significant differences.
+In conclusion, what we learn from this example is that a keyboards type 2 has
+statistically significantly higher typing speed
+than keyboard layout 1 and layout 3 on average.
+It is plausible that keyboard layout 1 and 3 have similar typing speed on average.
+I'll conclude here, the introduction of the pairwise comparison in ANOVA.
+Thank you.
+[MUSIC]

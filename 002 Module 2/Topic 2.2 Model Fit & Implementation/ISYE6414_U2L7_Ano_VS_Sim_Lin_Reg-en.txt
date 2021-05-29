@@ -1,0 +1,71 @@
+This is the regression analysis course.
+My name is Nicoleta Serban.
+I'm a professor in the School of Industrial and System Engineering.
+In this lesson, I'll contrast the two models we've learned so far,
+the simple regression model that we've learned in unit one, and
+the ANOVA model discussed, introduced in this unit.
+In a simple linear regression model in unit one, both the response and
+the predicting variable have been quantitative variables.
+Can this be generalized to analyzing the variability in response variable with
+different groups or predicting variables?
+For example, does knowing the education level of a person, say,
+high school, college have predictive power for their annual salary?
+Is a return on a stock related to the industry group of the company?
+This is special kind of regression question in this context.
+If you group membership has predictive power for the response, then
+the average mean of the response variable is different for different groups.
+This is actually a comparison of means, as we learned in the analysis of variance.
+Thus, ANOVA is a linear regression model where the predicting
+factor is a categorical or qualitative variable.
+Let's look closer at ANOVA as a linear regression model.
+The data in the ANOVA consist of a response variable Yij
+observed across multiple categories with j from 1 to k.
+Or we can write the response Yij as the sum between the mean
+of the group i plus the error term.
+Furthermore, we can write mu i as the sum between mu and tau i,
+where mu is the overall mean and tau i are the so-called
+treatment effect, where the sum of tau i's is equal to 0.
+So let's see how we can write this model into a regression model.
+Now I take all the Ys and I stack them
+up in one vector of responses.
+The first n1 values correspond to the first group, the first data sample.
+The next n2 values correspond to the second group,
+the second data sample, and so on.
+The k last values in the vector will correspond to the kth
+data sample or group.
+This is going to be the Y response variable.
+Now I define another variable.
+I call it a label or categorical variable.
+Again, I stack those values, which are the labels.
+The first n1 values in this vector corresponds to label 1,
+the label of the first category.
+The next n2 values correspond to the label of the second category.
+The last nk values correspond to the label of the kth group.
+Now ANOVA is a linear regression where we regress the label L onto response Y.
+When we have a categorical or qualitative predicting variable with k different
+labels, we then convert those into what we call dummy variables labeled X1 to Xk.
+The X1 dummy variable, for example,
+has 1 on the first n1 values and 0 for the rest of the values.
+The kth dummy variable has zeros at the beginning, but
+the last nk values are equal to 1.
+All of those dummy variables have the same length, and the length is big N,
+which is the sum of all sample sizes across the k samples.
+When we model a regression analysis with those variables,
+now those key dummy variables become the predicting variables,
+where Y presented in the previous slide is the response variable.
+If the model has an intercept, we only include
+k- 1 dummy variables because of the linear dependence between the Xs.
+If the model does not have an intercept,
+then we'll include all k dummy variables in the model.
+But most importantly, what you can see here is that I wrote the ANOVA as
+a multiple linear regression model, where the predicting variables are the dummy
+variables and the response variable is the response data stuck into one vector.
+Thus, ANOVA is a particular case of a multiple regression model.
+In fact, beta 1, beta 2, up to beta k in this model with no intercept
+correspond to the mean parameters mu 1, mu 2, mu k in the ANOVA.
+I'll expand on the linear models with multiple predicting variables, including
+both quantitative and qualitative variables in unit three of this course.
+In summary, I conclude here the comparison between the two models we've learned so
+far, the simple linear regression model and the ANOVA.
+Thank you.
+[MUSIC]

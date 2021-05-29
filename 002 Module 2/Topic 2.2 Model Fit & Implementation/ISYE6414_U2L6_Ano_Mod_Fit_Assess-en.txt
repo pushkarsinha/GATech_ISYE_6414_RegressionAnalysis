@@ -1,0 +1,67 @@
+This is the Regression Analysis course.
+My name is Nicoleta Serban.
+I'm a professor in the School of Industrial and System Engineering.
+In this lesson, I will focus on the goodness of fit of ANOVA.
+The data in the ANOVA model, consists of a response variable of interest observed
+from multiple populations differentiated by a categorical variable or a label.
+For example, for the analysis of suicide rates,
+the categorization could be instead age group, year, weather type.
+Let's begin with the model.
+In our notation, Yijs, are the responses differentiated across the k categories,
+j is the index within group, and i is the index across groups.
+The model is Yij equal to mu i which is the mean of
+the group i plus epsilon ij as the error terms.
+The assumptions in ANOVA are with respect to the error terms.
+The constant variance assumption meaning that the error terms
+have constant variance.
+Independence assumption meaning that the error terms are independent.
+And normality assumption meaning the error terms are normally distributed.
+And thus the Y is the response data are normally distributed as well.
+To diagnose these assumptions, we do not diagnose
+the assumptions to error terms because we do not know the means.
+Instead we're going to diagnose the assumptions of the residuals.
+The residuals are the differences between the responses minus
+the estimated means of the individual samples.
+If the amount of fit is a good fit,
+then the residuals should be scattered around zero randomly in the plot
+of the residuals against either the fitted values or just their order.
+When we evaluate the assumptions in ANOVA, or the type of residual plots we will
+consider, we can plot the residuals for each treatment group to evaluate whether
+there is a different variability across the groups.
+We can plot the quantile-quantile long plot trivial normality.
+We can also plot the histogram of the residual scenery used to evaluate
+normality.
+If the scatter plot of the residuals is not random, the sample responses
+are not independent or the variances of the responses are not equal.
+If the quantile-quantile normal plot on the histogram show
+departures from normality,
+you may consider a transformation in order to normalize the data.
+Here's one example for the departure from the assumption of non-constant variance.
+You can see here that the variability for
+the residuals changes from one group, to another.
+We have a much smaller variability for group one than for group three.
+This is another example of a departure from the assumptions.
+We can see that the results are clustered which may mean that we have
+correlated errors.
+Now, let's go back to the first example,
+where we're comparing the suicide rates across different country regions.
+Are the inferences on the means of
+the suicide rates reliable?
+Is the model a good fit?
+In order to address this question,
+we'll perform a residual analysis using the three residual plots.
+The R code is here, the residual plots we're interested are here.
+The first one plots residuals against the fitted means.
+We're going to use this plot in order to evaluate whether the residuals
+are scattered around the zero line and whether the variances are different across
+the groups or whether there are clusters in the residuals.
+The second plot is the quantile-quantile normal plot,
+where we expect the residuals to line up on the line, meaning that the residuals
+will have a single distribution to that of a normal distribution.
+The third plot is a histogram of the residuals.
+We expect to see an approximately symmetric distribution.
+For these examples, the three assumptions hold although we can
+see that the normality of the residuals has a longer tail on their right.
+I'll conclude here the discussion around the goodness of fit of ANOVA.
+Thank you.
+[SOUND]

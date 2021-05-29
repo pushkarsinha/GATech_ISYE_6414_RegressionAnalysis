@@ -1,0 +1,114 @@
+This is the regression analysis course.
+My name is Nicoleta Serban.
+I'm a professor in the School of Industrial and Systems Engineering.
+In this lesson, I will illustrate how to perform the hypothesis testing procedure
+for equal means.
+Using the hypothesis testing procedure for equal means,
+we test the null hypothesis that the means are all equal.
+That means mu 1 = mu 2 up to = mu k.
+Versus the alternative hypothesis that some means are different.
+Not all means have to be different for the alternative hypothesis to be true.
+At least one pair of the means needs to be different.
+Under the null hypothesis, we can combine all k samples into one big large sample.
+Because the null hypothesis of equal means translate into that observations have
+a normal distribution with a common mean mu and a common variance sigma squared.
+We can estimate this common mean by pulling
+all the response samples into one sample and
+estimating the mean with the sample mean of this combined response sample.
+If we want to estimate the variance under the null hypothesis, similarly,
+we're going to use the sample variance of the entire combined response sample.
+The difference between this variance estimator and
+the pooled variance estimator that I introduced in the previous lesson
+is that now we are replacing the mean with the overall mean provided on the slide,
+not with the individual sample means.
+Because we're replacing only one parameter,
+the common mean, we're now only losing one degree of freedom.
+We can rewrite this estimate as the sum of square total or
+abbreviated sum of square of total divided by N- 1.
+Again, N is the sum of all samples.
+Because we only have to estimate one mean, we only lose one degree of freedom,
+and thus, the denominator is N- 1, not N- k as in the pooled variance estimator.
+For this variance estimator, which is obtained under the null hypothesis,
+the sampling distribution is a chi-square distribution with N- 1 degrees of freedom.
+The sum of squares of total can be decomposed into two components,
+the sum of squared errors or SSE introduced in the previous lesson
+plus the sum of square for treatments or SS treatment.
+Recall the sum of square of errors, SSE, is the sum of square differences
+between the observations and the individual sample means.
+On the other hand, the sum of square for
+treatments is the sum of square differences between sample
+means of the individual samples minus the overall mean.
+The interpretation of this decomposition is as follows.
+The ratio between the sum of squared errors,
+SSE divided by N- k is called the mean sum of squared errors.
+It's a measure of the within-group variability.
+Remember that we use this to estimate the pooled variance estimator.
+The mean sum of square for treatments is the sum of square
+treatments divided by k- 1, where k is the number of samples.
+This is a measure of the between-group variability.
+One of the main purposes of ANOVA is to compare the variability
+between samples to the variability within samples.
+The F-test is the ratio of between-group variability and
+within-group variability.
+This F-test is equivalent to the ratio between mean sum of
+square treatments divided by the mean sum of squared errors.
+The F-test compares the variability between
+groups against variability within groups.
+Under the null hypothesis that all means are equal, this ratio has
+an F distribution with k- 1 and N- k degrees of freedom.
+If the F-test value is large, the variability between
+groups is larger the variability within groups.
+And thus, we reject the null hypothesis that the means are equal.
+We make this determination by comparing the F-test with F critical point,
+where the F critical point is for
+the F distribution with k- 1 and N- k degrees of freedom.
+We can also make a decision based on the P-value computed
+as the area under the right tail of the F distribution with k- 1 and
+N- k degrees of freedom shown here in blue.
+Generally, we perform this test with a statistical software as
+I'll illustrate in the next slide with a data example.
+Let's go back to the first example we're interested
+in comparing the suicide rates by country region.
+Are the mean suicide rates statistically different?
+To perform the testing procedure for equal means, we can use the aov() command in R.
+The ANOVA table can be obtained by using the summary() command.
+And this on the slide is the ANOVA table for the example we're interested
+in differences in suicide rates across regions.
+There are two important rows in this ANOVA table:
+one corresponding to the treatments, in this example, country region
+and the other one corresponding to the residuals,
+which are proxies of the error terms.
+The first column provides the degrees of freedom for
+the treatment versus the residuals.
+There are 9 degrees of freedom for treatments because we have ten groups.
+Thus, k- 1 is going to be 9.
+We have 77 degrees of freedom for residuals, which corresponds to N- k.
+The second column provides the values for the sum of squares.
+The sum of square for treatment is 1548,
+and the sum of squared errors is 2779.
+The third column provides the mean sum of squares.
+For example, for the mean square of treatments, we take the sum of square
+treatment and divide it by the corresponding degrees of freedom.
+We thus take 1548 and divide it by 9, and
+we're going to get 172.06.
+The fourth column gives us the F value, which is the ratio between
+the mean sum of square for treatment divided by mean sum square of errors.
+The last two columns provide the F-test and the P-value of the F-test.
+What we learned from here is that because the P-value is approximately equal to 0,
+we reject the null hypothesis of equal means for
+the suicide rates across regions.
+In the second example, we're interested to compared the means of the typing speed
+between the three keyboard layouts.
+Are the mean typing times of the three keyboard layouts statistically different?
+Similar to the previous example, we perform an ANOVA using R,
+the summary is the ANOVA table provided on the slide.
+We have 2 degrees of freedom for the treatment because we have three groups.
+We have N- k = 30.
+The sum of square of treatment is 121.24.
+The sum of square of error is 34.42.
+The F-value is 52.84.
+Because the P-value is approximately equal to 0,
+we conclude that we reject the null hypothesis of equal mean typing speeds.
+I will conclude here the introduction of the hypothesis
+testing procedure of equal means, thank you.
+[MUSIC]

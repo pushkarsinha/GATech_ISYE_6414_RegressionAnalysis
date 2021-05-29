@@ -1,0 +1,132 @@
+This is the Regression Analysis course. My name is Nicoleta Serban,
+a professor in the School of Industrial and Systems Engineering.
+In this lesson I'll continue the example in which we are interested in testing
+the purchasing power parity theory, and I'll focus on outliers for
+the implementation of a simple regression model. To get confidence or
+prediction bands around the estimated regression line, we can use an R
+function that is this is called regplot.confbands.fun()
+provided in the in the R code for this data example.
+This R function is an example of how you can write your
+own functions, your own code in R. When we want to write more general R code
+that can be used in many other settings we'll do so in the form of R
+functions. Similar to this example, I'm giving you the function name
+to refer to it later along with the input parameters, in this example are x
+and y. Which are the predicting and
+the response variables. The inputs in this function are the confidence level for
+the confidence band. Then we can use the same R function to produce
+the simple regression scatter plot along with the confidence bands for
+this example as well as other examples.  This figure illustrates
+the output of this R function for the relationship between inflation
+difference and exchange rate change across the 41 countries. The fitted line
+plot shows several lines. The continuous line is the fitted regression line.
+The wider interrupted line band is the prediction confidence band, and the
+narrow interrupted line is the confidence band. The circles [blue ovals] correspond to outliers.
+First, the confidence band is represented by the inner pair of the lines. It's
+much narrower than the prediction band represented by the outer pair of lines.
+While a confidence interval takes into account only the viability in estimation,
+the prediction band takes into account both the variability do to the estimation and
+variability do to the uncertainty in the data, hence wider.
+In this plot we could also identify two outliers. One is on the left, which
+corresponds to Brazil. The other one is a point outside
+of the confidence band and the prediction interval band
+and this point corresponds to Mexico. This type of analysis using confidence bands
+could be used to identify potential outliers.
+To compute confidence and prediction intervals for new observations
+we can use to predict() command in R.
+Using this command we need to specify the value, or the values, we want to predict and
+create separately a data frame for the data used for prediction. We also need
+to specify whether we want to estimate a confidence versus a prediction interval.
+So we need to specify that in the predict() function, in the predict() command.
+In this example we're estimating the prediction and confidence intervals for
+a data point corresponding to a -0.68
+inflation difference, which is roughly the value for Norway.
+For that, I created a new data frame, and then input this into the predict() command.
+Estimating both intervals we see that the two intervals are different. The prediction
+interval is wider than the confidence interval since uncertainty in the prediction
+interval is higher than for the confidence interval. How do interpret this,
+the intervals? The confidence interval provides our estimate for what the average
+change rate change would be for all countries with inflation differences
+equal to -0.68 and this confidence interval
+has a lowerbound of 2.75 and an
+upperbound of -1.59. The prediction interval provides our estimate for
+what the exchange rate change will be for one country with inflation difference
+equal to -0.68. The first interval
+includes only negative values, where the second one includes both negative and
+positive values and is much wider. The prediction interval includes the 0 value.
+All the inference provided so far on the regression coefficients relies
+on the fact that the model assumptions hold. What are those assumptions of
+the simple linear regression? Again linearity, constant variance, independence and normality.
+We'll have to check those assumptions in order to rely
+on the inference results I provided so far. Here is some of
+R code example for a residual analysis plot that I often use
+to evaluate assumptions to do this residual analysis. The first
+one is a scatter plot of the predicting variable.  In this case inflation difference
+versus the residuals. The second one provides a scatter plot of the fitted values
+versus the residuals. The third one is the normal probability plot along with
+the histogram in the fourth plot. It's good practice to correctly label the
+x axis and the y axis. For example, for the 1st plot the x axis
+corresponds to the inflation difference and the y axis corresponds to the residuals.
+Let's take a closer look at those four plots. The first one, again, is the residual plot
+against the inflation difference, which is used to evaluate whether we have
+a linearity assumption, if the linearity assumption holds.
+If there's no pattern this plot, we conclude that the linearity assumption holds.
+For this example there's no specific pattern thus we do have the linearity assumption.
+We do identify one outlier, however. Again, this corresponds to Brazil.
+The second plot can be used to evaluate the assumptions of constant variance and
+uncorrelated errors. In fact the first plot can be used for that
+as well.  What we can learn from this plot is that there is a difference in variability
+of the residuals with increasing fitted values, meaning that the constant variance
+does not hold. We do not see a grouping of the residuals, meaning that assumption of
+uncorrelated errors possibly hold.  The two graphs on the bottom can be used to
+evaluate the normality assumption. You can see that we do have a slight tilt in the normal
+quantile plot that's also reflected in the histogram of the residuals.
+Let's discuss the outlier that we've noted in the two graphs. Specifically the
+isolated point in the residual plot corresponding to Brazil. Observations for
+which the predicting variable is away from the range is called a leverage point.
+Why is Brazil a leverage point? Brazil had a period of hyper inflation
+from 1980 to 1994, and for a time period during which prices went
+up by a factor of roughly one trillion. This hyperinflation
+was caused by an expansion of the money supply. The government financed
+projects not through taxes or borrowing, but simply by printing more money.
+A crisis triggered by the world-wide energy crisis of the 1970s, and
+political instabilities of the Brazilian military dictatorship.
+What should we do about this case? The unusual point has the potential to change the results.
+of the regression. So we cannot simply ignore it. We can remove it from the data, and
+analyse the data without it, while informing the reader about the removal of
+the outliar and its implication. That is, we can present our results without Brazil
+while making clear that implications of the model do not apply to Brazil or
+probably to other countries with a similar unsettled economic situation.
+Next, we perform a linear regression for
+the data without Brazil. We first remove the data point from the data, and
+then we redo the analysis.
+Using the lm() command, a portion of the R summary, the
+R output, is provided on the slide. We can note that
+the estimated intercept has changed from
+-1.59 to -1.37.
+Although that is still statistically different from 0 since the p-value is approximately 0.
+Testing the null hypothesis that the slope is equal to 1, and now the
+p-value is 0.74 indicating that we did not reject the null hypothesis.
+And that it's possible for the intercept to be equal to 1.
+Thus, we conclude that we're seeing violations of the purchasing power
+parity theory with respect to the intercept only when we omit
+Brazil from the data set.
+We're going to redo again the residual analysis without Brazil, and
+we're going to use the same four graphical displays in order to evaluate the four
+assumptions. These are the four plots. Similar to the model with Brazil, the linearity
+assumption holds. There's no grouping in the residuals. However, the constant
+variance assumption still does not hold. A different outlier appears, corresponding
+this time to Indonesia. Should we remove the outlier and run the model again and test
+the purchasing power parity? We can do that. In fact, we'll find that there is still
+going to be violations with respect to the intercept in terms of the purchasing power
+parity theory. In fact, you can perform the analysis separately for developed and
+developing countries. Since Brazil and Indonesia are both developing countries
+the question is, will the purchasing power parity theory hold differently for
+the two sets of countries? Those are the findings of this example.
+The support of the theory is the sadly mixed. By separating developed
+countries from developing countries we can find that changes
+in the inflation difference do seem to be balanced by exchange
+rate changes with one outlier, Greece. For developing countries the case for
+the theory is much weaker. We can see Brazil and Indonesia are two of the outliers. So,
+we conclude that the purchasing power parity is not robust under unusual economic or political conditions.
+I'll conclude here the example on purchasing power parity that I
+used to illustrate simple linear regression. Thank you.

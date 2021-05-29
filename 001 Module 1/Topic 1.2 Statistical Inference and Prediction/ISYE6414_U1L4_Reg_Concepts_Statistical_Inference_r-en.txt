@@ -1,0 +1,123 @@
+This is the regression analysis course.
+My name is Nicoleta Serban,
+I'm a professor in the School of Industrial System Engineering.
+In this lesson, I will introduce the statistical properties
+of the estimated regression coefficients and
+I will use those properties to perform statistical inference.
+We'll begin with deriving the statistical properties of the estimator for β1.
+The expectation of β1-hat is equal to β1, which is the true parameter and
+the variance of this coefficient of this estimator is sigma squared divided by Sxx.
+I will show you a brief derivation of the expectation of β1-hat,
+and we can use the same sequence of derivations for the variance of β1-hat.
+Let's go back to the formula of the estimator for β1.
+We could write that as the sum of a constant times the random
+variable Y, where the constant is ci.
+What does that mean?
+Is that β1-hat is a linear combination of random variables.
+We know from statistics, from basic statistics,
+that the expectation of a linear combination of random variables
+is equal to the linear combination of the expectations.
+Now we replace the expectation of the random variable of the response
+variable Yi with a linear relationship in x.
+We divide that into two sums, and
+now the first sum is equal to 0 because the sum of the constants, ci, is 0, and
+the sum of the constants times xi is equal to 1.
+Thus, the expectation of the estimator for the slope parameter is exactly β1.
+This property, the fact that the expectation of the estimator is
+exactly the true parameter that we're estimating is called unbiasedness.
+What that means is that β1-hat is an unbiased estimator for β1.
+Thus, although β1 is unknown, we have that,
+in expectation, the slope estimator is all equal to the true parameter.
+This is an important statistical property.
+Let's dive more into the properties of this estimator.
+I'll remind you that β1-hat is a linear combination of the response variables Yi.
+Under the normality assumption β1-hat is thus a linear combination of normally
+distributed random variables and thus β1-hat is also normally distributed.
+Along with the expectation from the previous slide as well as a single
+derivation for the variance of the estimator,
+now we get the distribution for β1-hat.
+However, the sampling distribution of β1-hat
+is not useful because sigma squared or the variance of the error terms is unknown.
+In order to get the full.
+In order to get the full specification of this distribution,
+we must replace sigma squared with an estimator.
+We can use the estimator
+we discussed in the previous lesson, the mean squared error.
+Or the sum of squared residuals divided by n-1.
+Because this estimator has a chi-squared
+distribution with n-2 degrees of freedom, the sampling distribution of
+β1-hat becomes a t-distribution with n-2 degrees of freedom.
+The n-2 degrees of freedom come from the fact that the distribution of
+the variance of the estimator,
+the estimated variance, is chi-squared distribution with n-2 degrees of
+freedom. We'll use a sampling distribution to derive confidence intervals and
+also to perform hypothesis testing with respect to β1.
+This is the confidence interval for β1 based on the normality assumption.
+Let's digest a bit this formula.
+Again the sampling distribution of the estimator β1-hat is a t-distribution.
+In order to get the 1 - alpha confidence
+interval where 1 - alpha is the confidence level,
+then we can center the confidence interval at the estimated value for
+β1 ± the 1 - alpha critical point, t.
+This critical point comes from the fact that the sampling distribution of
+β1-hat is a t-distribution with n-2 degrees of freedom.
+The critical point also incorporates information
+about the confidence level.
+Specifically it's the alpha over two critical point for
+a 1 - alpha confidence interval.
+At last, to account for variability of the estimator,
+we multiply this critical point with the standard deviation of β1 or the square
+root of the estimated the variance of β1-hat provided in the previous slide.
+If we want to perform hypothesis testing on β1, for example,
+test whether β1 is equal to 0 versus the alternative, that β1 is not equal to 0.
+We're going to use statistical inference.
+The hypothesis testing procedure is going to be very similar to testing for
+the new parameter in a standard normal distribution problem.
+The t-value is in this case as follows.
+We take the difference between the data and the null hypothesis,
+more specifically we take the difference between the estimated value for β1 minus
+the new value, in this case it's 0, divided by the standard error of the estimator.
+If that t-value is large, we reject the null hypothesis that β1 = 0.
+If the null hypothesis is rejected,
+we interpret that this β1 is statistically significant.
+Statistical significance, means again, that β1 is statistically different from 0.
+We'll use this concept throughout the entire course.
+But what if we want to change the procedure to test whether β1
+is equal to a constant versus β1 not equal to that constant.
+Where that constant may be a different-value from 0.
+Remember that this is the t-value.
+We can replace 0 from the previous statistics we used
+with c depending on the specified new value in the null hypothesis.
+If the t-value is larger than this critical point, in absolute value, we say that
+the slope coefficient is statistically significantly different from c.
+We can also make a decision based on the p-value,
+which is going to be the sum of the tails of the distribution of
+the β1-hat on the left and on the right of the t-value.
+If the p-value is small, for
+example, smaller than 0.1, we reject the null hypothesis.
+What if we were to change the procedure and were interested in testing whether
+the regression coefficient is positive or negative?
+That means we'll change the alternative hypothesis from β1 different from 0.
+Now we're interested whether β1 is greater or
+less than 0 as a null hypothesis. In this case,
+the p-value will change in the sense that we're interested in
+only one of the tails.  For β1 greater than zero, we're interested on the right tail
+of the distribution. For β1 smaller than zero, we're interested on the left tail.
+The inference for the intercept parameter is going to be similar to
+the inference for the slope parameter. β0-hat is also a linear combination
+of random variables, a linear combination of Yis.
+We can derive similarly that the expectation
+of these estimators equal to the true parameter.
+Thus, β0-hat is an unbiased estimator for β0 and
+the variance of this estimator is on this slide.
+With this information and
+with the fact that β0-hat is a linear combination of normally distributed
+random variables, the sampling distribution is also a t-distribution.
+Thus, the confidence interval is going to be very similar to the confidence
+interval for β1-hat.
+It is the center of the estimator for
+β0 ± the critical point from the t-distribution times the standard
+deviation of the estimated β0-hat.
+I'll conclude here the introduction of statistical inference for
+simple linear regression.
+Thank you.

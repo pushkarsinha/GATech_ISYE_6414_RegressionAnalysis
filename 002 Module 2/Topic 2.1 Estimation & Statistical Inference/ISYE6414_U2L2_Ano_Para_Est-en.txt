@@ -1,0 +1,101 @@
+This is the Regression Analysis course, my name is Nicoleta Serban
+professor in the school of Industrial and Systems Engineering.
+In this lesson, I will cover the estimation measures for ANOVA.
+As provided in the previous lesson for ANOVA, the data and
+the ANOVA model consist of a response variable of interest observed across
+multiple populations differentiated by a categorical variable or label.
+For example for the analysis of suicide rates,
+the categorization could be instead age group year, weather type and so on.
+Let's begin with the model, in our notation Yij,
+is the response data differentiated across to k categories,
+where j is the index within group, and i is the index across the groups.
+The model is as follows.
+Yij = mu i, with also the mean of the group i + epsilon ij, the error terms.
+The assumptions in ANOVA are with respect to the error terms.
+Constant variance assumption, meaning
+that we assume that the response data has constant variance across all groups.
+And thus, the variance of the error terms is constant, equal to sigma squared.
+Independent assumption meaning that the response data or
+the error terms are independent and last,
+the normality assumption meaning that the error terms are normally distributed and
+thus the Yij is the response data are normally distributed.
+In ANOVA, again we assume that the variance of the response variable
+is the same across all populations and equal to sigma squared.
+Thus, we compare the means, assuming the variances are the same and
+estimate the variance across all samples using the so
+called pooled variance estimator, in the formula for
+the pooled variance estimator.
+Si squared, are the sample variances of the data samples
+of the response variable, for the different k groups.
+I'll note again that a data sample corresponds to the response
+data for one group or population in the ANOVA.
+Thus if we have k groups we'll have k data samples. For each of the k
+data sample, we thus can compute the sample variance as shown in this formula.
+In addition, the n's are n1, n2, n3, up to nk,
+are the sample sizes of the data samples of the response variable.
+By adding up the weighted sample variances we get the sum
+of the pooled variance estimator.
+In this formula, the big N is the total number of samples, or
+the sum n1+n2+n3 up to nk.
+The degree of freedom in the estimation of the pooled variance estimator is N-k.
+When estimating the sample variance of one data sample for one group,
+we place a true mean of that group, which is unknown with its sample estimated mean.
+Because we replaced k, different means with their sample means,
+we lose k degrees of freedom, hence, we subtract k from the total sample size n.
+I'll come back to this aspect when we're going to the sample distribution of
+the pooled variance estimator.
+The formula for the pooled variance estimator is also called
+the mean squared error in ANOVA or abbreviated, MSE.
+MSE, is the ratio between the sum of
+squared errors or abbreviate as SSE and N- k.
+Just like in simple regression analysis, we do not have the error
+terms in the ANOVA model and here is where we replaced the errors with the residuals.
+Hence we'll use errors and residuals interchangeably.
+In some contexts, Sum of Squared Errors may be referred to as the Sum
+of Squared Residuals.
+The individual sample variance for each of the case samples, has a chi square
+distribution because we assume that the data are normally distributed.
+An important property of the chi square distribution
+is that we if we have independent chi squared random variables,
+their sum is also a chi square distribution.
+Let's take the first term in this sum, if we multiply the sample variance
+of the first sample by n1- 1 and divided by the sigma squared,
+the result is a chi-square distribution where the number of degrees of freedom
+is n1- 1.
+Now if we add up all the k such components,
+each with a chi-square distribution, the result in distribution
+is a chi-square distribution with the number of degree of freedom
+being the sum across all degrees of freedom, in this case, a N-k.
+In a nut shell, the sampling distribution of the pooled variance is
+a chi-square distribution with N-k degrees of freedom.
+The means of the k samples of populations are the parameters of interest in ANOVA,
+to obtain estimates of these parameters,
+the sample mean of the individual samples are used to estimate the mean parameters.
+But what is a sampling distribution of those estimated means?
+Remember that we assume that data are normally distributed for each sample.
+That is they have a normal distribution with mean mu i and sigma squared.
+Since we estimate mu i with mu i hat,
+which is the average across the responses assumed normally distributed.
+Then the sampling distribution of the sample mean,
+is also normal with mean mu i, and variance sigma squared
+divided by the sample size, n i for this i group.
+However, we do not have sigma squared. So we replace sigma squared
+with the pooled variance estimator, the mean squared error.
+with this the sampling distribution changes to the t distribution.
+Thus, we have a t distribution with N- k degrees of freedom,
+because the sample distribution of the estimated variance
+is a chi-squared distribution with N-k degrees of freedom.
+Given the estimators for the mean and variance parameters,
+we now can get the confidence interval for each individual mean.
+Similarly to the confidence intervals for sample means,
+we center the confidence intervals at the sample means plus or
+minus the t critical point with n minus k degrees of freedom
+multiplied by the standard error of the estimator mu I hat,
+which is the square root of the mean square error, divided by n-1.
+Again, the mean square error replaces sigma square.
+The mean square error is the estimator for the variance.
+To conclude in this lesson,
+I introduced the estimation approach for the means in the ANOVA.
+Thank you.
+[MUSIC]
+[SOUND]

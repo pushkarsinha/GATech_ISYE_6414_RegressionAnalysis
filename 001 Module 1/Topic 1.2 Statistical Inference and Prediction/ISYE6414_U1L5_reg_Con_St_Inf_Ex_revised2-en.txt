@@ -1,0 +1,81 @@
+This is the regression analysis course.
+I'm Nicoleta Serban, I'm a professor in the School of Industrial and
+Systems Engineering.
+This lesson is regression concepts, statistical inference examples.
+Specifically, I will illustrate statistical inference with a data
+example using the R statistical software.
+Well, we're returning now to the example on which we're interested in
+the relationship between advertising expenditure and sales.
+The question we want to address is,
+what inferences can be make on the regression coefficients?
+To perform statistical inference, we need to find the estimated coefficient
+β1 and its variance along with a sampling distribution of β1-hat.
+The estimated coefficient of the interest of β0 and
+it's variance along with its sample distribution, whether the coefficient β1
+is statistically significant and whether β1 is statistically positive.
+We'll also learn how to derive a 90% confidence interval for β1.
+I'll conclude with an interpretation of the p-value in
+the general context in the hypothesis testing procedures.
+This is the output of the regression model from a previous lesson.
+Using this output, we not only can get the estimated values of the coefficients,
+but also the standard errors and p-values for
+the statistical significance of the regression coefficients.
+The estimated value for β1 is 2.77.
+If we want to estimate the variance,
+we need to take the square of the standard error.
+So this value, the estimated variance, is going to be 0.2794 squared.
+The sampling distribution is now a t-distribution with 23 degrees of freedom,
+all this data again is available in the output.
+The estimated value for
+the intercept coefficient is -147 and
+the variance estimator, or in fact,
+the standard error of the estimator of the intercept is 145.19.
+We will need to take the square of this value in
+order to get the variance of β0-hat.
+Do remember that error output provides standard deviations, not variances,
+that is the square root of the variance, not the variance itself.
+If we want to test whether β1 is 0,
+we can use the p-value provided by R which is approximately equal to 0.
+Meaning that we reject the null hypothesis that β1 is equal to 0,
+and conclude that β1 is statistically significant.
+To test whether β1 is statistically positive,
+now we have to change the alternative hypothesis to β1 greater than 0.
+For this, we can use the R output that I provided in a previous slides, but
+we need to adjust the p-value.
+The difference in the p-value for the one-sided test versus
+the two-sided test is that the p-value will be based on both the right and
+left tail for the two sided test and only on the right tail of the one-sided test.
+We can compute the p-value of the one-sided test using the function pt,
+which stands for the probability of a t-distribution.
+The command is going to give us the left tail, for
+evaluating a t-distribution, the probability for
+the distribution at the quantile equal to the t-value.
+In order to get the right tail of that distribution which is needed for
+the test where alternative as the β1 is positive,
+would have to take 1 minus this probability.
+Because the p-value in this case is very small,
+this will lead to the conclusion that β1 is statistically positive.
+In order to estimate a confidence interval,
+we can use the R command confint().
+The estimated confidence interval for
+the slope coefficient β1 is here.
+The lowest value of the 99% confidence interval is 1.9 and
+the highest value is 3.5.
+The interpretation of a confidence interval is tricky,
+the interpretation is in a frequentist sense.
+Specifically, if we have a 99% confidence interval it means that 1 out of 100 times,
+the interval may miss including β1 in the interval.
+In other words, β1 will not be the confidence interval 1 time out of 100.
+But what is a p-value?
+P-value is a measure of how rejectable the null hypothesis is.
+The smaller the p-value is,
+the more ejectable the null hypothesis is for the observed data.
+It is not the probability of rejecting the null hypothesis, nor
+is that the probability that the null hypothesis is true.
+But for further information about the statements about p-value and
+how to interpret a p-value, I refer to the source that I provided on the slide.
+I'll conclude here.
+The illustration of statistical inference for
+the regression coefficients using the R software.
+Thank you.
+[MUSIC]

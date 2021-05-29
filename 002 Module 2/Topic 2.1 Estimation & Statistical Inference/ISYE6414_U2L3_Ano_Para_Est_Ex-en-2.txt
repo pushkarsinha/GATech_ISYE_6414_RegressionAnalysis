@@ -1,0 +1,46 @@
+This is the regression analysis course and my name is Nicoleta Serban.
+I'm a professor in a School of Industrial and Systems Engineering.
+In this lesson I will illustrate estimation of ANOVA with
+two examples using R statistical software.
+Let's go back to the example where we're interested in differences in suicide rates
+among regions of the countries from which we have data for.
+The question that we wanted to address is, what are the estimates for
+the mean suicide rates for the different regions of the countries in this study?
+To fit an ANOVA model using the R
+staistical software we can use the R command aov().
+In this command, we need to input the response variable,
+the suicide rates for all the countries included in the study
+with all of the samples of the responses stacked in one vector.
+We'll also need to input the vector of labels, in this case region,
+to specify which of the labels correspond to what responses.
+To get the estimating means, we can use the model.tables() command in R.
+In this table I'm providing you here,
+a summary of the output derived from the model.tables() for the ANOVA.
+And what we can see here we have the estimated means along
+with the samples sizes.
+For one particular case, we see the sample size is equal to one.
+That means that one region has only one observation.
+While we can still run the ANOVA for this example,
+I would point out that the sample sizes should be larger than one, for
+it to have a reliable pairwise comparison.
+We'll get back to this in a different lesson.
+Overall, there are differences in the suicide rates across the region.
+The question we'll address in the next lesson is:
+Are those differences statistical significantly different.
+In the second example,
+we're interested in the typing speed across three different keyboard layouts.
+We want to estimate the mean typing speed
+across all three keyboard layouts and compare the means.
+Similarly as in the previous example,
+we can use the aov() the command along with the model.tables() command,
+which provides us the output on this slide.
+For layout one, the sample mean is 25.12 seconds.
+For the second layout is 29.11 seconds.
+For the third layout, it's 24.76 seconds.
+Thus there are differences in the mean speed time particularly the second
+layout has a much larger typing speed than the other two.
+Again, are those statistically significantly different?
+We'll have to perform a hypothesis testing procedure in order to address this question.
+In summary in this lesson,
+I illustrated estimation of the means with two examples, thank you.
+[MUSIC]

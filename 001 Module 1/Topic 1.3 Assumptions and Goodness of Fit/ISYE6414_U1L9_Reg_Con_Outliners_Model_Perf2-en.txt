@@ -1,0 +1,50 @@
+This is the Regression Analysis course. My name is Nicoleta Serban,
+professor in the School of Industrial and System Engineering.
+In this lesson I'll cover other aspects of the model fit for the simple linear regression,
+specifically, outliers and measures of model performance
+An important aspect in regression is the presence of outliers
+which are data points far from the majority of the data in X and/or Y.
+Data points that are far from the mean of the Xs are called leverage points.
+A data point that is far from the mean of the X's and/or Y's is called
+influential point, if it influences the regression model
+fit significantly. They can change the value of the estimated parameters,
+the statistical significance, the magnitude of the estimated parameters or even the sign.
+It's important to note that an outlier, including a leverage point may or
+may not impact the regression fit significantly.  That it may or
+may not be an influential point. It is tempting to just discard
+outliers, but sometimes the outliers belong to the data
+the elephant may not be a lion in terms of its size, but
+it's a real mammal none the less. Excluding an elephant from an analysis would skew or
+bias your conclusions. Other times there are good reasons for
+excluding subset of points when there are errors in data entry or
+in the experiment. When outliers belong in the data you'll have to
+perform the statistical analysis with and without the outliers and
+inform the reader about how an outlier influences the regression fit.
+To check for outliers a very simple approach is to use to standardized residuals,
+and then compare to standardized residuals to -2 and 2 band or
+even tighter, the -1 and 1 band. Statistical packages usually compute
+the standardized residuals and or point to Outliers. You'll learn about other ways
+to evaluate outliers in a different lesson in Unit 3 when I introduce
+multiple linear regression. Once we've established
+the goodness of fit of the model by evaluating the model assumptions
+we also want to see whether the linear model is useful to predict.
+One approach to quantify the predictive power or the model performance in terms of
+prediction is using the coefficient of determination,
+a statistic that efficiently summarizes how well the predicting variable
+can be used to linearly predict the response variable. This is called, the
+so called R-squared, which is 1 minus the ratio between the sum
+of the squared errors and the sum of squared total. The interpretation of the
+R-squared is the proportion of told variability in the response
+That can be explained by the linear regression that uses X.
+R-squared, again, this is not a goodness of fit measure. It is a measure of performance
+of how well the model linearly explains the viability in Y.
+Another approach to establish the linear relationship between 2 variables, for
+example the predicting variable and the response,
+is through computation of the correlation coefficient. One could also use
+the coefficient correlation to evaluate various transformations of X and
+Y to improve the linearity assumption in a simple linear reggression model.
+Relevant, in the context of evaluating the explanatory power, is
+how the correlation coefficient relates to R-squared in simple linear regression.
+The relationship is that the squared of the correlation coefficient is actually the R-squared.
+I will conclude here the introduction of various aspects of
+evaluating the model fit of a simple linear regression model. Thank you.

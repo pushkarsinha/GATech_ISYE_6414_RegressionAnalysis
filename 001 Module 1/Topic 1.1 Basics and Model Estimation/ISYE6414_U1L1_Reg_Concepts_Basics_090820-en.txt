@@ -1,0 +1,183 @@
+This is regression analysis course, I'm Nicoleta Serban,
+Professor in the School of Industrial and System Engineering.
+This lesson is on simple linear regression basic concepts.
+Integration analysis is one of the simplest ways we have in statistics
+to evaluate the relationship between two or more variables.
+It applies to many, many areas, including healthcare policy,
+marketing finance, bike share, you name it.
+In this course, we'll cover two main topics,
+standard linear regression, and generalized linear models.
+I will begin with the simplest regression analysis model,
+which is the simple regression model.
+Throughout the course, we will regularly come back to a set of data examples
+to help demonstrate and practice the theories taught in this course.
+Our first example is about a company which sells medical supplies to hospitals,
+and is considering the effectiveness of a new advertising program.
+It wants to assess whether there is a relationship between sales, and
+their expenditure on advertising.
+We have data for 25 offices.
+And for each office, we begin our analysis with the two variables of interest.
+One is sales, measured in thousands of dollars, and
+the other one is advertising expenditure, measured in hundreds of dollars.
+If you look at the first row of this data,
+you have a value of 963 in sales for that specific office.
+For the first office, which is equivalent to an amount of sales of 963 sales.
+For advertising expenditure for the same office,
+the amount of the expenditure is 37,427,
+which is 374 units of advertising expenditure.
+The second example is related to economic theory.
+Here, we are interested to evaluate and test the principal of purchasing power parity,
+which states that over long periods of time, exchange rate changes will
+tend to offset the difference in inflation rates between two countries.
+In a perfect world, meaning an efficient international economy,
+exchange rates would give each currency the same purchasing power in its economy.
+What we've been trying to identify here is the relationship between the changes
+in the currency rates, and inflation rates across multiple countries.
+For this example, we have data across 41 countries, including developed and
+developing countries.
+We'll study the relationship between inflation difference and
+exchange rate change.
+In the third example,
+we will study data related to the presidential elections in 2000.
+State results tallied on election night gave 246 electoral votes
+to the Republican candidate, George W. Bush, and 255 to the Democratic candidate,
+Al Gore, with three states too close to call that evening.
+Among those three states was Florida, which really mattered in the final count.
+As such, in Florida, there was a recount of vote for weeks after the election date.
+After this recount, the court decision was that George W. Bush won Florida by a margin
+of 537 votes, just a very very small number of additional votes.
+In this analysis, we'll study whether there is a specific
+aspect in this election that could have overturned
+the decision on which candidate could have won the presidential election in 2000.
+Particularly, one specific county, Palm Beach County, the count for
+the independent candidate, Buchanan, was much higher than expected.
+And the reason is that Buchanan was a conservative candidate.
+And we would have expected that those that voted for
+Buchanan would have voted for Bush as well.
+In this data example, we'll assess the relationship between
+the vote of the independent candidate, and the Republican candidate, and
+identify with a Palm Beach County was indeed an outlier.
+For this data, we have many more variables.
+What we're going to study is only the relationship between the votes of Buchanan
+and George W. Bush.
+When we speak of regression analysis, what do we mean?
+We have one variable that we're interested in understanding, or modeling, or testing.
+For example, sales of a particular product.
+The stock price of a publicly traded firm,
+the number of bikes rented, the election count across counties in a state.
+This variable is often referred to as the response variable,
+because this is a variable we are interested to model.
+Some textbooks will refer to this variable as the dependent variable as well.
+But for consistency in this course, we're going to refer to the variable of interest
+as the response variable, and we would represent it by Y.
+We also have a set of other variables or
+factors that we think might be useful in modeling the response variable.
+Say the price of a product, if we're interested in modeling the sales.
+Or the revenue,
+financial position of the firm profits if we're interested to model the stock price.
+These are called predicting, or explanatory variables.
+Often, textbooks refer to these variables as independent variables.
+Those variables are usually represented by x's, x1, x2, and so on.
+For consistency in this course,
+I will refer to these variables as predicting, or explanatory variables.
+One of the first things that you'll need to learn when you perform regression
+analysis, is to correctly identify which is the response variable, and
+which is the predicting variable, or variables.
+The response variable is a random variable, because it varies with
+changes into predicting variable, or with other changes in the environment.
+Whenever we're going to say Y in our annotations,
+it means that it is the response random variable.
+This is particularly important in the context of statistical influence
+on the regression.
+I'll add here that in experimental or
+observational studies from which we derive the data,
+for the regression analysis, we observe the response variable, and
+hence, we have observations of the response variable.
+On the other hand, the predicting variable is a fixed variable.
+It's set fixed before the regression, this response is measured.
+That is, we first set the predictive variable to a fixed value.
+Then given this value, we next observe the response.
+If we take the example where we are interested in a relationship between sales
+and advertising expenditure, the company will first set
+what they would spend on advertisement at the beginning of the year.
+And then they will observe the sales at the end of that year.
+That's first a fixed advertising expenditure.
+But then the sales will depend not only on what they spend on advertising, but
+also on other factors.
+Here are a few examples, just to give you a feel for
+the difference between the response and predicting variables.
+In the first example, we're interested in the effect of several types
+of cholesterol medication on LDL levels.
+In this example, we're interested to control the LDL level,
+and we'll control it with, for example, different types of medications.
+What is fixed here is the type of medication.
+What varies is the change in the LDL level.
+In the second example, we're interested in the relationship
+between driving habits and fuel efficiency.
+Again here, what we're interested in is the fuel efficiency.
+And that could be different from one car brand to another.
+It could be different whether one drives on the highway, or on surface streets, and
+definitely will depend on the driving habits, like average driving speed.
+In this example, the response variable is the fuel efficiency measured by miles per
+gallon, where the predicting variable is the average driving speed.
+The third example, we're interested in a relationship between college GPA and
+SAT scores.
+The score of the SAT is the score
+of a test that students take at the end of their high school.
+Many colleges, if not all, are admitting students based on their SAT scores.
+This SAT score is a predicting variable, because it predicts the admission, and
+it may predict how students perform in a college measured by the GPA, or
+the college grade point average.
+A simple deterministic relationship between two factors here in X and Y,
+is a linear relationship.
+We can generalize that to a relationship between two factors in a nondeterministic
+way as the first model on the slide, which is a simple linear regression.
+We can extend that to a model.
+We'll include more than one predicting variable,
+which is called multiple linear regression.
+This model is going to be covered in a different unit of this course.
+Furthermore, we can take this to extend to polynomial regression, or
+more complex relationships between the predicting variable, and
+the response variable, as shown on the last model.
+For example, what we have on the bottom is our relationship between Y and
+a relationship with X.
+With simple linear regression, we estimate the relationship between the response and
+the predicting variable as one straight line, and
+that line doesn't fit perfectly the points.
+We can see the points are along the line.
+In the second model, multiple linear regression,
+we can have a plane for a linear regression model with two predictors,
+where in the last case, we're capturing a non-linear relationship.
+In fact, all these models fall under the same framework of linear regression, even
+the last one, because the last one can be translated into a linear regression model.
+We can think of X and X squared as two different predicting variables, and
+model using a linear regression.
+What you need to remember is that the linear regression is a very general model.
+Practically, most of the regression models are some variations from linear
+regression.
+There are three objectives in the regression. Prediction.
+We want to see how the response variable behaves in different settings.
+For example, for a different location, if we think about geographic prediction.
+Or in time, if you think about temporal prediction.
+Modeling. The relationship between the response variable and
+the explanatory variables or predicting variables.
+And last, testing hypothesis of associations, or
+relationships between variables.
+Why restrict ourselves to linear models?
+Well, they are simple to understand, and they're simpler, mathematically.
+But most importantly, they work well for
+a wide range of circumstances of applications.
+It's a good idea when carrying out a statistical model, in general,
+to remember the words of the famous statistician,
+George Box, "All models are wrong, but some are useful."
+We do not believe that the linear model represents a true representation of
+reality.
+Rather, we think that perhaps, it provides useful representation of reality.
+Another useful piece of advice comes from another very famous statistician,
+John Tukey.
+"Embrace your data, not your models."
+While sigma regression is a simple model, it has very wide applicability, and
+can be generalized to much more complex models.
+In summary, I covered the basic concepts of simple linear regression.
+Thank you.
+[MUSIC]

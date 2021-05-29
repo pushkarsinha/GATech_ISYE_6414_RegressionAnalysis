@@ -1,0 +1,101 @@
+This is the Regression Analysis course.
+I'm Nicoleta Serban, Professor in the School of Industrial and
+System Engineering.
+I'll cover Regression Concepts, Estimation Example.
+Specifically, I will illustrate in this lesson how to use the R
+statistical software, to estimate a simple linear regression model,
+and I'll also overview the output from the R statistical software.
+In this illustrative example, we're interested in a relationship between sales
+and advertising expenditure under a new advertising program.
+The first question that we'd like to address is, which is the response and
+which is the predicting variable?
+So in this example, we're interested in modeling the sales.
+And again, the sales can vary with the expenditure in advertisement, but
+also with other factors.
+Thus in this example, the response variable consists of the sales and
+the predicting variable, consists of the advertising expenditure.
+Here are a few questions that we will study in this example, we'll fit
+the linear regression, we'll identify the estimated regression coefficients,
+β0-hat and β1-hat.
+Interpret the coefficients, quantify the amount of increase in the sales for
+each additional sales in dollars
+invested in advertising expenditure, predict the sales for
+a specific value of an advertising expenditure, for example $30,000.
+Estimate the error variance, and predict the sales for
+a very large amount of advertising expenditure, for example $100,000.
+The first step in using the R statistical software,
+is to read the data from a file into R.
+One common function using R is the command read.table(), with which we'll
+need to specify the file where the data are, the separator of the data
+values in the file, and whether the columns in a data file have names or not.
+We'll also want to extract the specific variables from this data.
+In this case sales is the first column, and
+advertising expenditure is the second column.
+Fitting a linear regression model is very simple in R.
+We can use the function lm().
+We'll need to specify the response variable, in this case, sales on the left.
+On the predicting variable,
+which is advertising expenditure on the right, separated by a tilde.
+What I'm showing you here is the summary of the model. It's a portion
+of the summary from which we can obtain the estimated coefficients, the estimated
+regression coefficients β0-hat and β1-hat, and the estimated variance.
+For this output, the estimated intercept is -157.33,
+the estimated slope is 2.77, and
+the estimated standard deviation of the error terms,
+not the values, is 101.4.
+You can see those values highlighted in the output.
+Let's go back to the questions we wanted to address.
+The estimated regression coefficients from the output, are -157 and 2.77.
+Based on those estimates, we can now write that regression equation as sales equal
+to estimated intercept, plus estimated slope times advertising expenditure.
+To interpret the coefficients, we have to keep in mind the fact that sales and
+advertising expenditure are measured in different units.
+Sales are measured in thousands, and
+advertisings are measured in hundreds of dollars.
+Thus, we interpret that the sales increased by $2,770
+with each additional $100 on expenditure for advertisement.
+Or we can also interpret that the sales increase with $27.7,
+with each dollar invested in advertising expenditure.
+If we want to quantify, how much more we would derive
+in sales with an additional $1000 in advertising expenditure.
+Again, we have to convert $1000 in advertising expenditure in
+the units used for expenditure, which is equivalent to 10 units,
+or 10 $100s. To address question C we plugin,
+we plugin the expenditure as 10 units in the prediction of the sales,
+as specifically 10 times the estimated value for
+the slope, which gives 27.7 units of sales,
+or equivalent to $27,700 increase in sales.
+Thus, the increase in sales with every additional
+$1,000 in expenditure, is $27,700.
+Pay particular attention to the units of both the response and
+the predicting variables for correct interpretation of a model.
+If we were interested to predict the sales of an advertisement expenditure of $30,000,
+again, we have to convert $30,000 into original units corresponding to 300 units.
+We plugin this in the estimated regression line,
+and we obtain $673,000 in sales.
+What is the estimate of the variance of the error terms.
+Remember, what we get from the output, the R output, is not the variance,
+it is the estimated standard deviation of the error terms,
+defined in the R output as the residual standard error.
+To obtain the estimate of the variance,
+we need to take the square of the residual standard error.
+In this case the 101.4 squared, which gives us the value of 10,281.
+What could you say about the sales of an advertisement expenditure of $100,000?
+This expenditure corresponds to a 1,000 units, and is a very large value,
+way out of the range of the observed advertising expenditure.
+This is the histogram of advertising expenditure, and
+you can see that the maximum value we've observed is 650,
+or corresponding to $65,000 in advertising expenditure.
+Because the value of the advertising expenditure $100,000 for
+which would like to predict sales, is much larger and other values we observe.
+This is what we call extrapolation.
+In this case, we cannot say much about the sales
+because it's not within the range of the observed axis.
+We can not assume that the relationship between sales and
+advertisement expenditure is the same beyond the range of our axis.
+It is possible that sales will tip off once advertising expenditure
+increases up to a specific value, for example.
+In this lesson,
+I illustrated the estimation approach with the part of the specific example.
+Thank you.
+[SOUND]

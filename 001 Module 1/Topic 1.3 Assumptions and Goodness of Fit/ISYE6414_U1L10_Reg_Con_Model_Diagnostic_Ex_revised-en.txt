@@ -1,0 +1,54 @@
+This is regression analysis course.
+My name is Nicoleta Serban.
+I'm a professor in School of Industrial and Systems Engineering.
+In this lesson, I will demonstrate how to evaluate the assumptions
+of the simple linear regression and
+how to evaluate the predictive power of the model using the R software.
+I will return now to the example in which
+we're interested in evaluating the relationship between sales and
+advertising expenditure to address the question.
+Do the assumptions of the linear regression model hold?
+And what is the explanatory power of the model?
+First, we'll review the assumptions of the linear regression and
+then evaluate those assumptions using graphical displays.
+We also identify outliers using the residual plots.
+Then we'll obtain the R squared to evaluate the variability in the sales is
+explained by the advertising expenditure.
+To review the assumptions or linearity, constant variance,
+independence and normality, do the assumptions hold?
+One way to evaluate the linearity is
+using the scatter plot of the predictive variable versus sales.
+This is how to plot a scatter plot of the predictive variable advertising versus
+their response verbal sales in R using the plot R command.
+This gives us the first plot. To evaluate the constant variance and
+the assumption of uncorrelated errors
+we can use a scatter plot of the residuals versus fitted values,
+which is the second plot.
+To evaluate the normality, we can use a normal probability plot.
+There are multiple ways you can display the normality plot.
+Here, I'm using an R command from the card library.
+The resulting plot is the third one.
+We can see from the three graphical displays,
+that the linearity assumption between advertising expenditure and sales hold.
+Also the residuals are scattered around the zero line indicating that the constant
+variance assumption and the assumption of uncorrelated errors both hold.
+We just see some departure from normality, especially in the tail, which could
+be an indication that the distribution of the residuals is heavy tail.
+But overall based on those plots, the assumptions appeared to hold.
+Do we identify any outliers?
+We can also identify outliers using the plots from the previous slides.
+In fact, we did not see anything outside of the range of the residuals in
+the residual plots,
+which is an indication that there do not appear to be outliers in the data.
+How much variability in sales is explained by the advertising expenditure?
+To quantify the R squared, we can use the summary of the model and
+instruct the R squared from the model output using the command in a slot.
+The value of the R square for this example is 0.81, which means that 81% of
+the variability in the sales is explained by advertising expenditure alone.
+This is a large R squared.
+We'll rarely see such a large R squared in real practice.
+I'll conclude this lesson where I've introduce an example using
+the R software in which I've evaluated the diagnostics,
+the assumptions of the simple linear regression.
+Thank you.
+[MUSIC]

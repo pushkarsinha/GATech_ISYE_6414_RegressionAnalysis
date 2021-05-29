@@ -1,0 +1,126 @@
+This is the Regression Analysis course. My name is Nicoleta Serban, professor
+in the School of Industrial and Systems Engineering, and this is the last lesson in this unit.
+I'll cover at last another data example looking into the elections,
+presidential elections, in 2000. In the presidential elections in 2000,
+during the election night, the electoral votes for the two candidates, George W.
+Bush and Al Gore were very tight. George W.
+Bush had 246 electoral votes and Al Gore had 255 with
+three states too close to call that night. The state that really mattered was Florida. So
+weeks after the election night there was an intense recount of the votes in Florida.
+In this example we're going to analyze the vote counts for Bush and for
+the independent candidate, Buchanan, because we'd expect that the votes of those two
+candidates would be similar since Buchanan was an independent candidate
+that was more conservative. Particularly, we're going to look at one county,
+the Palm Beach County, where the number of votes for Buchanan was very large.
+The first step in a data analysis using R is to read the data file
+in R.  In this case we're using the read.table() command in R. To use this
+command we need to specify the name of the file along with information whether
+the columns in the data file have a header. We need to check the data content
+by looking at the first few columns of the data. Here we're
+checking the first four rows. In this example, you can see that the data consists
+of many more factors, but we'll only look at the vote counts for Bush and Buchanan.
+In this analysis we're interested in the vote counts for Buchanan and for
+Bush. We extract those factors from the data matrix when using the R
+commands provided on the slide. Next we can use again the plot() R command for
+the scatter plot of the two variables. In this case, the vote counts for Bush and
+the vote counts for Buchanan. The scatter plot of those two variables
+is on the slide. We can identify two
+specific outliers, one corresponding to Palm Beach County, but
+we can also note that the relationship between the number of votes for
+Bush and number of votes for Buchanan is not linear. In fact, it has a curvature.
+Thus we will have to perform some transformation of X or/and Y
+in order to fix this non-linearity to between the two factors. Here we
+compare the scatter plot of the number of votes of Bush vs the number of votes for
+Buchanan, on the left, versus the scatterplot
+of the log of the number of votes for Bush and the log of the number of votes for
+Buchanan, on the right. We can see that one of
+the outliers doesn't seem to be an outlier anymore. Although Palm Beach, which is
+a large value in the vote for Buchanan, is still present as an outlier.
+We can also see that the linearity assumption has improved significantly
+using those transformations. The correlation has increased from 0.625
+to 0.922. I mentioned in a different lesson
+that an approach to identify a transformation to improve the linearity
+between two factors is using the correlation. Here we can play with multiple
+transformations of the two factors, and see which one most improves or
+increases the correlation coefficient.
+This is the model output from the regression of the log count of votes for
+Bush onto the log count of votes for
+Buchanan. The slope coefficient is 0.756,
+and is statistically significantly different from 0 because the p-value
+of the t-test for the slope coefficient is approximately 0.
+Moreover, the model performance in terms of capturing the linear
+relationship between the response and predicting variable is high with an
+R-squared of 0.85, meaning that 85 percent of
+the variability in the log count of votes for Buchanan is explained by the
+log count of votes for Bush. Thus, the
+assumptions I made earlier the that the votes for
+the two candidates would be similar is supported.
+Next I will perform the regression analysis using
+the transformed data. The residual analysis is similar as before.
+These are the resulting four
+residual plots. Based on the residual analysis we learned that the assumption
+of constant variance holds because we do not see a change in the variability of
+the residuals with the response variable. We also can assess the linearity
+assumption using the first plot, and because there is no pattern we conclude that
+the linearity assumption holds also. There is also not a clustering among the residuals,
+indicating that the assumption of uncorrelated errors holds.
+For normality, we can use the bottom plots to evaluate normality, and
+while the qq plot looks reasonably well, that is the quantiles of
+the residuals line up with the quantiles of the normal distribution,
+the histogram tells us the residuals have a skewed distribution.
+We can further interpret the estimated regression coefficients and
+provide confidence intervals. The function you can use to estimate
+confidence intervals in R is confint(),
+which stands for confidence interval. This command will give
+you the confidence intervals for both the intercept and the slope.
+The way we interpret this output is that as the number of
+log of votes for Bush increases by one percent
+the expected increase for the log count votes for Buchanan
+is 0.756. This interpretation is on the log scale, but
+it's better practice to provide such interpretation on the original scale. For
+the confidence interval for the slope, the confidence interval
+is between 0.677 for the lowerbound, and
+0.834 for the upperbound.
+Is Palm Beach an outlier? In order to evaluate whether the vote counts for
+Buchanan in Palm Beach County is an outlier we're going to omit
+Palm Beach from the analysis, and
+perform the linear regression without the value of the votes for this county.
+Thus we remove the 50th observation from both the number of votes for
+Buchanan and from Bush. Those are the estimated coefficients
+along with statistical inference regression coefficients from the summary
+output of this linear regression. Now we're going to predict the vote counts for
+Palm Beach County for Buchanan based on the model that omitted the number of votes
+for this county. Then we're comparing what we predicted
+with what we observed. Because the predicted value is on the log
+scale we need to take the exponential of the predicted
+value to compare it to the observed value. The difference between the observed and
+the predicted is 2809 votes.
+This is not a large number given the number of votes in the entire US or
+even in Florida. We can also look at the prediction intervals for
+the number of votes for Buchanan in Palm Beach. We can use to predict()
+function command in R, but now we need to specify the type
+of interval we want to use, in this case "prediction". To obtain the lower and
+upper bound for to predicted number of votes for Buchanan
+we need again to transform the lower and upper bounds of the prediction interval
+back to the original scale by taking the exponential function,
+or exponential transformation. From the output the lowerbound of
+the number of votes for Buchanan is 252 and
+the upperbound as 1412. We compare the lower and
+upper bounds with what we observed. The observed vote count for Buchanan
+in Palm Beach was 3407 votes.
+The observed value is much larger than even the upper bound
+of the prediction interval suggesting that this is an outlier.
+Interpreting the results we find that the difference
+between predicted an observed vote counts for Buchanan in the Palm Beach County
+is 2809.  The upper bound of the confidence
+interval for the vote count is 1412, which is
+much lower than observed vote count while a difference of
+2800 votes is not large given the total US votes or
+total Florida votes. This was particularly decisive for the 2000 election
+to recall the court decision on George w.
+Bush winning Florida was by a margin of 537 votes. This is
+a much smaller difference we identify here of 2800
+votes. These are now this is indicates that analysis of this kind or
+even using a simple linear regression could overturn elections in 2000.
+This lesson concludes unit one where I've presented on
+a particular example of implementing simple linear regression. Thank you.

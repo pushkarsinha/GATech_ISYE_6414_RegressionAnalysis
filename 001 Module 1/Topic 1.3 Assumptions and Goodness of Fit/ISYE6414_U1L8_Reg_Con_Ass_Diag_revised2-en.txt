@@ -1,0 +1,113 @@
+This is the Regression Analysis course.
+My name is Nicoleta Serban.
+I'm a professor in the school of Industrial and Systems Engineering.
+And in this lesson, I'll cover the assumptions and
+diagnosis of simple linear regression.
+Let's go back to the model framework for simple linear regression.
+The data consist of binary data of a response variable Y.
+And a predicting variable X, the relationship between those two variables
+is a linear relationship plus an error term.
+The assumptions in a linear regression on the simple regression models
+are as follows, linearity or the mean zero assumption.
+Meaning that the expectation of the error terms is equal to 0.
+Constant variance assumption, meaning, the variance of the error terms
+is equal to sigma squared and is the same across all error terms.
+Independence assumption, meaning the error terms are independent random variables.
+And the normality assumption meaning the error terms are normally distributed.
+This assumption is needed for statistical inference.
+In the next slides, I'll discuss how to assess those assumptions.
+The common approach for diagnosing this assumption is to evaluate the residuals.
+We're not going to evaluate the assumptions of the error terms directly
+because we do not know β0 and β1.
+And thus, we do not have the error terms.
+Instead, we evaluate assumptions in the residuals, which are differences
+between the observed responses and the frigid responses.
+And it was residuals are proxies of the error terms.
+Specifically, we plot the residuals against the fitted values and
+against the predicting values.
+If the scatter plot of the residuals is not random around 0 line, the relationship
+between X and Y may not be linear, or the variance of their terms may not be equal.
+Or the response data or error terms are not independent.
+Let's look at a few examples of departures from the assumptions
+when using this approach.
+This is an example with residuals plotted against the predicting values as you see.
+There is a curvature in the relationship between
+residuals and the predicting variables showing a non-linear relationship.
+This is a departure from the linearity assumption.
+A second example is this plot on a slide showing a megaphone
+effect on the residuals, in the sense that residuals increase
+with increasing fitted values,
+which means that the cost of various assumption does not hold.
+This is a third example, where we see a departure from the assumption
+of independence assumption, or uncorrelated errors.
+You can see here that the residuals now are clustered in two separate clusters,
+which means that the residuals may be correlated to due to
+some clustering effect for example,
+proximity in geography where the surface responses may have been observed.
+Keep in mind that residual analysis cannot be used to check for
+the independence assumption.
+Recall the initial assumption is independence,
+not uncorrelated errors.
+But all we can assess with the residual analysis
+is whether the errors are uncorrelated.
+Independence is a more complicated assumption to evaluate.
+If the data are from a randomized trial, the independence is established,
+but most data you're going to apply regression on are from
+observational studies and thus independence does not hope.
+In those cases, residual analysis is going to be used to assess
+uncorrelated errors not independent errors.
+For checking normality, we can use the so called quantile plot or
+normal probability plot on which data are plotted against that theoretical
+normal distribution in such a way that the points should form a straight line.
+The x axis of the normal probability plot, is formed by the normal or
+the statistic medians, and the y axis is the order residual values
+departures from this trade line indicate departures from normality.
+The intuition behind this plot is that it compares the quantiles
+of the residuals against those of the normal distribution.
+If the residuals are normal,
+then the quantiles of the residuals will line up with the normal quantiles.
+Thus, we should expect that they follow a straight line
+departure from a straight line could be in the form of a tail,
+which is an indication of either a secure distribution or heavy distribution.
+Do not attempt to do this quantile plot on your own.
+Uses the statistical software to do it for you.
+We'll see many examples of qq plot in this class.
+Do not worry if you do not get the concept just now.
+Another approach to check for the normality is using the histogram plot.
+Histograms are often used to evaluate the shape of a distribution.
+In this case, we'll plot a histogram of residuals and
+we'll identify departures from normality.
+Examples of departures from the normality assumption is, for example,
+skewedness in the shape of the distribution, or multimodality.
+For example we may have two or more modes in the distribution,
+gaps in a data and so on, I suggest using both the normal probability plot and
+the histogram approaches to evaluate normality.
+If some of the assumptions do not hold, then we interpret that the model fit is
+inadequate, but it does not mean that the regression is not useful.
+For example, if the linearity does not hold in simple linear regression
+Then we can transform Y or X to improve the linear assumption.
+This is generally a trial and error exercise, although sometimes
+you may just need to fix the curvature in the relationship, which could be done
+through using a power transformation or the classic log transformation.
+What if the normality or constant variance assumption does not hold? Often
+we use a transformation that normalizes or variance stabilizes the response variable.
+The common transformation is a power transformation of Y.
+If lambda, for example, the power,
+lambda, is equal to 1, we do not transform.
+If lambda is equal to 0, we actually use the normal logarithmic transformation.
+If lambda is equal to -1, we use the inverse of Y, and so on.
+This is called the Box-Cox transformation.
+And the parameter of this transformation can be determined using the R
+statistical software.
+After transforming Y, you need to fit the model again and
+evaluate residuals for departures from assumptions.
+If the transformation or transformations do not address these departures from
+assumptions you need to consider other transformations.
+If you cannot identify the appropriate transformation,
+it may be that you need to consider a different modeling approach.
+Some illustrations are discussed in the last unit of this course.
+I'll conclude here the overview of diagnostics for
+the assumptions of the simple linear regression.
+In one word, assessing goodness of fit of the model.
+Thank you.
+[SOUND]

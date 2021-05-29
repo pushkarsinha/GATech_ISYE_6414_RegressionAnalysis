@@ -1,0 +1,152 @@
+This is the Regression Analysis course. My name is Nicoleta Serban.
+I′m a Professor in the School of Industrial and Systems Engineering.
+In this lesson, I will go through one particular data example
+to demonstrate how to implement the simple linear regression model.
+In this example, we'll study the relationship between inflation rates and
+exchange rates to evaluate the economic theory of the purchasing power parity.
+The principle of purchasing power parity states that
+over long periods of time exchange rate changes tend to offset
+the differences in the inflation rate between two countries.
+In an efficient global economy, exchange rates would give
+each currency the same purchasing power in its own economy.
+Even if it does not hold exactly, the purchasing power parity model provides
+a benchmark to adjust the levels that exchange rates should achieve.
+This example was made available by Dr Jeffrey Simonoff of
+the New York University.
+The average annual change in exchange rate is the response variable
+expressed as U.S. dollar per unit of a country's currency.
+It is calculated as a difference in natural logarithm divided
+by the number of years and multiplied by 100,
+to create percentage change as shown on the slide.
+This is approximately equal to the proportional change in exchange rate
+over all 37 years producing an analysed change in exchange rate.
+The predicting of variable is the estimated average annual rate of change
+of the differences in a wholesale price index values for
+the US versus another country as shown on the slide.
+We'll analyze data for 41 countries including both developed and
+developing countries covering the years 1975 to 2012.
+The columns include country and
+the inflation difference on the exchange rate change over a period of time.
+We also have a column specifying whether a developed or the developing country.
+We'll explore the purchasing power theory using the simple linear regression model.
+Let's begin with the first step in the data analysis using R, we'll first read
+the data with the read.table() command in R, where the input is the data file.
+We also specify the separator of the data values in the file,
+we specify that a data file has a header specifically that the columns have names.
+You should check whether the data matrix coincides with the data you read from
+the file.
+You can find how many columns and rows are in the data using the dim() command in R.
+For this example, we have 40 rows which means we have data for 40 countries.
+However, initially I said that we have 41 countries.
+That is because we'll now add another country, Brazil,
+which is an outlier not included in a dataset initially.
+I'm adding now this data to the initial data matrix by using the rbind() command.
+I'm converting now the matrix into a data frame.
+Last, I attached this data using attach() command in order for
+the columns in the data matrix to be identified by R as individual vectors.
+I'll relabel the column corresponding to type of the country using their initial
+denomination, 1 indicates developed and 0 indicates developing.
+The reason I'm doing that is because when we do exploratory analysis it's better to
+refer to the names of those categories, denominations of those categories.
+Next, we'll perform exploratory data analysis for this data set.
+One visual approach is by plotting X versus Y.
+In this case, X is inflation difference and Y is the exchange rate change.
+I recommend labeling both the title, the labels for x and
+y axis accordingly, because it's much easier to interplot the graphics.
+We also can evaluate how exchange rate varies
+with the categorical qualitative variable developed, and
+can be done using the boxplot() command in R,
+to provide a side by side box plot for
+the development of the exchange rate change,
+the two plots are in this slide.
+What you see from the scatter plot of inflation difference against the exchange
+rate change is that there is a cleaner linear relationship between those two.
+From the box plot, you can see that there is a significant difference in exchange
+rate change among and between the two types of countries, developed and developing.
+Let's ignore for now the presence of the outlier and
+the fact that there are differences in the response variable across developed and
+developing countries, as we've learned from the box plot on the previous slide.
+We're going to perform the simple linear regression with exchange rate change
+as the response variable and inflation difference as the predicting variable.
+The R command is lm(), and for this command the response variable,
+exchange rate change is provided on the left separated by a tilda,
+from the predicting variable which is inflation difference.
+Part of the output from this command is on the slide.
+Let's dissect the part of the output that provides information about
+the coefficients.
+The estimated β0 is -1.51, and its standard error is 0.2941.
+The intercept says that if the analyzed
+difference in inflation between a country and
+the US is 0, then the country has the same
+inflation experience as thus the US.
+However, the estimated expected change in exchange
+rate between any two countries in our study is not 0,
+it's actually 1.52%, that is the currency
+becomes devalued relative to the US dollar.
+The estimated β1 slope is 0.961 and
+the standard error is 0.017.
+The slope coefficient says that a 1% change in the difference in
+inflation rate is associated with the estimated expected value
+of 0.962% of point change in exchange rates.
+The other portion of the output,
+of the summary output that is of interest is the Residual Standard Error and
+Multiple R-squared.
+This summary gives estimated standard deviation of the estimated sigma.
+The number of degrees of freedom is 39, thus, in this case the sample size is 41.
+Also the R-squared is high, meaning that 98% of the variability in
+exchange rate change is explained by the inflation difference.
+Let's go back to the validity of the of the purchasing power parity theory which
+says that in an efficient market the intercept is 0 and the slope is 1.
+However, we see that the estimates of these coefficients are not
+quite what this theory says.
+Looking only at the estimated values, it's not sufficient to make
+statistical statements about the purchasing power parity theory, however.
+We'll need to use statistical inference, such as hypothesis testing.
+Testing for β0 equal to 0 means testing for statistical significance.
+From previous slides, we can find that β0 is statistically different from 0,
+because the p-value provided in the output is approximately equal to 0.
+Thus the theory does not hold with respect to the intercept.
+That is, that foreign currencies appear to have appreciated less, than
+would be predicted by the purchasing power theory since the intercept is negative.
+Testing whether a β1 is equal to 1 is a slightly different test under the test for
+statistical significance, since the null value is 1 and not 0.
+For this test, the test value is 2.14 and
+the p-value is 0.038, how did we get those values?
+For the t-value we're replacing 0 with 1 and
+the resulting t-value is on the slide.
+I computed a p-value similarly as for the test with a null value equal to 0.
+That is we take 2 times 1 minus the left tail of the t-distribution
+with 39 degrees of freedom for the t-value equal to 2.14.
+The p-value is 0.038, and is small but not very small.
+We'd like to see whether p-value is generally smaller than 0.1.
+If we compare this p-value with 0.05, we would conclude that
+the null hypothesis will be rejected at the significance level of 0.05, but
+will not be rejected at the level of 0.01.
+Thus, we see violations of the purchasing power parity
+with respect to the intercept and possibly with a slope.
+Let's see if you again how we can perform the hypothesis testing procedure for
+β1 equal to 1, the test that we've performed on a previous slide, but
+this time using R.
+We're going to use a function, a command from the library car.
+Don't forget to install the package, car before using this library.
+You can use the command install.packages() to install a package and
+the library() command to upload the library into R.
+We're using the command linearHypothesis(). The input in this command
+is the model called pppa, along with a vector of null values for
+the regression coefficients, corresponding to a null value equal to 0 for
+the intercept and a null value equal to 1 for the slope coefficient.
+Last, the option rhs=1 specifies the type of the alternative hypothesis.
+We can also compute the t-value directly by computing the t-value as β1-hat,
+minus 1, divided by the standard deviation of β1-hat,
+provided those values were provided in our output.
+We can compute the p-value as the formula I provided in the previous slide,
+but using R we can do 2 * 1 - pt(),
+a t-value with 39 degrees of freedom providing the probability of a t-value
+distribution where we input the t-value and the degrees of freedom.
+If you like to learn more about how to use the pt() command
+as well as other commands related to distributions, you can use
+the help() command, which will take you to a help page describing the command.
+To conclude in this lesson, I provided the implementation
+of the simple linear regression model with a specific data example.
+Thank you.
+[MUSIC]

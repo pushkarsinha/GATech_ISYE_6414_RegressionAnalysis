@@ -1,0 +1,95 @@
+This is the regression analysis course.
+My name is Nicoleta Serban.
+Professor in the School of Industrial System Engineering.
+In this lesson, I will illustrate estimation and
+prediction of the main response using an R example.
+We'll return to the example of the relationship between sales and
+advertising expenditure to determine what inferences can be made on
+the prediction of the sales given a targeted advertisement expenditure.
+This is a set of questions that we'll address in this lesson.
+What sales would you predict for an advertisement expenditure of $30,000?
+What is the variance estimate of the estimated predicted sales for this value?
+Can we get a lower and upper bound for the sales under this value of advertising
+expenditure with 99% confidence level, or with a 95% confidence level?
+How did the confidence intervals differ for the two confidence levels?
+Let's go back to the summary of the model,
+we've seen this summary in a previous lesson.
+Over in this slide I added some additional R code.
+For the advertising expenditure of 30,000 we will need to replace x with 300.
+This is because the expenditure is measured in hundreds.
+Thus 300 units corresponds to 30,000 in advertising expenditure.
+In order to get the predicted sales,
+we replace x with 300 and we get the value of 673,
+which corresponds to 673,000 because we measure
+the sales in thousands. So one unit of sales, is 1,000.
+If we want to compute the variance of the predicted sales,
+this is the formula that we solved before from a different lesson.
+In this formula we need to input the estimated variance, the sample size,
+the values for Sxx, x-star, and x-bar, the average of the values xs.
+The estimated variance is the square of the residual standard
+error from the R output, which is equal to the mean square error.
+MSE is equal to 101.4 square in this case.
+The sample size is the degrees of freedom, which is 23 + 2.
+We are adding 2 to the degrees of freedom in order to get a sample size,
+because we lose 2 degrees of freedom to do the estimated coefficients.
+To get the value for Sxx we'll use the formula again from a previous lesson.
+In this formula we have with this formula represents the format for
+the variance of the estimator for β1.
+Recall that the variance is equal to sigma squared divided by Sxx.
+And from this formula, we derive that Sxx,
+the sum of squared differences between xs and
+x-bar is equal to MSE divided by the variance of β1-hat.
+So I can use this to get Sxx, which is going to be the estimated
+variance of the error terms or MSE divided by the variance of β1-hat.
+Both values are available in the output and
+this is why its easier to use this formula rather
+than actually use the original formula for Sxx,
+which is again the sum of squared differences between x minus x-bar.
+For the average across xs, we can just use them in function in R.
+Now, we plug in all these values into the formula for
+the variance of the predicted sales.
+And the value that results from this plugin is 14,286.
+What are the lower and upper limits of predicted sales for
+advertisement expenditure of $30,000 at 99% confidence level?
+How would the limits change if you lower the confidence level to 95%?
+To derive confidence intervals and prediction
+intervals we'll use a command in R code predict.lm().
+We first need to set the new data, in this case,
+the advertising expenditure equals to 300 units or $30,000.
+We also need to specify whether we want a prediction interval, 59 00:05:11,247 --> 00:05:16,547 a confidence interval corresponding to prediction.
+Or whether we want a confidence interval corresponding to estimation.
+Please note that while R differentiates between confidence intervals and
+prediction intervals by the specification of the interval or
+equal to confidence versus predict.
+In statistics we will refer to confidence intervals in both
+the estimation and prediction settings.
+Thus, if you are asked to derive a confidence interval, you will need
+to first differentiate whether you're deriving under estimation or
+prediction setting then use the appropriate input.
+The predict.lm() R function also takes as the input
+the confidence level of the confidence interval,
+being 95% or 99%.
+Thus, this will be those intervals that I provided
+on the slide.
+We'll provide the prediction and
+confidence intervals under both confidence levels.
+Let's compare the confidence intervals under estimation versus prediction.
+You can see that a prediction interval is significantly wider.
+This is because we have additional uncertainity due to the prediction under
+a new setting, whereas the confidence intervals under estimation
+are reflecting an average across all settings for that specific vet.
+We also see that when we compare the 99% versus 95% intervals,
+we can see that the higher the confidence, the wider the confidence intervals.
+Note again that we need to be careful about whether we want to
+confidence interval estimation versus prediction.
+Just to wrap up, the comparison, the confidence intervals under estimation
+are narrower than the prediction intervals because the prediction intervals
+have additional variance from the variance of a new measurement.
+We also interpret those intervals differently.
+The prediction intervals are for one specific setting,
+whereas confidence intervals are average across settings that have
+the same value for the predicting value.
+This lesson concludes the illustration with a data example
+of statistical inference and estimation for the regression line.
+Thank you.
+[MUSIC]
