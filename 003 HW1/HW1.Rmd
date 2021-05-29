@@ -1,9 +1,10 @@
 ---
 title: "HW1 Peer Assessment"
 output:
+  pdf_document: default
   html_document:
     df_print: paged
-  pdf_document: default
+  word_document: default
 ---
 
 ```{r setup, include=FALSE}
@@ -49,7 +50,11 @@ treatement_shift_data
 ```{r}
 
 library(ggplot2)
-ggplot(treatement_shift_data, aes(x=Treatment, y=Phase_Shift_hr), xlab = "Treatement", ylab = "Phase Shift (hr)") + geom_boxplot() + theme(axis.text.x  = element_text(angle=90, vjust=0.5))+ggtitle("Phase Shift (hr) with Respect to Treatement - ANOVA")
+ggplot(treatement_shift_data, aes(x=Treatment, y=Phase_Shift_hr), 
+       xlab = "Treatement", 
+       ylab = "Phase Shift (hr)") + geom_boxplot() + 
+  theme(axis.text.x  = element_text(angle=90, vjust=0.5))+
+  ggtitle("Phase Shift (hr) with Respect to Treatement - ANOVA")
 
 # apply ANOVA
 model = aov(Phase_Shift_hr ~ Treatment, data=treatement_shift_data)
@@ -102,7 +107,7 @@ c. **1 pts** Fill in the blanks for the degrees of freedom of the ANOVA $F$-test
 nrow(treatement_shift_data)
 length(unique(treatement_shift_data$Treatment))
 ```
-   **Answer : ** $F$( k - 1, N - k) -> in above example it is $F$( 2, 19) 
+   **Answer : ** $F$( k - 1, N - k) -> in above example it is **$F$( 2, 19)**
 
 d. **1 pts** What is the p-value of the ANOVA $F$-test?
    
@@ -113,7 +118,7 @@ d. **1 pts** What is the p-value of the ANOVA $F$-test?
 model = aov(Phase_Shift_hr ~ Treatment, data=treatement_shift_data)
 summary(model)
 ```
-   **Answer ** - P-Value -  0.00447
+   **Answer ** - P-Value -  **0.00447**
 
 e. **1 pts** According the the results of the ANOVA $F$-test, does light treatment affect phase shift?  Use an $\alpha$-level of 0.05.
 ```{r}
@@ -149,7 +154,10 @@ a. **3 pts** Use a scatter plot to describe the relationship between CPU perform
    **Answer:**  
 ```{r}
 # Your code here...
-plot(data$performance, data$chmax, main="Scatterplot of CPU performance and the maximum number of channels", xlab="CPU performance",ylab="maximum number of channels")
+plot(data$performance, data$chmax, 
+     main="Scatterplot of CPU performance and the maximum number of channels", 
+     xlab="CPU performance",
+     ylab="maximum number of channels")
 
 #plot(log(data$performance), log(data$chmax))
 ```
@@ -165,7 +173,7 @@ cor(data$performance, data$chmax)
 
 ```
 
-**Comment** : correlation cofficient of 0.6052093 shows that the correlateion is above Modereate and not strong positive relationship
+**Answer** : correlation cofficient of 0.6052093 shows that the correlateion is above Modereate and not strong positive relationship
 
 c. **2 pts** Based on this exploratory analysis, would you recommend a simple linear regression model for the relationship?
 
@@ -191,9 +199,9 @@ pt(10.938, 207, lower.tail=FALSE)
 a. **3 pts** What are the model parameters and what are their estimates?  
    **Answer:**  
    Model parameters 
-     i. $\beta_0$ - Intercept - 37.2252
-     ii. $\beta_1$ - Max #Channels - 3.7441
-     iii. $\hat{\sigma}$ - Std Error- 0.3423
+     i. $\hat{\beta}_0$ - Intercept - 37.2252
+     ii. $\hat{\beta}_1$ - Max #Channels - 3.7441
+     iii. $\hat{\sigma}$ - Std Error- 128.3
      
 
 b. **2 pts** Write down the estimated simple linear regression equation.
@@ -214,7 +222,7 @@ d. **2 pts** Find a 95% confidence interval for the $\beta_1$ parameter. Is $\be
 e. **2 pts** Is $\beta_1$ statistically significantly positive at an $\alpha$-level of 0.01?  What is the approximate p-value of this test?
 
    **Answer:**  
-   p-value is 1.424772e-22 for lower tail.. This shows that  $\beta_1$ statistically significantly positive at an $\alpha$-level of 0.01
+   p-value is 1.424772e-22.. This shows that  $\beta_1$ statistically significantly positive at an $\alpha$-level of 0.01
 
 ## Question B3: Checking the Assumptions of the Model - 8 pts
 
@@ -224,7 +232,10 @@ a. **2 pts** Scatterplot of the data with *chmax* on the x-axis and *performance
 
 ```{r}
 # Your code here...
-plot(data$performance, data$chmax, main="Scatterplot of CPU performance and the maximum number of channels", xlab="CPU performance",ylab="maximum number of channels")
+plot(data$performance, data$chmax, 
+     main="Scatterplot of CPU performance and the maximum number of channels", 
+     xlab="CPU performance",
+     ylab="maximum number of channels")
 ```
 
 **Model Assumption(s) it checks:**
@@ -297,7 +308,10 @@ c. **4 pts** Similar to Question B3, assess and interpret all model assumptions 
 **Model Assumption : ** Linearity Assumption.
 ```{r}
 # Your code here...
-plot(log(data$performance), log(data$chmax + 1), main="Linearity Assumption", xlab="CPU performance",ylab="maximum number of channels")
+plot(log(data$performance), log(data$chmax + 1), 
+     main="Linearity Assumption", 
+     xlab="CPU performance",
+     ylab="maximum number of channels")
 ```
 
 **Model Assumption : ** Constant variance.
@@ -325,11 +339,11 @@ predict(model1,newppp,interval=c("prediction"), level = 0.95)
 exp(predict(model2,newppp,interval=c("prediction"), level = 0.95))
 ```
 
-    **Answer : ** 
-    1. Model 1 - the predicted value - 516.4685 with confidence interval of 252.2519 & 780.6851
-      1. the predicted value is high compared to model 2 but has smaller range.
-    2. Model 2 - the predicted value - 277.723 with confidence interval of 55.17907 & 1397.813
-      1. the predicted value is lower than Model 1 and it has higher prediction intervel. 
+
+    **Answer : **
+
+    1. Model 1 - the predicted value - 516.4685 with confidence interval of 252.2519 & 780.6851. The predicted value is high compared to model 2 but has smaller range.
+    2. Model 2 - the predicted value - 277.723 with confidence interval of 55.17907 & 1397.813. The predicted value is lower than Model 1 and it has higher prediction intervel. 
       
     Looking at this .. seems like the Model 2 prediction has a tighter confidence interval and cab be deemed better than Model 2 prediction.
 
@@ -347,12 +361,20 @@ data2$vendor = factor(data2$vendor)
 
 ```{r}
 # Your code here...
-ggplot(data2, aes(x=vendor, y=performance), xlab = "Vendor", ylab = "Performance") + geom_boxplot() + theme(axis.text.x  = element_text(angle=90, vjust=0.5))+ggtitle("Performance with Respect to Vendor")
+ggplot(data2, aes(x=vendor, y=performance), 
+       xlab = "Vendor", 
+       ylab = "Performance") + 
+  geom_boxplot() + 
+  theme(axis.text.x  = element_text(angle=90, vjust=0.5))+
+  ggtitle("Performance with Respect to Vendor")
 ```
-   **Answer : ** 
-    1. honeywell and hp look to have similar meanst
-    2. nas seems to have higher mean that honeywell and hp
-    3. eventhough honewell has lower mean, there are some higher performance machines that they make
+  
+  
+   **Answer : **
+
+    * honeywell and hp look to have similar mean
+    * as seems to have higher mean that honeywell and hp
+    * eventhough honewell has lower mean, there are some higher performance machines that they make
 
 
 2. **3 pts** Perform an ANOVA F-test on the means of the three vendors.  Using an $\alpha$-level of 0.05, can we reject the null hypothesis that the means of the three vendors are equal?  Please interpret.
@@ -363,7 +385,7 @@ amodel = aov (data2$performance ~ data2$vendor)
 summary(amodel)
 ```
 
-   **Answer : ** - The P-value of 0.00553 suggest that not all means are equal. Thus we reject the Null hypothesis and say that there are some means that are different. The Box Plot also shows the same thing
+   **Answer : ** The P-value of 0.00553 suggest that not all means are equal. Thus we reject the Null hypothesis and say that there are some means that are different. The Box Plot also shows the same thing
 
 3. **3 pts** Perform a Tukey pairwise comparison between the three vendors. Using an $\alpha$-level of 0.05, which means are statistically significantly different from each other?
 
