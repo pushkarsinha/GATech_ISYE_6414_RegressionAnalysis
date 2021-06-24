@@ -1,9 +1,9 @@
 ---
 title: "HW1 Peer Assessment"
 output:
-  pdf_document: default
   html_document:
     df_print: paged
+  pdf_document: default
   word_document: default
 ---
 
@@ -41,6 +41,8 @@ Fill in the missing values in the analysis of the variance table.
 
 ## Answer A1 
 
+I created a csv file with the data and saved as Treatment_Phase_Shift.csv.
+
 ```{r}
 treatement_shift_data = read.csv("Treatment_Phase_Shift.csv", header = TRUE)
 treatement_shift_data
@@ -63,7 +65,7 @@ summary(model)
 
 model.tables(model, type="means")
 ```
-
+Pulling in the information from model summary... 
 
 Complete R output:
 
@@ -79,6 +81,7 @@ Complete R output:
 Use $\mu_1$, $\mu_2$, and $\mu_3$  as notation for the three mean parameters and define these parameters clearly based on the context of the topic above. Find the estimates of these parameters.
 
 ## Answer A2 
+Calculate Mean using the $aggregate$ function
 
 ```{r}
 aggregate(treatement_shift_data[, 2], list(treatement_shift_data$Treatment), mean)
@@ -96,11 +99,11 @@ Use the ANOVA table in Question A1 to answer the following questions:
 
 a. **1 pts** Write the null hypothesis of the ANOVA $F$-test, $H_0$
 
-   **Answer : ** Null hypothesis means all means are equal - $\mu_1$ = $\mu_2$ = ... $\mu_k$. In this case Mean of Control Group = Mean of Eyes Group = Mean of Knees Group
+   **Answer : ** Null hypothesis means all means are equal - $\mu_1$ = $\mu_2$ = ... $\mu_k$. In this case $\mu_{Control} = \mu_{Eyes} = \mu_{Knees}$
 
 b. **1 pts** Write the alternative hypothesis of the ANOVA $F$-test, $H_A$
 
-   **Answer : ** Alternate Hypothesis means some means are different. Mean of Control group and Knees group appear to be similar but mean of Eyes group is different. This hsows atleast Eyes group mean is different from Control and Knees group
+   **Answer : ** Alternate Hypothesis means some means are different. $\mu_{Control}$ and $\mu_{Knee}$ to be similar but $\mu_{Eyes}$ is different. This shows atleast $\mu_{Eyes}$ is different from $\mu_{Control}$ & $\mu_{Knees}$
 
 c. **1 pts** Fill in the blanks for the degrees of freedom of the ANOVA $F$-test statistic:   F(____,_____)
 ```{r}
@@ -123,10 +126,10 @@ summary(model)
 e. **1 pts** According the the results of the ANOVA $F$-test, does light treatment affect phase shift?  Use an $\alpha$-level of 0.05.
 ```{r}
 model.tables(model, type="means")
-TukeyHSD(model)
+TukeyHSD(model, conf.level = 0.95)
 ```
   
-  **Answer **  Since the p-values is less than $\alpha$-level of 0.05, we reject the null hypothesis that all means are equal. Thus the light treatement does affect Phase shift
+  **Answer **  Since the p-values is less than $\alpha$-level of 0.05, we reject the null hypothesis that all means are equal. Thus the light treatment does affect Phase shift
 
 # Part B. Simple Linear Regression
 
@@ -162,7 +165,7 @@ plot(data$performance, data$chmax,
 #plot(log(data$performance), log(data$chmax))
 ```
 
-**Comments** : Scatter plot using original data does not show a good trend. Most of the points are clumped together towards the left bottom corner. When plotting the log of data points the graph starts to look a little more linear relationship
+**Comments** : Scatter plot using original data does show a trend eventhough most of the points are clumped together towards the left bottom corner. 
 
 b. **3 pts** What is the value of the correlation coefficient between _performance_ and _chmax_? Please interpret the strength of the correlation based on the correlation coefficient.
 
@@ -173,15 +176,15 @@ cor(data$performance, data$chmax)
 
 ```
 
-**Answer** : correlation cofficient of 0.6052093 shows that the correlateion is above Modereate and not strong positive relationship
+**Answer** : correlation cofficient of 0.6052093 shows that the correlation is above Moderate and not strong positive relationship
 
 c. **2 pts** Based on this exploratory analysis, would you recommend a simple linear regression model for the relationship?
 
-   **Answer:**  Based on the Exploratory data analysis there exists moderate relationship between the variables. I would still recommend Linear Regression for this... as there are a lot of datapoint for lower values of maximunnumber of  channles 
+   **Answer:**  Based on the Exploratory data analysis there exists moderate relationship between the variables. I would still recommend Linear Regression for this... as there are a lot of data-point for lower values of maximum number of channels 
 
 d. **1 pts** Based on the analysis above, would you pursue a transformation of the data? *Do not transform the data.*
 
-    **Answer:**  Since th data is clumped together in the left bottom corner .. I would pursue data transformation before appling linear Regression to compare the model performace agains the one created without transformation
+  **Answer:**  Since th data is clumped together in the left bottom corner .. I would pursue data transformation before appling linear Regression to compare the model performace agains the one created without transformation
 
 ## Question B2: Fitting the Simple Linear Regression Model - 11 pts
 
@@ -191,9 +194,7 @@ Fit a linear regression model, named *model1*, to evaluate the relationship betw
 # Your code here...
 model1 = lm(performance ~ chmax, data)
 summary(model1)
-confint(model1, level = 0.95)
 
-pt(10.938, 207, lower.tail=FALSE)
 ```
 
 a. **3 pts** What are the model parameters and what are their estimates?  
@@ -215,6 +216,9 @@ c. **2 pts** Interpret the estimated value of the $\beta_1$ parameter in the con
 d. **2 pts** Find a 95% confidence interval for the $\beta_1$ parameter. Is $\beta_1$ statistically significant at this level?
 
    **Answer:**  
+```{r}
+confint(model1, level = 0.95)
+```
    95 % confidence Interval for $\beta_1$ - 3.069251 - 4.418926
    
    $\beta_1$ is statistically significant as evidenced by p-value of 2e-16
@@ -222,6 +226,10 @@ d. **2 pts** Find a 95% confidence interval for the $\beta_1$ parameter. Is $\be
 e. **2 pts** Is $\beta_1$ statistically significantly positive at an $\alpha$-level of 0.01?  What is the approximate p-value of this test?
 
    **Answer:**  
+```{r}
+pt(10.938, 207, lower.tail=FALSE)
+```
+
    p-value is 1.424772e-22.. This shows that  $\beta_1$ statistically significantly positive at an $\alpha$-level of 0.01
 
 ## Question B3: Checking the Assumptions of the Model - 8 pts
@@ -275,6 +283,16 @@ qqPlot(model1$residuals)
 a. **2 pts** Use a Box-Cox transformation (`boxCox()`) to find the optimal $\lambda$ value rounded to the nearest half integer.  What transformation of the response, if any, does it suggest to perform?
 
 ```{r}
+b = boxCox(model1)
+lambda <- b$x # lambda values
+lik <- b$y # log likelihood values for SSE
+bc <- cbind(lambda, lik) # combine lambda and lik
+sorted_bc <- bc[order(-lik),] # values are sorted to identify the lambda value for the maximum log likelihood for obtaining minimum SSE
+head(sorted_bc, n = 10)
+```
+
+
+```{r}
 # Your code here...
 b = boxCox(data$performance ~ data$chmax)
 lambda <- b$x # lambda values
@@ -292,7 +310,6 @@ b. **2 pts** Create a linear regression model, named *model2*, that uses the log
 model2 = lm(log(performance) ~ log(chmax + 1), data)
 summary(model2)
 confint(model2, level = 0.95)
-
 ```
 
 e. **2 pts** Compare the R-squared values of *model1* and *model2*.  Did the transformation improve the explanatory power of the model?
@@ -361,6 +378,7 @@ data2$vendor = factor(data2$vendor)
 
 ```{r}
 # Your code here...
+aggregate(data2$performance, list(data2$vendor), mean)
 ggplot(data2, aes(x=vendor, y=performance), 
        xlab = "Vendor", 
        ylab = "Performance") + 
@@ -368,13 +386,14 @@ ggplot(data2, aes(x=vendor, y=performance),
   theme(axis.text.x  = element_text(angle=90, vjust=0.5))+
   ggtitle("Performance with Respect to Vendor")
 ```
-  
-  
    **Answer : **
 
-    * honeywell and hp look to have similar mean
-    * as seems to have higher mean that honeywell and hp
-    * eventhough honewell has lower mean, there are some higher performance machines that they make
+    * honeywell and hp look to have similar median
+    * nas seems to have higher medin that honeywell and hp
+    * honeywell has some outliers
+    * hp does not have a lot of variablility
+    * honeywell has moderate variability
+    * nas has higher variability especially w.r.t to higher performance
 
 
 2. **3 pts** Perform an ANOVA F-test on the means of the three vendors.  Using an $\alpha$-level of 0.05, can we reject the null hypothesis that the means of the three vendors are equal?  Please interpret.
@@ -391,15 +410,14 @@ summary(amodel)
 
 ```{r}
 # Your code here...
-TukeyHSD(amodel)
+TukeyHSD(amodel, conf.level = 0.95)
 ```
 
    **ANSWER : ** Based on $\alpha$-level of 0.05 
-   1. there are 2 pairs that are different nas-honeywell & nas-hp, 
-   2. but hp-honeywell have similar means. 
-   3. based on this we can conclude that hp and honeywell have same means. 
-   4. but both honeywell and hp have means different for NAS. 
-   5. Also both lower and upper thresholds for nas-honeywell and nas-hp are both positive.. so their means are not same
+   1. there are 2 pairs of men that are statistically different - nas-honeywell & nas-hp, 
+   2. we cannot say that hp-honeywell have different means. 
+   3. but both honeywell and hp have means different for nas 
+   4. Also both lower and upper thresholds for nas-honeywell and nas-hp are both positive.. so statistically their means are not same
    
    
    

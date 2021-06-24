@@ -1,0 +1,665 @@
+---
+output:
+  pdf_document: default
+  html_document: default
+---
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE)
+```
+
+## Overview
+
+### Background
+
+With increasing urban population, traffic congestion and saturation and/or lack of public transportation bike sharing proved to be an ingenious environment friendly solution for daily commuters. There has been steady increase in the number of bike share programs worldwide reaching 1608 bike share programs with a fleet of 18.2 million bikes in 2018.
+
+Despite the steady growth in bike sharing programs one of the key challenges faced by aggregators is to estimate the demand for bikes and allocate resources accordingly as the usage rates vary from around three to eight trips per bicycle per day globally2. The variation in usage could be due to multitude of factors one of which we believe are the prevalent weather conditions. We can expect that passengers are more likely to choose bike rides on days when the weather
+is pleasant without snowfall and/or heavy winds. Another important factor is time during the day. The demand is more during morning and evening peak traffic hours, and lesser during other times of the day.
+
+Further, a study carried out by Bowman Cutter and Matthew Neidell's on the effect of voluntary information disclosure of information on air quality urging people to reduce ozone emissions found that there is an increase in people choosing alternate methods of transportation on days such warnings are issued, supporting the idea that weather parameters have an effect on individual's behavior and choices.
+
+### Data Description
+
+**The response variable is:**  
+$Y$ (Cnt): Total bikes rented by both casual & registered users together  
+  
+**The predicting variables are:**  
+$X_1$ (Instant): Record index  
+$X_2$ (Dteday): Day on which the observation is made  
+$X_3$ (Season): Season which the observation is made (1 = Winter, 2 = Spring, 3 = Summer, 4 = Fall)  
+$X_4$ (Yr): Year on which the observation is made  
+$X_5$ (Mnth): Month on which the observation is made  
+$X_6$ (Hr): Day on which the observation is made (0 through 23)  
+$X_7$ (Holiday): Indictor of a public holiday or not (1 = public holiday, 0 = not a public holiday)  
+$X_8$ (Weekday): Day of week (0 through 6)  
+$X_9$ (Working day): Indicator of a working day (1 = working day, 0 = not a working day)  
+$X_{10}$ (Weathersit): Weather condition (1 = Clear, Few clouds, Partly cloudy, Partly cloudy, 2 = Mist & Cloudy, Mist & Broken clouds, Mist & Few clouds, Mist, 3 = Light Snow, Light Rain, Thunderstorm & Scattered clouds, Light Rain & Scattered clouds, 4 = Heavy Rain, Ice Pallets, Thunderstorm & Mist, Snow & Fog)  
+$X_{11}$ (Temp): Normalized temperature in Celsius  
+$X_{12}$ (Atemp): Normalized feeling temperature in Celsius  
+$X_{13}$ (Hum): Normalized humidity  
+$X_{14}$ (Windspeed): Normalized wind speed  
+$X_{15}$ (Casual): Bikes rented by casual users in that hour  
+$X_{16}$ (Registered): Bikes rented by registered users in that hour  
+
+***
+## Exploratory Data Analysis
+
+### Reading data
+
+```{r}
+# Set colors
+gtblue = rgb(0, 48, 87, maxColorValue = 255)
+techgold = rgb(179, 163, 105, maxColorValue = 255)
+buzzgold = rgb(234, 170, 0, maxColorValue = 255)
+bobbyjones = rgb(55, 113, 23, maxColorValue = 255)
+# Read the data using read.csv
+data = read.csv("Bikes.csv")
+# Show the number of observations
+obs = nrow(data)
+cat("There are", obs, "observations in the data")
+```
+
+### Response Data Distribution
+
+```{r}
+# Check the distribution of the response, cnt
+hist(data$cnt,
+     main="",
+     xlab="Count of Bike Shares",
+     border=buzzgold,
+     col=gtblue)
+```
+
+* The frequency of zero bike shares is high, which skews the demand data.
+
+
+```{r}
+# Check the response, cnt, against time of day
+boxplot(cnt~hr,
+        main="",
+        xlab="Hour",
+        ylab="Count of Bike Shares",
+        col=blues9,
+        data=data)
+```
+
+The number of bike shares between hour 0 and hour 6 is low. The majority activity as expected is focused between hour 7 and hour 23, peaking at hour 8 and hour 17.
+
+```{r,fig.width = 10, fig.height = 3.5}
+par(mfrow=c(1, 2))
+
+# Plot cnt against season
+boxplot(cnt~season,
+        main="",
+        xlab="Season",
+        ylab="Count of Bike Shares",
+        col=blues9,
+        data=data)
+
+# Plot cnt against weather
+boxplot(cnt~weathersit,
+        main="",
+        xlab="Weather",
+        ylab="Count of Bike Shares",
+        col=blues9,
+        data=data)
+```
+
+The number of bikes rented during winter are the lowest.  The number of bikes decreases as the weather becomes unfavorable.
+
+```{r}
+plot(data$windspeed,
+     data$cnt,
+     xlab="Scaled Wind Speed",
+     ylab="Count of Bike Share",
+     main="",
+     col=gtblue)
+abline(lm(cnt~windspeed, data=data), 
+       col=buzzgold, 
+       lty=2, lwd=2)
+```
+
+The count of rental bikes seems to decrease as windspeed increases. <- ***Need to discuss this as the OLS line contradicts this statement.***
+
+```{r,fig.width = 10, fig.height = 3.5}
+par(mfrow=c(1, 2))
+
+plot(data$temp, 
+     data$cnt, 
+     xlab="Scaled Temperature",
+     ylab="Count of Bike Share",
+     main="",
+     col=gtblue)
+abline(lm(cnt~temp, data=data), col=buzzgold, lty=2, lwd=2)
+
+plot(data$hum, 
+     data$cnt, 
+     xlab="Scaled Humidity",
+     ylab="Count of Bike Share",
+     main="",
+     col=gtblue)
+abline(lm(cnt~hum, data=data), col=buzzgold, lty=2, lwd=2)
+```
+
+The count of rental bikes seems to decrease as humidity increases although the demand varies within similar ranges at varying humidity levels.
+The count of rental bikes seems to increase as temperature increases however with much wider variability at larger temperature levels.
+
+***
+## Preparing the Data
+```{r}
+# Set a seed for reproducibility
+set.seed(9)
+
+# Remove the irrelevant columns
+clean_data = data[-c(1,2,9,15,16)]
+
+# Convert the numerical categorical variables to predictors
+clean_data$season = as.factor(clean_data$season)
+clean_data$yr = as.factor(clean_data$yr)
+clean_data$mnth = as.factor(clean_data$mnth)
+clean_data$hr = as.factor(clean_data$hr)
+clean_data$holiday = as.factor(clean_data$holiday)
+clean_data$weekday = as.factor(clean_data$weekday)
+clean_data$weathersit = as.factor(clean_data$weathersit)
+
+# 80% Train 20% Test split
+sample_size = floor(0.8*nrow(clean_data))
+picked = sample(seq_len(nrow(clean_data)), size=sample_size)
+train = clean_data[picked,]
+test = clean_data[-picked,]
+```
+
+***
+## Creating the Model
+```{r}
+# Create a multiple linear regression model
+model1 = lm(cnt ~ ., data=train)
+summary(model1)
+```
+
+### Finding Insignificant Variables
+```{r}
+which(summary(model1)$coeff[,4]>0.05)
+```
+
+```{r}
+summary(data$weathersit)
+```
+
+### Coding Dummy Variables
+```{r}
+# Create dummy variables
+weathersit.1 = ifelse(data$weathersit == 1, 1, 0)
+weathersit.2 = ifelse(data$weathersit == 2, 1, 0)
+weathersit.3 = ifelse(data$weathersit == 3, 1, 0)
+
+# Include all dummy variables without intercept
+fit.1 = lm(cnt ~ weathersit.1 + weathersit.2
+           + weathersit.3 - 1, data=data)
+# Include 2 dummy variables with intercept
+fit.2 = lm(cnt ~ weathersit.2 + weathersit.3,
+           data=data)
+# Use categorical variable
+fit.3 = lm(cnt ~ weathersit, data=clean_data)
+
+summary(fit.1)
+summary(fit.2)
+summary(fit.3)
+```
+
+***
+## Model Assessment
+
+### Outliers
+```{r}
+# Cook’s Distance
+cook = cooks.distance(model1)
+plot(cook,
+     type="h",
+     lwd=3,
+     col=buzzgold,
+     ylab = "Cook's Distance",
+     main="Cook's Distance")
+
+```
+There is one observation with a Cook’s Distance noticeably higher than the other observations. However, its Cook’s distance is close to 0.004, suggesting that there are likely no outliers. 
+
+## Multicollinearity
+```{r}
+library(car)
+round(vif(model1),3)
+```
+As VIFs of the season, mnth, temp, atemp factors are greater than max(10, 1/(1-R2)), it indicates there is a problem of multicollinearity in the linear model. So, we should not use all the predictors in the model.
+
+### Goodness of Fit
+
+#### Constant Variance Assumption
+```{r}
+# Extract the standardized residuals
+resids = rstandard(model1)
+fits = model1$fitted
+
+# Plot the standardized residuals against
+# fitted values
+plot(fits, resids,
+     xlab="Fitted Values",
+     ylab="Residuals",
+     main="",
+     col=gtblue)
+abline(0, 0, 
+       col=buzzgold, 
+       lty=2, lwd=2)
+```
+
+* The constant variance assumption does not hold --  the variance increases when moving from lower to higher fitted values.  
+* The residuals, at low y values, seem to follow a straight-line pattern. The linear pattern in the beginning suggests that the response variable stays constant for a range of predictor values.
+
+#### Linearity Assumption
+```{r}
+par(mfrow=c(2,2))
+# Plot the standardized residuals against
+# temperature
+plot(train$temp, resids,
+     xlab="Temperature",
+     ylab="Residuals",
+     main="",
+     col=gtblue)
+abline(0, 0, 
+       col=buzzgold, 
+       lty=2, lwd=2)
+plot(train$atemp, resids,
+     xlab="Feeling Temperature",
+     ylab="Residuals",
+     main="",
+     col=gtblue)
+abline(0, 0, 
+       col=buzzgold, 
+       lty=2, lwd=2)
+plot(train$hum, resids,
+     xlab="Humidity",
+     ylab="Residuals",
+     main="",
+     col=gtblue)
+abline(0, 0, 
+       col=buzzgold, 
+       lty=2, lwd=2)
+plot(train$windspeed, resids,
+     xlab="Windspeed",
+     ylab="Residuals",
+     main="",
+     col=gtblue)
+abline(0, 0, 
+       col=buzzgold, 
+       lty=2, lwd=2)
+```
+
+* Analysis here
+
+#### Normality Assumption
+```{r, fig.width=8, fig.height=3} 
+par(mfrow=c(1,2))
+# Plot histogram of std residuals
+hist(resids,
+     nclass=20,
+     col=gtblue,
+     border=techgold,
+     main="Histogram of residuals")
+
+# qq plot of std residuals
+qqnorm(resids,       
+       col=gtblue)
+qqline(resids,
+       col="red")
+
+```
+
+* Analysis here
+
+***
+## Transforming to improve Goodness of Fit
+
+### Transforming the Response Variable
+```{r}
+# Box-Cox Transformation
+bc = boxCox(model1)
+lambda = bc$x[which(bc$y==max(bc$y))]
+cat("Optimal lambda:", lambda)
+
+# Fitting the model with square root
+# transformation
+model2 = lm(sqrt(cnt)~., data=train)
+summary(model2)
+
+```
+
+### Finding Insignificant Variables
+```{r}
+which(summary(model2)$coeff[,4]>0.05)
+
+```
+
+### Explanatory Power
+```{r}
+cat('R-squared:', summary(model2)$r.squared)
+```
+
+### Multicollinearity
+```{r}
+vif(model2)
+```
+
+Explanatory power of the new model is better with respect to the coefficient of determination, but multicollinearity is still a problem.
+
+### Goodness of Fit
+```{r}
+# Extract the standardized residuals
+resids2 = rstandard(model2)
+fits2 = model2$fitted
+
+par(mfrow=c(3,3))
+# Constant Variance Assumption
+plot(fits2, resids2,
+     xlab="Fitted Values",
+     ylab="Residuals",
+     main="",
+     col=gtblue)
+abline(0, 0, 
+       col=buzzgold, 
+       lty=2, lwd=2)
+# Plot the standardized residuals against
+# temperature
+plot(train$temp, resids2,
+     xlab="Temperature",
+     ylab="Residuals",
+     main="",
+     col=gtblue)
+abline(0, 0, 
+       col=buzzgold, 
+       lty=2, lwd=2)
+plot(train$atemp, resids2,
+     xlab="Feeling Temperature",
+     ylab="Residuals",
+     main="",
+     col=gtblue)
+abline(0, 0, 
+       col=buzzgold, 
+       lty=2, lwd=2)
+plot(train$hum, resids2,
+     xlab="Humidity",
+     ylab="Residuals",
+     main="",
+     col=gtblue)
+abline(0, 0, 
+       col=buzzgold, 
+       lty=2, lwd=2)
+plot(train$windspeed, resids2,
+     xlab="Windspeed",
+     ylab="Residuals",
+     main="",
+     col=gtblue)
+abline(0, 0, 
+       col=buzzgold, 
+       lty=2, lwd=2)
+# Plot histogram of std residuals
+hist(resids2,
+     nclass=20,
+     col=gtblue,
+     border=techgold,
+     main="Histogram of residuals")
+
+# qq plot of std residuals
+qqnorm(resids2,       
+       col=gtblue)
+qqline(resids2,
+       col="red")
+```
+
+The constant variance assumption is still violated. The transformation has not improved the goodness of fit even though the model performance is better with respect to the coefficient of determination.
+
+***
+## Removing Low Demand Data to improve Goodness of Fit
+
+```{r}
+# Set a seed for reproducibility
+set.seed(9)
+
+# Remove data for hours 0-6
+hrs = as.numeric(data$hr)
+data_red = clean_data[which(hrs>=7),]
+
+# 80% Train 20% Test split
+sample_size = floor(0.8*nrow(data_red))
+picked = sample(seq_len(nrow(data_red)), size=sample_size)
+train_red = data_red[picked,]
+test_red = data_red[-picked,]
+
+# Fitting the model with square root transformation
+model3 = lm(sqrt(cnt)~.,data=train_red)
+summary(model3)$r.squared
+
+which(summary(model3)$coeff[,4]>0.05)
+
+```
+
+### Goodness of Fit
+```{r, fig.width = 8, fig.height = 3}
+# Extract the standardized residuals
+resids3 = rstandard(model3)
+fits3 = model3$fitted
+
+par(mfrow=c(2,4))
+# Constant Variance Assumption
+plot(fits3, resids3,
+     xlab="Fitted Values",
+     ylab="Residuals",
+     main="",
+     col=gtblue)
+abline(0, 0, 
+       col=buzzgold, 
+       lty=2, lwd=2)
+# Plot the standardized residuals against
+# temperature
+plot(train_red$temp, resids3,
+     xlab="Temperature",
+     ylab="Residuals",
+     main="",
+     col=gtblue)
+abline(0, 0, 
+       col=buzzgold, 
+       lty=2, lwd=2)
+plot(train_red$atemp, resids3,
+     xlab="Feeling Temperature",
+     ylab="Residuals",
+     main="",
+     col=gtblue)
+abline(0, 0, 
+       col=buzzgold, 
+       lty=2, lwd=2)
+plot(train_red$hum, resids3,
+     xlab="Humidity",
+     ylab="Residuals",
+     main="",
+     col=gtblue)
+abline(0, 0, 
+       col=buzzgold, 
+       lty=2, lwd=2)
+plot(train_red$windspeed, resids3,
+     xlab="Windspeed",
+     ylab="Residuals",
+     main="",
+     col=gtblue)
+abline(0, 0, 
+       col=buzzgold, 
+       lty=2, lwd=2)
+# Plot histogram of std residuals
+hist(resids3,
+     nclass=20,
+     col=gtblue,
+     border=techgold,
+     main="Histogram of residuals")
+
+# qq plot of std residuals
+qqnorm(resids3,       
+       col=gtblue)
+qqline(resids3,
+       col="red")
+
+# Cook’s Distance
+cook3 = cooks.distance(model1)
+plot(cook3,
+     type="h",
+     lwd=3,
+     col=buzzgold,
+     ylab = "Cook's Distance",
+     main="Cook's Distance")
+```
+
+***
+## Prediction
+```{r}
+# Build a prediction of the models with the new test data
+# Specify whether a confidence or prediction interval
+pred1 = predict(model1, test, interval = 'prediction', level=0.95)
+pred2 = predict(model2, test, interval = 'prediction', level=0.95)
+pred3 = predict(model3, test_red, interval = 'prediction', level=0.95)
+
+head(pred1, 12)
+```
+
+### Model1 Accuracy
+```{r}
+## Save Predictions to compare with observed data
+test.pred1 = pred1[,1]
+test.lwr1 = pred1[,2]
+test.upr1 = pred1[,3]
+
+# Mean Squared Prediction Error (MSPE)
+mean((test.pred1-test$cnt)^2) 
+
+# Mean Absolute Prediction Error (MAE)
+mean(abs(test.pred1-test$cnt)) 
+
+# Mean Absolute Percentage Error (MAPE)
+mean(abs(test.pred1-test$cnt)/test$cnt) 
+
+# Precision Measure (PM)
+sum((test.pred1-test$cnt)^2)/sum((test$cnt-mean(test$cnt))^2) 
+
+# Calculate number of values outside UCL and LCL
+sum(test$cnt<test.lwr1 | test$cnt>test.upr1) / nrow(test)
+```
+
+### Model2 Accuracy
+```{r}
+## Save Predictions to compare with observed data
+test.pred2 = pred2[,1]^2
+test.lwr2 = pred2[,2]
+test.upr2 = pred2[,3]
+
+# Mean Squared Prediction Error (MSPE)
+mean((test.pred2-test$cnt)^2)
+
+# Mean Absolute Prediction Error (MAE)
+mean(abs(test.pred2-test$cnt))
+
+# Mean Absolute Percentage Error (MAPE)
+mean(abs(test.pred2-test$cnt)/test$cnt)
+
+# Precision Measure (PM)
+sum((test.pred2-test$cnt)^2)/sum((test$cnt-mean(test$cnt))^2)
+
+# CI Measure (CIM)
+sum(sqrt(test$cnt)<test.lwr2 | sqrt(test$cnt)>test.upr2) / nrow(test)
+```
+
+### Model3 Accuracy
+```{r}
+## Save Predictions to compare with observed data
+test.pred3 = pred3[,1]^2
+test.lwr3 = pred3[,2]
+test.upr3 = pred3[,3]
+
+# Mean Squared Prediction Error (MSPE)
+mean((test.pred3-test_red$cnt)^2)
+
+# Mean Absolute Prediction Error (MAE)
+mean(abs(test.pred3-test_red$cnt))
+
+# Mean Absolute Percentage Error (MAPE)
+mean(abs(test.pred3-test_red$cnt)/test_red$cnt)
+
+# Precision Measure (PM)
+sum((test.pred3-test_red$cnt)^2)/sum((test_red$cnt-mean(test_red$cnt))^2)
+
+# CI Measure (CIM)
+sum(sqrt(test_red$cnt)<test.lwr3 | sqrt(test_red$cnt)>test.upr3) / nrow(test_red)
+```
+
+***
+## P-values and Large Sample Size
+
+### P-value Problem
+```{r}
+# Approach: Subsample 40% of the initial data sample & repeat 100 times
+count = 1
+n = nrow(train)
+B = 100
+ncoef = dim(summary(model1)$coeff)[1]
+pv_matrix = matrix(0,nrow = ncoef,ncol = B)
+
+while (count <= B) {
+  # 40% random sample of indices
+  subsample = sample(n, floor(n*0.4), replace=FALSE)
+  # Extract the random subsample data
+  subdata = train[subsample,]
+  # Fit the regression for each subsample
+  submod = lm(sqrt(cnt)~.,data=subdata)
+  # Save the p-values
+  pv_matrix[,count] = summary(submod)$coeff[,4]
+  # Increment to the next subsample
+  count = count + 1
+}
+
+# Count pvalues smaller than 0.01 across the 100 (sub)models
+alpha = 0.01
+pv_significant = rowSums(pv_matrix < alpha)
+
+```
+
+### Statistically Significant Coefficients
+```{r}
+# Which regression coefficients are statistically significant?
+idx_scoef = which(pv_significant>=95)
+
+# Plot the 100 p-values of the significant coefficients
+matplot(pv_matrix[idx_scoef,],
+     xlab="Regression Coefficient Index",
+     ylab="P-values across 100 Samples",
+     type="p",
+     pch="o",
+     col=gtblue)
+
+# Show the p-values of the significant coefficients in model2
+cbind(round(summary(model2)$coeff[idx_scoef,c(1,4)],3),
+      Freq=pv_significant[idx_scoef])
+```
+
+### Coefficients Not Statsitically Significant
+```{r}
+## Which regression coefficients are not statistically significant?
+idx_icoef = which(pv_significant<85)
+
+# Plot the 100 p-values of the coefficients not statistically
+# significant
+matplot(pv_matrix[idx_icoef,],
+     xlab="Regression Coefficient Index",
+     ylab="P-values across 100 Samples",
+     type="p",
+     pch="o",
+     col=gtblue)
+
+# Show the p-values of coefficients not stastically significant
+# in model2
+cbind(round(summary(model2)$coeff[idx_icoef,c(1,4)],3),
+      Freq=pv_significant[idx_icoef])
+```
