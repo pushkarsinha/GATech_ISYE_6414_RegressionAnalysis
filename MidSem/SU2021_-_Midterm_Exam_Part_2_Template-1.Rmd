@@ -1,0 +1,351 @@
+---
+title: "Midterm Exam - Open Book Section (R) - Part 2"
+output:
+  html_document: default
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE)
+```
+
+# Instructions
+
+This R Markdown file includes the questions, the empty code chunk sections for your code, and the text blocks for your responses. Answer the questions below by completing this R Markdown file. You will submit a *html file* using this file. You may make slight adjustments to get the file to knit/convert but otherwise keep the formatting the same. Once you've finished answering the questions, submit your responses in a single knitted file (just like the homework peer assessments).
+
+There are 12 questions total.The number of points for each question is provided. Partial credit may be given if your code is correct but your conclusion is incorrect or vice versa.
+
+*Next Steps:*
+
+1.  Save this .Rmd file in your R working directory - the same directory where you will download the "Car_Purchasing_Data.csv" data file into. Having both files in the same directory will help in reading the .csv file.
+
+2.  Read the question and create the R code necessary within the code chunk section immediately below each question. Knitting this file will generate the output and insert it into the section below the code chunk. 
+
+3.  Type your answer to the questions in the text block provided immediately after the response prompt.
+
+4.  Once you've finished answering all questions, knit this file and submit the knitted file **as HTML** on Canvas.
+
+### Mock Example Question 12 - 4pts
+
+This will be the exam question - each question is already copied from Canvas and inserted into individual text blocks below, *you do not need to copy/paste the questions from the online Canvas exam.*
+
+```{r}
+# Example code chunk area. Enter your code below the comment`
+
+
+```
+
+**Mock Response to Question 12**:  This is the section where you type your written answers to the question. Depending on the question asked, your typed response may be a number, a list of variables, a few sentences, or a combination of these elements. 
+
+
+
+**Ready? Let's begin. We wish you the best of luck!**
+
+
+**Recommended Packages**
+```{r}
+# Load relevant libraries (add here if needed)
+library(car)
+```
+
+
+# Car Purchasing Data Analysis
+
+For this exam, you will be building a model to predict car purchase prices (*Car.Purchase.Amount*) that are sold in different countries of Mexico, Canada, and USA.
+
+The "Car_Purchasing_Data.csv" data set consists of the following variables:
+
+* *Country*: country in which the car is sold (3-letter identifier)
+* *Gender*: gender of the buyer (0=female, 1=male)
+* *Age*: age of the buyer (years)
+* *Annual.Salary*: annual salary earned of the buyer ($ USD)
+* *Credit.Card.Debt*: amount of reported credit debt owed by buyer ($ USD)
+* *Net.Worth*: amount of reported assets of buyer ($ USD)
+* *Car.Purchase.Amount*: amount the car was purchased for by buyer ($ USD)
+
+
+Read the data and answer the questions below. Assume a significance threshold of 0.05 for hypothesis tests unless stated otherwise.
+
+```{r}
+# Read the data set
+buyers = read.csv('Car_Purchasing_Data.csv', header=TRUE)
+
+#Set Gender & Country as a categorical variable
+buyers$Gender<-as.factor(buyers$Gender)
+buyers$Country<-as.factor(buyers$Country)
+
+#View first few rows
+head(buyers)
+```
+
+**Note:** For all of the following questions, treat all variables as quantitative variables except for *Gender* and *Country*. They have already been converted to categorical variables in the above code.  
+
+
+### Question 1 - Exploratory Data Analysis of Categorical Variable - 2pts
+Create a boxplot of the response variable *Car.Purchase.Amount* and the categorical variable *Country*. From this plot, does *Country* appear useful in predicting *Car.Purchase.Amount*?  Explain how you came to your conclusion.  
+
+```{r}
+#code for boxplot...
+library(ggplot2)
+ggplot(buyers, aes(x=Country, y=Car.Purchase.Amount, color=Country), 
+       xlab = "buyers$Country", 
+       ylab = "buyers$Car.Purchase.Amount") + 
+  geom_boxplot() + 
+  theme(axis.text.x  = element_text(angle=90, vjust=0.5))+
+  ggtitle("Purchase amount by country")
+```
+
+**Response to Question 1**:    
+ 
+**Answer :** Box plot shows that the means of Car purchase amount varies considerably in the 3 countries. Looks like USA has the highest mean and MEX has the lowest.. Canada falls somewhere in between. Also there are some outlierst for USA and Mex with Mexico having outliers towards the lower price and USA for both upper and lower prices.
+
+
+### Question 2 - ANOVA - 4pts
+Create an ANOVA model called **anovamodel** to compare the mean *Car.Purchase.Amount* among the different countries. Display the corresponding ANOVA table.
+
+A) Identify the value of the sum of square treatment (SSTr) from the ANOVA table.    
+
+B) Provide the variable formula that is used to calculate the F-Value in the table.  
+
+```{r}
+#Code to create ANOVA model...
+anovamodel = aov(Car.Purchase.Amount ~ Country, buyers)
+summary(anovamodel)
+
+model.tables (anovamodel, type = "means")
+
+```
+
+**Response to Question 2A**: SSTr - 1.541e+10
+
+**Response to Question 2B**: F Value - MSSTr/MSE = 7.704e+09/8.553e+07 \n
+      where MSSTr = SSR/(k-1) = 1.541e+10 / 2\n
+            MSE = SSE / (N-k) = 4.251e+10 / 497\n
+
+
+### Question 3 Test of Equal Means - 4pts
+A) State the Null and Alternative Hypotheses for the Test of Equal Means  
+
+B) Do you reject or fail to reject the null hypothesis for the test of equal means at a significant level of 0.05? Explain your answer using the values from the ANOVA Table. 
+
+C) Given your answer in part B, explain what this conclusion means in the context of the problem.
+
+**Response to Question 3A**:
+
+**H0**:  $\mu_{MEX} = \mu_{USA} = \mu_{CAN} = 0$
+
+**HA**:  Atleaset 2 means ($\mu_{MEX}, \mu_{USA}, \mu_{CAN}$) are different
+
+
+**Response to Question 3B**: The p value is < 2e-16. We fail to reject the Null Hypotheses
+
+
+**Response to Question 3C**:    This means that the mean Car price amount is different and not equal to 0. The means it would make sense to use the Country as a varible in the Regression model to predict the car prices.
+  
+
+
+### Question 4 Pairwise Comparison - 4pts
+Conduct a pairwise comparison of the mean *Car.Purchase.Amount* for the different categories of *Country*. Use a 95% confidence level for this comparison.
+
+A) According to the pairwise comparison, identify all the pairs that are statistically significantly different.
+
+B) State how you came to your conclusion. 
+
+C) Provide an interpretation of "diff" in the context of the average purchase price between a car sold in Mexico and Canada.  *(Note: provide this interpretation regardless of the means being statistically different/equal).*
+
+```{r}
+# Code to create pairwise-comparison...
+TukeyHSD(anovamodel, "Country", conf.level=0.95)
+
+```
+
+**Response to Question 4A**:  All pairs have p-value close to zero. so all pairs(MEX-CAN, USA-CAN & USA-MEX) are statistically significant
+
+
+**Response to Question 4B**:  The "p-adj" values for MEX-CAN and USA-MEX are 0e+00 and USA-CAN = 1e-07. Also the lower and upper bounds for USA-CAN and USA-MEX are positive and MEX-CAN are negative. Thus none of the means are = 0.
+
+
+**Response to Question 4C**:  Mexico has lower mean purchase price compared to Canada. USA had higer mean purchase price compared to both Mexico and Canada
+
+
+
+### Question 5 Exploratory Data Analysis Quantitative Variables - 4pts
+Now consider the quantitative variables ONLY: *Age*, *Annual.Salary*, *Credit.Card.Debt*, and *Net.Worth*.
+
+Compute the correlation coefficients between each quantitative variables and also the response variable. 
+
+A) Which predicting variable has the best correlation with the *response*?
+
+B) Interpret the value of the best correlation coefficient in the context of the problem. Include strength (weak, moderate, strong) and direction (positive, negative).  
+
+C) Considering the predicting variables, does the correlation matrix suggest signs of multicollinearity? Explain how you came to your conclusion. 
+
+```{r}
+# Code to calculate correlation...
+cor(buyers[c("Age","Annual.Salary","Credit.Card.Debt","Net.Worth","Car.Purchase.Amount")])
+
+ 
+```
+
+**Response to Question 5A**:     *Age* has the best correlation with *Car.Purchase.Amount*
+
+
+**Response to Question 5B**:  *Age* has High(above Moderate) positive correlation to *Car.Purchase.Amount*. 
+
+
+**Response to Question 5C**:  Correlation matrix does NOT suggest multicollinearity. this is becasue the predicting variables have a no significat correlation amongst each other.. 
+
+
+
+### Question 6 Multiple Linear Regression - 4pts
+Create a full model with **ALL** variables (quantitative and qualitative) called **lm.full** with *Car.Purchase.Amount* as the response variable. Include all variables in the dataset.Display the summary table for the model. 
+*(Note: Treat all variables as quantitative variables except for Gender and Country. Include an intercept.)*
+
+A) Which coefficients are significant at the 0.05 significance level?
+
+B) Is the model significant overall using an alpha of 0.05?  Why/Why not?  
+
+
+```{r}
+# Code to create model...
+lm.full = lm(Car.Purchase.Amount~., data=buyers)
+summary(lm.full)
+
+```
+
+**Response to Question 6A**:  Coefficients Significant at 0.05 significance level - Intercept, Age, Annual.Salary and Net.Worth
+
+**Response to Question 6B**:  Since the p-value of F-statistics is < 2.2e-16 , the model *is* overall significant at alpha level of 0.05.
+
+
+
+### Question 7 Confidence Intervals - 3pts
+What are the bounds for a **99%** confidence interval on the coefficient for *Credit.Card.Debt*? Using this confidence interval, is the coefficient for *Credit.Card.Debt* plausibly equal to zero at this confidence level?  Explain.
+
+```{r}
+# Code to calculate 99% CI...
+confint(lm.full, level = 0.99)['Credit.Card.Debt',]
+
+```
+
+**Response to Question 7**:     The coefficient for *Credit.Card.Debt* is plausibly equal to zero at this confidence level. this is because the 0 falls between the upper and lower bound suggesting that the coefficient is plausably 0.
+
+
+
+### Question 8 Residual Analysis - 10pts
+Perform residual analysis on the *lm.full* model for the 4 assumptions. State whether the assumption holds and why you came to the conclusion. 
+
+```{r}
+#code for plots...
+resids =rstandard(lm.full)
+
+for (i in c(3:7)){
+  col_name = names(buyers[i])
+  plot(buyers[,i], resids, xlab= col_name, ylab = "S. Residuals")
+  abline(h=0, col="red")
+  lines(lowess(buyers[,i], resids), col='blue')
+}
+
+ggplot(data=buyers, aes(x=lm.full$fitted.values, y=lm.full$residuals)) +
+  geom_point(alpha=I(0.4),color='darkorange') +
+  xlab('Fitted Values') +
+  ylab('Residuals') +
+  ggtitle('Residual Plot') +
+  geom_hline(yintercept=0)
+
+hist(resids, col="orange", nclass=15)
+
+qqPlot(lm.full$residuals)
+```
+
+**Response to Question 8**:  
+
+**Constant Variance Assumption**:  Constant Variance holds as the as Residual plot shows the residuals vs fitted values distributed randomly around the 0 line 
+
+**Independence Assumption**:  Independence Assumption also holds as the Residual plot does not show groupings of residuals when plotted against Fitted Values
+
+**Linearity Assumption**:   Linearity Assumptions also holds. this is shown by the first 5 plots residual plots against each predicting variable. The Residuals are randomly distributed around 0 line for all predicting variables.
+
+**Normality Assumption**:    Even though the QQ plot shows heavy tails most of the data points are normally distributed. This histogram also show slight tail aroud the extreme values.. Normality assumptions does seem to hold reasonably.
+
+
+
+### Question 9 Transformations - 3pts
+Perform a BoxCox analysis to find if a transformation of the response variable is appropriate. State the optimal lambda value rounded to the nearest half integer and conclusion. *(Note: Do not apply any transformations to the model)*  
+
+```{r}
+#code for boxcox...
+bc = boxCox(lm.full)
+# Find the optimal lambda
+opt.lambda = bc$x[which.max(bc$y)]
+opt.lambda
+```
+**Response to Question 9**:   
+
+**Optimal lambda value**: Optimal Lambda value is 1
+
+**Conclusion** This means that there is no transformation needed for the response variable
+
+
+
+### Question 10 - Outlier Detection - 3pts
+Using Cook's distances, evaluate whether there are any outliers in the *lm.full* model. Display your plot and state your conclusion. *(Do not remove any observations)*  
+```{r}
+#code for outlier detection...
+cook = cooks.distance(lm.full)
+# Plotting Cook's distances
+plot(cook,type="h",lwd=3,col="red", ylab= "Cook's Distance")
+abline(1,0,col="blue")
+
+```
+**Response to Question 10**: Most of the values are below 1. there do not seem to be outliers in the data
+
+
+
+### Question 11 - Reduced Model 6pts
+Create a third model called **lm.red** by removing *Credit.Card.Debt* and *Gender* from *lm.full*. Display the summary.  
+
+A) Comment on the removal of the predicting variables by comparing *lm.red* to the full model (*lm.full*). Note any changes to the statistical significance of the coefficients.  
+
+B) Perform a partial F-test on the new model (**lm.red**) vs the previous model (**lm.full**), using $\alpha=0.05$. Do you reject or fail to reject the null hypothesis? Explain your answer using the output.  
+
+C) Do the variables *Credit.card.debt* and *Gender* add predictive power? (Yes or No should suffice in conjunction w/ 11B)
+
+```{r}
+# Code to create lm.red...
+lm.red = lm(Car.Purchase.Amount~Country+Age+Annual.Salary+Net.Worth, data=buyers)
+summary(lm.red)
+
+anova(lm.full, lm.red)
+
+# Code for partial f-test...
+
+```
+
+**Response to Question 11A**:  Compared to Full model,  the same 4 predictors come out to be significant. 
+
+**Response to Question 11B**:  We fail to reject the NUll Hypothesis because the p-vaue at 0.05 significance level is 0.1152. this is greate that 0.05
+
+**Response to Question 11C**:  No. The variables *Credit.card.debt* and *Gender* do NOT add predictive power.
+
+
+
+### Question 12 - Predictions 4 - 3pts
+
+Using **lm.full** model, what is the predicted *Car.Purchase.Amount* and corresponding **90% prediction interval** for a vehicle purchased in **Mexico** by a **45** year old **female** (0) with an annual salary of **$65,000**, Credit.Card.Debt of **$2,000**, and Net.Worth of **$500,000**? Provide an interpretation of your results.
+
+**(Note: Ensure you are using lm.full not lm.red. The data point has been provided.)**
+
+```{r}
+# new observation...
+newpt <- data.frame(Country='MEX', Age=45, Gender='0', Annual.Salary=65000, Credit.Card.Debt=2000, Net.Worth=500000)
+
+# Code for prediction interval...
+predict(lm.full, newpt, interval="prediction", level=0.90)
+
+```
+**Response to Question 12**:  predicted *Car.Purchase.Amount* is  46,755.79 with prediction varying etween 46350.64 and 47160.94 with 90% confidence 
+
+
+
+
+**The End.**
