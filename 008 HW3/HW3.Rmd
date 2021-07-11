@@ -1,9 +1,9 @@
 ---
 title: "HW3 Peer Assessment"
 output:
+  pdf_document: default
   html_document:
     df_print: paged
-  pdf_document: default
 ---
 
 ```{r setup, include=FALSE}
@@ -58,7 +58,7 @@ For each unit increase in *Num.Of.Products*
 
 1. Log Odds of staying decreases by 1.7668.
 
-2. Odds of staying decreases by 5.85 ($e^{1.7668}$)
+2. Odds of staying decreases by 5.85 ($e^{1.7668}$) or decreases by 82.91 % ($1 - e^{-1.7668}$)
 
 # Question 2: Inference - 9 pts 
 
@@ -77,7 +77,7 @@ confint(model1, level = 0.90)
 
 **(b) 3 pts - Is model1 significant overall? How do you come to your conclusion?**
 
-**Answer :** Without the residual analysis, it is difficult to say if model1 is significant overall. But the coefficients are statistically significant. The model looks significant based on the parameter significance
+**Answer :** Without the residual analysis, it is difficult to say if model1 is significant overall. But since the coefficients are statistically significant the model looks significant based on the parameter significance.
 
 
 **(c) 3 pts - Which coefficients are significantly nonzero at the 0.01 significance level? Which are significantly negative? Why?**
@@ -108,7 +108,7 @@ c(pearson1.tvalue, 1-pchisq(pearson1.tvalue,156))
 Using deviance residuals: P-value = 0.00. Reject the null hypothesis of good fit (thus NOT a good fit) <br />
 Using Pearson residual: P value = 0.0000. Reject the null hypothesis of good fit (thus NOT a good fit)
 
-Comparing to Answer 2b, the model might not satisfy all the assumptions and not statisticaly significant
+Comparing to Answer 2b, the model might not satisfy all the assumptions and is not statistically significant
 
 
 **(b) 3.5 pts - Perform visual analytics for checking goodness of fit for this model and write your observations. Be sure to address the model assumptions. Only deviance residuals are required for this question.**
@@ -122,7 +122,7 @@ plot(Num.Of.Products,res1,ylab="Std residuals",xlab="Num.Of.Products",
 abline(0,0,col="blue",lwd=2)
 boxplot(res1~Num.Of.Products,ylab = "Std residuals", col=c("red","blue"))
 #Normality Assumption
-qqnorm(res1, ylab="Std residuals")
+car::qqPlot(res1, ylab="Std residuals")
 qqline(res1,col="blue",lwd=2)
 hist(res1,10,xlab="Std residuals", main="")
 
@@ -131,7 +131,7 @@ plot(Num.Of.Products,log((Staying)/(1-Staying)), ylab="Logit of Staying",
      main="logit staying vs Num of Products", col=c("red","blue"),lwd=3)
 ```
 
-**Answer :** Based on the residual analysis.. looks like the Normality assumptions holds, though the distributions has long tails. not able to determine linearity assumption wrt to *Num.Of.Products* as there are only 2 values for the predictor. But the variance for each of the 2 values is not consistent. Higher variance in data for 1 compared to 2
+**Answer :** Based on the residual analysis.. looks like the Normality assumptions holds with modt of the residuals falling between the 95% band, though the distributions has long tails. not able to determine linearity assumption wrt to *Num.Of.Products* as there are only 2 values for the predictor. But the variance for each of the 2 values is not consistent. Higher variance in data for 1 compared to 2
 
 **(c) 2 pts - Calculate the dispersion parameter for this model. Is this an overdispersed model?**
 
@@ -256,8 +256,9 @@ boxplot(res2~Is.Active.Member,ylab = "Std residuals", xlab = "Is.Active.Member")
 
 ```{r}
 #Normality Assumption
+library(ggplot2)
 par(mfrow=c(1,2))
-qqnorm(res2, ylab="Std residuals")
+car::qqPlot(res2, ylab="Std residuals")
 qqline(res2,col="blue",lwd=2)
 hist(res2,10,xlab="Std residuals", main="")
 
@@ -273,6 +274,7 @@ p2 = length(model2$coefficients) - 1
 
 disp = d2/(n - p2 - 1)
 disp
+model2$deviance/model2$df.residual
 ```
 
 **(e) 2.5 pts - Overall, would you say model2 is a good-fitting model? If so, why? If not, what would you suggest to improve the fit and why? Note, we are not asking you to spend hours finding the best possible model but to offer plausible suggestions along with your reasoning.**
@@ -286,7 +288,7 @@ Thus we cannot reject the null hypothesis of good fit using either Pearson resid
 3. the dispersion $\hat{\phi}$ = 1.131.. This is less than 2 .. so the model does not have overdispersion.
 4. Tenure and Age.Group have different means across values whereas Age.Group and Is.Active.Member have very similar means
 
-We can try and improve the fit by treating the variables as factors.
+We can try and improve the fit by treating the variables as factors. other option might be to run the analysis using other link functions
 
 ```{r}
 model3 = glm(Staying ~ as.factor(Age.Group)+as.factor(Gender)+as.factor(Tenure)+
@@ -309,10 +311,40 @@ p3 = length(model3$coefficients) - 1
 
 disp = d3/(n - p3 - 1)
 disp
+model3$deviance/model3$df.residual
+```
+
+```{r}
+model4 = glm(Staying ~ Age.Group+Gender+Tenure+Num.Of.Products+Is.Active.Member, 
+             weights=Employees , family=binomial(link = cloglog))
+summary(model4)
+
+c(deviance(model4), 1 - pchisq(deviance(model4),152))
+
+pearres4 = residuals(model4,type="pearson")
+pearson4.tvalue = sum(pearres4^2)
+c(pearson4.tvalue, 1-pchisq(pearson4.tvalue,152))
+
+
+model4$deviance/model4$df.residual
 ```
 
 
+```{r}
+model5 = glm(Staying ~ as.factor(Age.Group)+as.factor(Gender)+as.factor(Tenure)+
+               as.factor(Num.Of.Products)+as.factor(Is.Active.Member), 
+             weights=Employees , family=binomial(link = cloglog))
+summary(model5)
 
+c(deviance(model5), 1 - pchisq(deviance(model5),141))
+
+pearres5 = residuals(model5,type="pearson")
+pearson5.tvalue = sum(pearres5^2)
+c(pearson5.tvalue, 1-pchisq(pearson5.tvalue,141))
+
+
+model5$deviance/model5$df.residual
+```
 **Answer :** changing all the predictors as factors give a higher p-value compared to the model2. looks like the model also holds the assumptions better. Over dispersion is close to 1
 
 # Question 5: Prediction - 6 pts
@@ -332,9 +364,9 @@ Suppose there is an employee with the following characteristics:
 **(a) 2 pts - Predict their probability of staying using model1.**
 
 ```{r}
-newData1 = data.frame(Num.Of.Products=2)
-predict.glm(model1, newData1)
-
+newData = data.frame(Age.Group=2, Gender=0, Tenure=2, Num.Of.Products=2, Is.Active.Member=1)
+#predict(model1, newData)
+predict(model1, newData, type = "response")
 ```
 
 **Answer :**
@@ -345,8 +377,8 @@ $p_{staying} = 0.199$
 **(b) 2 pts - Predict their probability of staying using model2.**
 
 ```{r}
-newData2 = data.frame(Age.Group=2, Gender=0, Tenure=2, Num.Of.Products=2, Is.Active.Member=1)
-predict.glm(model2, newData2)
+#predict.glm(model2, newData)
+predict.glm(model2, newData, type = "response")
 
 
 ```
@@ -360,5 +392,5 @@ $p_{staying} = 0.04$
 
 **(c) 2 pts - Comment on how your predictions compare.**
 
-Model 1 the probably of staying is higher compared to the model2
+Model 1 the probably of staying is higher (0.199) compared to the model2 (0.04). But since model2 is statistically more significant and has less dispersion.
 
