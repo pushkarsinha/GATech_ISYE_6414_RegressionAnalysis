@@ -1,0 +1,275 @@
+---
+output:
+  pdf_document: default
+  html_document: default
+---
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE)
+```
+
+
+
+***
+
+
+## Overview
+
+### Background
+
+With increasing urban population, traffic congestion and saturation and/or lack of public transportation bike sharing proved to be an ingenious environment friendly solution for daily commuters. There has been steady increase in the number of bike share programs worldwide reaching 1608 bike share programs with a fleet of 18.2 million bikes in 2018.
+
+Despite the steady growth in bike sharing programs one of the key challenges faced by aggregators is to estimate the demand for bikes and allocate resources accordingly as the usage rates vary from around three to eight trips per bicycle per day globally2. The variation in usage could be due to multitude of factors one of which we believe are the prevalent weather conditions. We can expect that passengers are more likely to choose bike rides on days when the weather
+is pleasant without snowfall and/or heavy winds. Another important factor is time during the day. The demand is more during morning and evening peak traffic hours, and lesser during other times of the day.
+
+Further, a study carried out by Bowman Cutter and Matthew Neidell's on the effect of voluntary information disclosure of information on air quality urging people to reduce ozone emissions found that there is an increase in people choosing alternate methods of transportation on days such warnings are issued, supporting the idea that weather parameters have an effect on individual's behavior and choices.
+
+
+
+### Data Description
+
+**The response variable is:**  
+$Y$ (Cnt): Total bikes rented by both casual & registered users together  
+  
+**The predicting variables are:**  
+$X_1$ (Instant): Record index  
+$X_2$ (Dteday): Day on which the observation is made  
+$X_3$ (Season): Season which the observation is made (1 = Winter, 2 = Spring, 3 = Summer, 4 = Fall)  
+$X_4$ (Yr): Year on which the observation is made  
+$X_5$ (Mnth): Month on which the observation is made  
+$X_6$ (Hr): Day on which the observation is made (0 through 23)  
+$X_7$ (Holiday): Indictor of a public holiday or not (1 = public holiday, 0 = not a public holiday)  
+$X_8$ (Weekday): Day of week (0 through 6)  
+$X_9$ (Working day): Indicator of a working day (1 = working day, 0 = not a working day)  
+$X_{10}$ (Weathersit): Weather condition (1 = Clear, Few clouds, Partly cloudy, Partly cloudy, 2 = Mist & Cloudy, Mist & Broken clouds, Mist & Few clouds, Mist, 3 = Light Snow, Light Rain, Thunderstorm & Scattered clouds, Light Rain & Scattered clouds, 4 = Heavy Rain, Ice Pallets, Thunderstorm & Mist, Snow & Fog)  
+$X_{11}$ (Temp): Normalized temperature in Celsius  
+$X_{12}$ (Atemp): Normalized feeling temperature in Celsius  
+$X_{13}$ (Hum): Normalized humidity  
+$X_{14}$ (Windspeed): Normalized wind speed  
+$X_{15}$ (Casual): Bikes rented by casual users in that hour  
+$X_{16}$ (Registered): Bikes rented by registered users in that hour  
+
+
+
+### Reading data
+
+```{r}
+# clear memory
+rm(list=ls())
+# Set colors
+gtblue = rgb(0, 48, 87, maxColorValue = 255)
+techgold = rgb(179, 163, 105, maxColorValue = 255)
+buzzgold = rgb(234, 170, 0, maxColorValue = 255)
+bobbyjones = rgb(55, 113, 23, maxColorValue = 255)
+# Read the data using read.csv
+setwd('C:/NSerban/Courses/Regression Analysis/')
+data = read.csv("Bikes.csv")
+# Show the number of observations
+obs = nrow(data)
+cat("There are", obs, "observations in the data")
+```
+
+
+
+### Preparing the Data
+```{r}
+# Set a seed for reproducibility
+set.seed(9)
+
+# Remove the irrelevant columns
+clean_data = data[-c(1,2,9,15,16)]
+
+# Convert the numerical categorical variables to predictors
+clean_data$season = as.factor(clean_data$season)
+clean_data$yr = as.factor(clean_data$yr)
+clean_data$mnth = as.factor(clean_data$mnth)
+clean_data$hr = as.factor(clean_data$hr)
+clean_data$holiday = as.factor(clean_data$holiday)
+clean_data$weekday = as.factor(clean_data$weekday)
+clean_data$weathersit = as.factor(clean_data$weathersit)
+
+# 80% Train 20% Test split
+sample_size = floor(0.8*nrow(clean_data))
+picked = sample(seq_len(nrow(clean_data)), size=sample_size)
+train = clean_data[picked,]
+test = clean_data[-picked,]
+```
+
+
+
+***
+
+
+
+## Creating the Model
+```{r}
+# Create a Poisson regression model
+model1 = glm(cnt ~ ., data=train, family='poisson')
+summary(model1)
+```
+
+
+
+### Finding Insignificant Variables
+```{r}
+which(summary(model1)$coeff[,4]>0.05)
+```
+## Evaluate goodness-of-fit
+```{r}
+with(model1, cbind(res.deviance = deviance, df = df.residual,
+               p = pchisq(deviance, df.residual, lower.tail=FALSE)))
+```
+
+### Model Assessment
+
+```{r}
+# Extract the deviance residuals
+resids1 = resid(model1,type="deviance")
+
+
+par(mfrow=c(2,2))
+# Plot the standardized residuals against
+# temperature
+plot(train$temp, resids1,
+     xlab="Temperature",
+     ylab="Residuals",
+     main="",
+     col=gtblue)
+abline(0, 0, 
+       col=buzzgold, 
+       lty=2, lwd=2)
+plot(train$atemp, resids1,
+     xlab="Feeling Temperature",
+     ylab="Residuals",
+     main="",
+     col=gtblue)
+abline(0, 0, 
+       col=buzzgold, 
+       lty=2, lwd=2)
+plot(train$hum, resids1,
+     xlab="Humidity",
+     ylab="Residuals",
+     main="",
+     col=gtblue)
+abline(0, 0, 
+       col=buzzgold, 
+       lty=2, lwd=2)
+plot(train$windspeed, resids1,
+     xlab="Windspeed",
+     ylab="Residuals",
+     main="",
+     col=gtblue)
+abline(0, 0, 
+       col=buzzgold, 
+       lty=2, lwd=2)
+par(mfrow=c(1,2))
+# Plot histogram of std residuals
+hist(resids1,
+     nclass=20,
+     col=gtblue,
+     border=techgold,
+     main="Histogram of residuals")
+
+# qq plot of std residuals
+qqnorm(resids1,       
+       col=gtblue)
+qqline(resids1,
+       col="red")
+
+```
+
+***
+
+
+
+## Accuracy
+
+### Model1 Accuracy
+```{r}
+## Save Predictions to compare with observed data
+test.pred1 = predict(model1, test, type='response')
+
+# Mean Squared Prediction Error (MSPE)
+mean((test.pred1-test$cnt)^2) 
+
+# Mean Absolute Prediction Error (MAE)
+mean(abs(test.pred1-test$cnt)) 
+
+# Mean Absolute Percentage Error (MAPE)
+mean(abs(test.pred1-test$cnt)/test$cnt) 
+
+# Precision Measure (PM)
+sum((test.pred1-test$cnt)^2)/sum((test$cnt-mean(test$cnt))^2) 
+```
+
+***
+
+## P-values and Large Sample Size
+
+### P-value Problem
+```{r}
+# Approach: Subsample 40% of the initial data sample & repeat 100 times
+count = 1
+n = nrow(train)
+B = 100
+ncoef = dim(summary(model1)$coeff)[1]
+pv_matrix = matrix(0,nrow = ncoef,ncol = B)
+
+while (count <= B) {
+  # 40% random sample of indices
+  subsample = sample(n, floor(n*0.4), replace=FALSE)
+  # Extract the random subsample data
+  subdata = train[subsample,]
+  # Fit the regression for each subsample
+  submod = glm(round(cnt**0.5,0) ~ ., data=subdata, family='poisson')
+  # Save the p-values
+  pv_matrix[,count] = summary(submod)$coeff[,4]
+  # Increment to the next subsample
+  count = count + 1
+}
+
+# Count pvalues smaller than 0.01 across the 100 (sub)models
+alpha = 0.01
+pv_significant = rowSums(pv_matrix < alpha)
+
+```
+
+
+### Statistically Significant Coefficients
+```{r}
+# Which regression coefficients are statistically significant?
+idx_scoef = which(pv_significant>=95)
+
+# Plot the 100 p-values of the significant coefficients
+matplot(pv_matrix[idx_scoef,],
+     xlab="Regression Coefficient Index",
+     ylab="P-values across 100 Samples",
+     type="p",
+     pch="o",
+     col=gtblue)
+
+# Show the p-values of the significant coefficients in model2
+cbind(round(summary(model1)$coeff[idx_scoef,c(1,4)],3),
+      Freq=pv_significant[idx_scoef])
+```
+
+
+
+### Coefficients Not Statsitically Significant
+```{r}
+## Which regression coefficients are not statistically significant?
+idx_icoef = which(pv_significant<85)
+
+# Plot the 100 p-values of the coefficients not statistically
+# significant
+matplot(pv_matrix[idx_icoef,],
+     xlab="Regression Coefficient Index",
+     ylab="P-values across 100 Samples",
+     type="p",
+     pch="o",
+     col=gtblue)
+
+# Show the p-values of coefficients not stastically significant
+cbind(round(summary(model1)$coeff[idx_icoef,c(1,4)],3),
+      Freq=pv_significant[idx_icoef])
+```
+

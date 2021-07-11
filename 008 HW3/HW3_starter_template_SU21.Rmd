@@ -1,0 +1,150 @@
+---
+title: "HW3 Peer Assessment"
+output:
+  pdf_document: default
+  html_document:
+    df_print: paged
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE)
+```
+
+# Background
+
+The owner of a company would like to be able to predict whether employees will stay with the company or leave. The data contains information about various characteristics of employees. See below for the description of these characteristics. 
+
+## Data Description
+
+The data consists of the following variables:
+
+1. **Age.Group**: 1-9 (1 corresponds to teen, 2 corresponds to twenties, etc.) (numerical)
+2. **Gender**: 1 if male, 0 if female (numerical)
+3. **Tenure**: Number of years with the company (numerical)
+4. **Num.Of.Products**: Number of products owned (numerical)
+5. **Is.Active.Member**: 1 if active member, 0 if inactive member (numerical)
+6. **Staying**: Fraction of employees that stayed with the company for a given set of predicting variables
+
+**Note: Please do not treat any variables as categorical.** 
+
+## Read the data
+
+```{r}
+# import the data
+data = read.csv("hw4_data.csv", header=TRUE, fileEncoding="UTF-8-BOM")
+data$Staying = data$Stay/data$Employees
+head(data)
+```
+
+# Question 1: Fitting a Model - 6 pts
+
+Fit a logistic regression model using *Staying* as the response variable with *Num.Of.Products* as the predictor and logit as the link function. Call it **model1**.
+
+**(a) 2 pts - Display the summary of model1. What are the model parameters and estimates?**
+
+```{r}
+
+```
+
+**(b) 2 pts - Write down the equation for the odds of staying.**
+
+**(c) 2 pts - Provide a meaningful interpretation for the coefficient for *Num.Of.Products* with respect to the log-odds of staying and the odds of staying.**
+
+# Question 2: Inference - 9 pts 
+
+**(a) 3 pts - Using model1, find a 90% confidence interval for the coefficient for *Num.Of.Products*.**
+
+```{r}
+
+```
+
+**(b) 3 pts - Is model1 significant overall? How do you come to your conclusion?**
+
+**(c) 3 pts - Which coefficients are significantly nonzero at the 0.01 significance level? Which are significantly negative? Why?**
+
+# Question 3: Goodness of fit - 9 pts
+
+**(a) 3.5 pts - Perform goodness of fit hypothesis tests using both deviance and Pearson residuals. What do you conclude? Explain the differences, if any, between these findings and what you found in Question 2b.**
+
+```{r}
+
+
+```
+
+**(b) 3.5 pts - Perform visual analytics for checking goodness of fit for this model and write your observations. Be sure to address the model assumptions. Only deviance residuals are required for this question.**
+
+```{r}
+
+
+```
+
+**(c) 2 pts - Calculate the dispersion parameter for this model. Is this an overdispersed model?**
+
+```{r}
+
+
+```
+
+# Question 4: Fitting the full model- 20 pts
+
+Fit a logistic regression model using *Staying* as the response variable with *Age.Group*, *Gender*, *Tenure*, *Num.Of.Products*, and *Is.Active.Member* as the predictors and logit as the link function. Call it **model2**.
+
+```{r}
+
+
+```
+
+**(a) 2.5 pts - Write down the equation for the probability of staying.**
+
+```{r}
+
+
+```
+
+**(b) 2.5 pts - Provide a meaningful interpretation for the coefficients of *Age.Group* and *Is.Active.Member* with respect to the odds of staying.**
+
+**(c) 2.5 pts - Is *Is.Active.Member* significant given the other variables in model2?**
+
+**(d) 10 pts - Has your goodness of fit been affected? Repeat the tests, plots, and dispersion parameter calculation you performed in Question 3 with model2.**
+
+```{r}
+
+
+```
+
+**(e) 2.5 pts - Overall, would you say model2 is a good-fitting model? If so, why? If not, what would you suggest to improve the fit and why? Note, we are not asking you to spend hours finding the best possible model but to offer plausible suggestions along with your reasoning.**
+
+```{r}
+
+
+```
+
+# Question 5: Prediction - 6 pts
+
+Suppose there is an employee with the following characteristics:
+
+1. **Age.Group**: 2
+
+2. **Gender**: 0
+
+3. **Tenure**: 2
+
+4. **Num.Of.Products**: 2
+
+5. **Is.Active.Member**: 1
+
+**(a) 2 pts - Predict their probability of staying using model1.**
+
+```{r}
+
+
+```
+
+**(b) 2 pts - Predict their probability of staying using model2.**
+
+```{r}
+
+
+```
+
+**(c) 2 pts - Comment on how your predictions compare.**
