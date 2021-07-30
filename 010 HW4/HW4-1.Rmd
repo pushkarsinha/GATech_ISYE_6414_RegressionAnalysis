@@ -1,0 +1,153 @@
+---
+title: ''
+output: html_document
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE)
+```
+
+## R Markdown
+
+This is an R Markdown document. Markdown is a simple formatting syntax for authoring HTML, PDF, and MS Word documents. For more details on using R Markdown see <http://rmarkdown.rstudio.com>.
+
+When you click the **Knit** button a document will be generated that includes both content as well as the output of any embedded R code chunks within the document. You can embed an R code chunk like this:
+
+```{r , message=F, warning=F}
+# Ensure that the sampling type is correct
+RNGkind(sample.kind="Rejection")
+
+# Reading the data: 
+data = read.csv("GA_EDVisits.csv",header=TRUE) 
+data = na.omit(data)
+
+# Get names of the column 
+names = colnames(data) 
+attach(data)
+
+# Standardized predictors - use these variables in your modeling in addition to the predictors A5.9, A10.14
+sAvgDistS = scale(log(SpecDist)) 
+sAvgDistP = scale(log(PedDist))
+sMedianIncome = scale(MedianIncome) 
+sNumHospitals = scale(No.Hospitals)
+sPercentLessHS = scale(PercentLessHS) 
+sPercentHS = scale(PercentHS)
+
+# Define interaction terms
+DistA5.9 = sAvgDistS*A5.9 
+DistA10.14 = sAvgDistS* A10.14
+DistIncome = sAvgDistS*sMedianIncome 
+DistLessHS = sAvgDistS*sPercentLessHS
+DistHS = sAvgDistS*sPercentHS 
+DistPA5.9 = sAvgDistP*A5.9
+DistPA10.14 = sAvgDistP* A10.14 
+DistPIncome = sAvgDistP*sMedianIncome
+DistPLessHS = sAvgDistP*sPercentLessHS 
+DistPHS = sAvgDistP*sPercentHS
+
+# Define final data frame
+X = data.frame(A5.9, A10.14, sAvgDistS, sAvgDistP, sMedianIncome,sPercentLessHS,sPercentHS, sNumHospitals,DistA5.9, DistA10.14, DistIncome,DistLessHS, DistHS, DistPA5.9, DistPA10.14, DistPIncome,DistPLessHS, DistPHS)
+
+# Set Seed to 100
+set.seed(100)
+
+```
+
+
+```{r, message=F, warning=F}
+names
+
+n=nrow(X)
+n
+attach(X)
+colnames(X)
+```
+
+
+```{r, message=F, warning=F}
+
+model1=glm(ED.visits ~ A5.9 + A10.14 + sAvgDistS + sAvgDistP + sMedianIncome + sPercentLessHS + sPercentHS + sNumHospitals, family="poisson", data=X)
+summary(model1)
+```
+
+
+```{r}
+model2=glm(ED.visits ~ ., family="poisson", data=X)
+summary(model2)
+```
+
+```{r}
+
+step(model1, scope=list(lower=model1, upper=model2), direction="both")
+
+```
+```{r}
+m3 = glm(formula = ED.visits ~ A5.9 + A10.14 + sAvgDistS + sAvgDistP + 
+    sMedianIncome + sPercentLessHS + sPercentHS + sNumHospitals + 
+    DistPHS + DistHS + DistIncome + DistPIncome + DistPLessHS + 
+    DistLessHS + DistPA5.9 + DistPA10.14 + DistA10.14, family = "poisson", 
+    data = X)
+summary(m3)
+
+```
+
+```{r}
+set.seed(100)
+x.train <- model.matrix(ED.visits ~ ., X)[,-1]
+y.train <- ED.visits
+
+# Use cross validation to find optimal lambda
+cv.lasso <- cv.glmnet(x.train, y.train, alpha = 1, family = "poisson", nfolds = 10, type.measure="deviance")
+
+plot(cv.lasso)
+# Train Lasso and display coefficients with optimal lambda
+lasso.model <- glmnet(x.train, y.train, alpha = 1, family = "poisson")
+
+cv.lasso$lambda.min
+
+coef(lasso.model, cv.lasso$lambda.min)
+
+```
+
+```{r}
+set.seed(100)
+x.train <- model.matrix(ED.visits ~ ., X)[,-1]
+y.train <- ED.visits
+
+# Use cross validation to find optimal lambda
+cv.lasso <- cv.glmnet(x.train, y.train, alpha = 0.5, family = "poisson", nfolds = 10, type.measure="deviance")
+
+plot(cv.lasso)
+# Train Lasso and display coefficients with optimal lambda
+lasso.model <- glmnet(x.train, y.train, alpha = 0.5, family = "poisson")
+
+cv.lasso$lambda.min
+
+coef(lasso.model, cv.lasso$lambda.min)
+```
+
+
+
+
+
+
+
+
+```{r}
+set.seed(100) 
+Xpred= cbind(A5.9,A10.14,sAvgDistS,sAvgDistP,sMedianIncome,sPercentLessHS,sPercentHS,sNumHospitals,DistA5.9,DistA10.14,DistIncome,DistLessHS,DistHS,DistPA5.9,DistPA10.14,DistPIncome,DistPLessHS,DistPHS)
+cv_1=cv.glmnet(Xpred, ED.visits, alpha=1, nfolds=10, family="poisson")
+cv_1
+
+```
+
+```{r}
+cv_2=glmnet(Xpred, ED.visits, alpha=1, nfolds=10, family="poisson",nlambda = 100)
+cv_2
+```
+
+```{r}
+coef(cv_2, s=cv_1$lambda.min)
+plot(cv_1,xvar="lambda", lwd=2)
+```
+
