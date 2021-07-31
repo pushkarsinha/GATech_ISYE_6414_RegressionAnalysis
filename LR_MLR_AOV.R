@@ -146,6 +146,8 @@ model4<-lm(Weightˆ(1/2)~ Species + Total.Length, data=fish2)
 ## log- if transforming both X and Y
 model2 = lm(log(performance) ~ log(chmax + 1), data=data)
 
+b = boxCox(data$performance ~ data$chmax)
+
 ################################################################################################
 ## Box Plot 
 ################################################################################################
@@ -159,6 +161,16 @@ ggplot(fish, aes(x=Species, y=Weight, color=Species),
 
 ## Box Plot Residuals
 boxplot(model[['residuals']],main='Boxplot: Residuals',ylab='residual value')
+
+hist(data$cnt, main="", xlab="Count of Bike Shares", border="gold", col="darkblue")
+
+boxplot(cnt~hr,main="",xlab="Hour",ylab="Count of Bike Shares",col=blues9,data=data)
+
+plot(data$windspeed, data$cnt, xlab='Scaled Wind Speed',ylab='Count of Bike Share',main='', col="darkblue")
+
+abline(lm(cnt~windspeed, data=data),
+       col=buzzgold,
+       lty=2, lwd=2)
 
 ################################################################################################
 ## Correlation
@@ -259,14 +271,26 @@ cook = cooks.distance(model1)
 plot(cook,type="h",lwd=3,col="red", ylab= "Cook's Distance")
 abline(1,0,col="blue")
 
+influential <- as.numeric(names(cook)[(cook > 1)])
+influential
 
 ################################################################################################
-## VIF
+## Multi Colleanirity & VIF
 ################################################################################################
+# correlation 
+cor(meddcor[,2:5])
+
+# R2
+model2.r2 = summary(model2)$r.squared
+model2.r2
+model2.threshold = max(10, 1/(1-model2.r2))
+model2.threshold
+
 # VIF Threshold
 cat("VIF Threshold:", max(10, 1/(1-summary(model2)$r.squared)), "\n")
 # Calculate VIF
-vif(model2)
+car::vif(model2)
+
 
 
 
@@ -274,7 +298,8 @@ vif(model2)
 # Prediction Accuracy
 ################################################################################################
 ## Save Predictions to compare with observed data
-pred1 <-predict(model1, test, interval = 'prediction')test.pred1 <-pred1[,1]
+pred1 <-predict(model1, test, interval = 'prediction')
+test.pred1 <-pred1[,1]
 test.lwr1 <-pred1[,2]
 test.upr1 <-pred1[,3]
 # Mean Squared Prediction Error (MSPE)
@@ -331,10 +356,10 @@ SSyy=sum((y-mean(y))**2)
 #Ho: All coefficients are zero
 #Ha: At least one coefficient is nonzero
 #Compare test statistic to F Distribution table
-n&lt;-length(y)
-SSE&lt;-sum(model$residuals**2)
-SSyy&lt;-sum((y-mean(y))**2)
-k&lt;-length(model$coefficients)-1
+n<-length(y)
+SSE<-sum(model$residuals**2)
+SSyy<-sum((y-mean(y))**2)
+k<-length(model$coefficients)-1
 ((SSyy-SSE)/k) / (SSE/(n-(k+1)))
 
 #### T-Value
@@ -343,7 +368,7 @@ df = model1$df.residual
 ###upper tail, since this we are testing if Beta1 is positive
 pval = pt(tval, df, lower=F) #upper tail
 pval
-###upper tail, since this we are testing if Beta1 is negative
+###lower tail
 pval = pt(tval, df, lower=T) #upper tail
 pval
 
@@ -359,3 +384,16 @@ summary(fit)$coefficients[,'Estimate']
 summary(fit)$coefficients[,'Pr(>|t|)']
 
 
+To evaluate assumptions:
+  •Constant variance & uncorrelated errors
+    •Response variable or fitted values vs residuals
+  •Linearity
+    •Predicting variables vs residuals
+  •Normality
+    •Histogram and QQ normal plot
+To evaluate outliers:
+  •Cook’s distance plots
+
+
+# Find insignificant values
+which(summary(model1)$coeff[,4]>0.05)

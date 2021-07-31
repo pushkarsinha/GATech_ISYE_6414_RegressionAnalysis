@@ -1,0 +1,661 @@
+---
+title: "Untitled"
+author: "Pushkar Sinha"
+date: "7/30/2021"
+output: html_document
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE)
+```
+
+## Plot log of odds against Age
+```{r}
+prop.survival <-Survived/At.risk
+plot(Age,log(prop.survival/(1-prop.survival)), col=c("red","blue"), xlab="Age", ylab="Logit(Survival Proportion)", lwd=3)
+legend(30,0, legend=c("Smokers","Non-smokers"), pch=1, col=c("red","blue"))
+```
+
+
+## LR with weights
+```{r}
+## Fit a logistic regression model
+smoke1 = glm(Survived/At.risk ~ Smoker, weights=At.risk, family=binomial)
+summary(smoke1)
+
+smoke2 = glm(Survived/At.risk ~ Smoker + Age, weights=At.risk, family=binomial)
+summary(smoke2)
+```
+
+```{r}
+## Finding insignificant variables
+which(summary(full.model)$coeff[,4]>0.05)
+which(summary(model1)$coeff[,4]<=0.01)
+```
+
+# Poisson Regresstion
+# In this example, the number of policyholders is the exposure since the rate of claims is per policyholder (hence the unit).
+```{r}
+m.ins = glm(Claims ~ District + Group + Age + offset(log(Holders)), data = Insurance, family = poisson)
+```
+
+
+## Statistical Inference:
+# Test for overall regression
+```{r}
+gstat = model$null.deviance - deviance(model)
+cbind(gstat, 1-pchisq(gstat,length(coef(model))-1))
+
+1 - pchisq(smoke1$null.deviance-smoke1$deviance, 1)
+```
+
+## #########
+## GOF
+## #########
+```{r}
+## Checking normality
+# histogram
+hist(resids1,
+     nclass=20,
+     col=gtblue,
+     border=techgold,
+     main="Histogram of residuals")
+# q-q plot
+qqnorm(resids1,  col="gtblue")
+qqline(resids1,    col="red")
+
+# GOF Test
+with(model1, cbind(res.deviance = deviance, df = df.residual,
+               p = pchisq(deviance, df.residual, lower.tail=FALSE)))
+```
+     
+## Deviance Test for GOF using deviance residuals
+```{r}
+c(deviance(smoke2), 1-pchisq(deviance(smoke2),11))
+
+pearres2 = residuals(smoke2,type="pearson")
+pearson.tvalue = sum(pearres2^2)
+c(pearson.tvalue, 1-pchisq(pearson.tvalue,11))
+
+```
+
+P-value $ \approx $ 0 - Reject Null Hypothesis of good fit.(thus NOT a good fit)
+
+## Use probit link function
+```{r}
+smoke5 = glm(Survived/At.risk ~ Smoker + Age + Age.squared, weights=At.risk, family=binomial(link = probit))
+summary(smoke5)
+```
+
+## Exploratory data analysis:  Categorical Predictors - Mosaic Plot
+```{r}
+library(vcd)
+b_ageedu = xtabs(~agegr+edu)
+mosaicplot(tb_ageedu, xlab="Age Group", ylab="Education", color=TRUE, main="")
+```
+
+## Exploratory data analysis: Response vs Predictors
+```{r}
+tb_obage = xtabs(~obesityind+agegr)
+tb_obgender = xtabs(~obesityind+gender)
+tb_obedu = xtabs(~obesityind+edu)
+
+barplot(prop.table(tb_obage), axes=T, space=0.3, horiz=T,
+xlab="Proportion of Not Obese (blue) vs Obese (Brown)",
+col=c("blue","brown"), main="Obesity by Age Group")
+
+barplot(prop.table(tb_obgender), axes=T, space=0.3, horiz=T,
+xlab="Proportion of Not Obese (blue) vs Obese (Brown)",
+col=c("blue","brown"), main="Obesity by Gender")
+
+barplot(prop.table(tb_obedu), axes=T, space=0.3, horiz=T,
+xlab="Proportion of Not Obese (blue) vs Obese (Brown)",
+col=c("blue","brown"), main="Obesity by Education Level")
+```
+
+### Predict
+```{r}
+pred.test = predict.glm(model,pred.data,type="response")
+```
+
+### Prediction Accuracy for multiple thresholds
+```{r}
+err0.3 = cost0.3(testobdata$Obesity, pred.test)
+⋮
+err0.65 = cost0.65(testobdata$Obesity, pred.test)
+err = c(err0.3, err0.35, err0.4, err0.45, err0.5, err0.55, err0.6, err0.65)
+plot(c(0.3, 0.35, 0.4, 0.45, 0.5, 0.55, 0.6, 0.65), err,
+      type="l", lwd=3, xlab="Threshold", ylab="Classification Error")
+
+```
+
+# Residual Analysis
+```{r}
+res = resid(model.agg, type="deviance")
+par(mfrow=c(2,2))
+
+# Std Residual
+plot(awardsdata$math,res,ylab="Std residuals",xlab="Math Exam")
+
+boxplot(res~agegr,
+	xlab="Age Group", 
+	ylab="Std residuals",
+	data=obdata.agg)
+
+boxplot(res~gender,
+	xlab="Gender",
+	ylab="Std residuals",
+	data = obdata.agg)
+
+qqnorm(res, ylab="Std residuals")
+qqline(res, col="blue", lwd=2)
+
+hist(res, 10, xlab="Std residuals", main="")
+```
+
+## Residual Plots
+```{r}
+#Linearity Assumptions
+par(mfrow=c(2,3))
+plot(Age.Group,log((Staying)/(1-Staying)), ylab="Logit of Staying", xlab = "Age.Group", 
+     main="logit staying vs Age.Group", col=c("red","blue"),lwd=3)
+plot(Gender,log((Staying)/(1-Staying)), ylab="Logit of Staying",xlab = "Gender",
+     main="logit staying vs Gender", col=c("red","blue"),lwd=3)
+plot(Tenure,log((Staying)/(1-Staying)), ylab="Logit of Staying",xlab = "Tenure",
+     main="logit staying vs Tenure", col=c("red","blue"),lwd=3)
+plot(Num.Of.Products,log((Staying)/(1-Staying)), ylab="Logit of Staying",xlab = "Num.Of.Products",
+     main="logit staying vs Num of Products", col=c("red","blue"),lwd=3)
+plot(Is.Active.Member,log((Staying)/(1-Staying)), ylab="Logit of Staying",xlab = "Is.Active.Member",
+     main="logit staying vs Is.Active.Member", col=c("red","blue"),lwd=3)
+
+par(mfrow=c(2,3))
+res2 = resid(model2,type="deviance")
+
+plot(Age.Group,res2,ylab="Std residuals",xlab="Age.Group", col=c("red","blue"))
+abline(0,0,col="blue",lwd=2)
+plot(Gender,res2,ylab="Std residuals",xlab="Gender", col=c("red","blue"))
+abline(0,0,col="blue",lwd=2)
+plot(Tenure,res2,ylab="Std residuals",xlab="Tenure", col=c("red","blue"))
+abline(0,0,col="blue",lwd=2)
+plot(Num.Of.Products,res2,ylab="Std residuals",xlab="Num.Of.Products", col=c("red","blue"))
+abline(0,0,col="blue",lwd=2)
+plot(Is.Active.Member,res2,ylab="Std residuals",xlab="Is.Active.Member", col=c("red","blue"))
+abline(0,0,col="blue",lwd=2)
+
+par(mfrow=c(2,3))
+boxplot(res2~Age.Group,ylab = "Std residuals", xlab = "Age.Group")
+boxplot(res2~Gender,ylab = "Std residuals", xlab = "Gender")
+boxplot(res2~Tenure,ylab = "Std residuals", xlab = "Tenure")
+boxplot(res2~Num.Of.Products,ylab = "Std residuals", xlab = "Num.Of.Products")
+boxplot(res2~Is.Active.Member,ylab = "Std residuals", xlab = "Is.Active.Member")
+
+#Normality Assumption
+library(ggplot2)
+par(mfrow=c(1,2))
+car::qqPlot(res2, ylab="Std residuals")
+hist(res2,10,xlab="Std residuals", main="")
+
+
+# res = resid(smoke3,type="deviance")
+# plot(Num.Of.Products,res1,ylab="Std residuals",xlab="Num.Of.Products",
+#      main="Residual vs Num.Of.Products", col=c("red","blue"))
+# abline(0,0,col="blue",lwd=2)
+# boxplot(res1~Num.Of.Products,ylab = "Std residuals", col=c("red","blue"))
+# 
+# plot(awardsdata$math,res,ylab="Std residuals",xlab="Math Exam")
+# 
+# #Normality Assumption
+# car::qqPlot(res, ylab="Std residuals")
+# hist(res,10,xlab="Std residuals", main="")
+# 
+# qqnorm(res, ylab="Std residuals")
+# qqline(res,col="blue",lwd=2)
+# hist(res,10,xlab="Std residuals", main="")
+
+```
+
+#dispersion parameter for this model.
+```{r}
+model1$deviance/model1$df.residual
+
+```
+
+
+## Calculate Cp, AIC, BIC, $R^2$
+```{r}
+library(CombMSC)
+n = nrow(datasat)
+
+## full model
+c(Cp(regression.line, S2=summary(regression.line)$sigma^2), 
+AIC(regression.line, k=2), AIC(regression.line, k=log(n)))
+# [1]   7.016756 471.698197 486.994381
+
+## reduced model
+c(Cp(regression.red, S2=summary(regression.line)$sigma^2), 
+AIC(regression.red, k=2), AIC(regression.red, k=log(n)))
+# [1]  29.67045 490.59880 498.24689
+
+#10-Fold
+m1.10.fold = cv.glm(trainData, model1, K=10)
+(m1.10.fold)$delta
+
+#leave one out cross-validation
+m1.loocv = cv.glm(trainData, model1, K=nrow(trainData))
+(m1.loocv)$delta
+
+# Model Coefficients
+coef(model4)
+
+#R-Squared
+library(rsq)
+rsq(model1,adj=TRUE,type="sse")
+
+#AIC
+summary(model1)$aic
+
+#BIC
+AIC(model1, k=log(n))
+
+#Cp
+c(Cp(model1, S2=sigma(model1)^2), length(model1$coefficients) - 1)
+
+```
+
+## Model Search
+```{r}
+# Leaps
+library(leaps)
+
+out = leaps(datasat[,-c(1,2)], sat, method = "Cp")
+
+# with nbest
+out = leaps(trainData[,-c(10)], logBCF, method = "Cp", nbest = 1, names = colnames(trainData[,-c(10)]))
+cbind(as.matrix(out$which),out$Cp)
+best.model = which(out$Cp==min(out$Cp))
+cbind(as.matrix(out$which), out$Cp)[best.model,]
+
+# Forward Stepwise Regression
+# Controlling Var models
+step(lm(sat~log(takers)+rank), 
+     scope=list(lower=sat~log(takers)+rank,upper=sat~log(takers)+rank+expend+years+income+public), 
+     direction="forward")
+
+# Null Model
+fstep = step(glm(logBCF ~ 1), scope=list(upper=model1), direction="forward")
+summary(fstep)
+fstep$anova
+fstep$coefficients
+fstep$formula
+
+
+# Backward Stepwise Regression
+full = lm(sat ~ log(takers) + rank + expend + years + income + public)
+minimum = lm(sat ~ log(takers) + rank)
+# AIC
+step(full, scope=list(lower=minimum, upper=full), direction="backward")
+# BIC
+bstep = step(model1, direction="backward", k = log(n))
+bstep$anova
+bstep$coefficients
+bstep$formula
+
+
+## Compare all models
+library(bestglm)
+input.Xy <- as.data.frame(cbind(WC.TA, RE.TA, EBIT.TA, S.TA, BVE.BVL,Bankrupt))
+bestBIC <- bestglm(input.Xy, IC="BIC", family=binomial)
+
+bank2 = glm(Bankrupt~RE.TA+EBIT.TA+BVE.BVL, family=binomial, epsilon=1e-14, maxit=500, x=T)
+summary(bank2)
+
+```
+
+# Comparing 2 models
+# Testing for subset of regression coefficients
+```{r}
+gstat = deviance(bank2) - deviance(bank1)
+cbind(gstat, 1-pchisq(gstat,length(coef(bank1))-length(coef(bank2))))
+# [1,] 4.040336 0.1326332
+# The null (reduced model) is not rejected 
+```
+
+## ##################################
+## Ridge Regression - LM
+## ##################################
+```{r}
+ibrary(MASS)
+## Scale the predicting variables and the response variable
+ltakers = log(takers)
+predictors = cbind(ltakers, rank, income, years, public, expend)
+predictors = scale(predictors)
+sat.scaled = scale(sat)
+
+## Apply ridge regression for a range of penalty constants
+lambda = seq(0, 10, by=0.25)
+out = lm.ridge(sat.scaled~predictors, lambda=lambda)   
+round(out$GCV, 5)
+
+which(out$GCV == min(out$GCV))
+# 2.25 
+#     10 
+round(out$coef[,10], 4)
+
+plot(lambda, out$coef[1,], type = "l", col=1, lwd=3, 
+	xlab = "Lambda", ylab = "Coefficients",
+	main = "Plot of Regression Coefficients vs. Lambda Penalty Ridge Regression", 
+	ylim = c(min(out$coef), max(out$coef)))
+for(i in 2:6)
+    points(lambda, out$coef[i,], type = "l", col=i, lwd=3)
+abline(h = 0, lty = 2, lwd = 3)
+abline(v = 2.25, lty = 2, lwd=3)
+
+
+# GLM
+set.seed(100)
+lambda = seq(0, 10, by=1)
+x.train <- model.matrix(logBCF ~ ., trainData)[,-1]
+y.train <- logBCF
+
+ridge.cv = cv.glmnet(x.train, y.train, alpha=0, nfolds = 10)
+ridge = glmnet(x.train, y.train, alpha=0, nlambda=100)
+
+ridge.cv$lambda.min
+coef(ridge, s=ridge.cv$lambda.min)
+
+```
+
+## ##################################
+## LASSO Regression - LM
+## ##################################
+```{r}
+ibrary(MASS)
+## Scale the predicting variables and the response variable
+ltakers = log(takers)
+predictors = cbind(ltakers, rank, income, years, public, expend)
+predictors = scale(predictors)
+sat.scaled = scale(sat)
+
+library(lars)
+object = lars(x=predictors, y=sat.scaled)
+Object
+
+# Sequence of LASSO moves:
+#          ltakers rank years expend income public
+# Var            1    2     4      6      3      5
+# Step           1    2     3      4      5      6
+
+round(object$Cp,2)
+#          0          1        2         3        4        5        6 
+#     349.91     103.40    46.89     35.64     3.10     5.09     7.00 
+
+# The selected model according to Malow’s Cp is at the fourth variable introduced in the model.
+# From the order the predictors were added, i.e., log(takers), rank, years, expend, income and public, the first four are selected
+
+plot.lars(object)
+plot.lars(object, xvar="df", plottype="Cp")
+
+```
+
+## ##################################
+## LASSO Regression - GLM - aplha = 1
+## ##################################
+```{r}
+library(glmnet) # alpha=1 lasso, alpha=0 ridge
+Xpred= cbind(ltakers, rank, income, years, public, expend)
+
+# Find the optimal lambda using 10-fold CV 
+satmodel.cv=cv.glmnet(Xpred, sat, alpha=1, nfolds=10)
+
+## Fit lasso model with 100 values for lambda
+satmodel = glmnet(Xpred, sat, alpha = 1, nlambda=100)
+
+## Extract coefficients at optimal lambda
+coef(satmodel, s=satmodel.cv$lambda.min)
+
+## Plot coefficient paths
+plot(satmodel,xvar="lambda", lwd=2, abel=TRUE)
+abline(v=log(satmodel.cv$lambda.min), col='black', lty=2)
+
+## Model.matrix
+x.train <- model.matrix(logBCF ~ ., trainData)[,-1]
+y.train <- logBCF
+
+lasso.cv = cv.glmnet(x.train, y.train, alpha=1, nfolds=10)
+lasso = glmnet(x.train, y.train, alpha=1, nlambda=100)
+cat('Min Lambda : ', lasso.cv$lambda.min, '\n')
+
+# Lasso non Zero Coeff
+set.seed(100)
+index.lasso <- which(coef(lasso, lasso.cv$lambda.min) != 0)
+cat("\nVariables selected by lasso regression: ",
+    names(coef(model1)[index.lasso])[-c(1)], "\n")
+
+cat("Numbers Variables selected", length(names(coef(model1)[index.lasso])) - 1, "\n")
+
+
+```
+
+## ##################################
+## Elastic Net - GLM alpha = 0.5
+## ##################################
+```{r}
+library(glmnet) # alpha=1 lasso, alpha=0 ridge
+Xpred= cbind(ltakers, rank, income, years, public, expend)
+
+# Find the optimal lambda using 10-fold CV 
+satmodel.cv=cv.glmnet(Xpred, sat, alpha=0.5, nfolds=10)
+
+## Fit elastic net model with 100 values for lambda
+satmodel = glmnet(Xpred, sat, alpha=0.5, nlambda = 100)
+
+## Extract coefficients at optimal lambda
+coef(satmodel, s=satmodel.cv$lambda.min)
+
+## Plot coefficient paths
+plot(satmodel, xvar="lambda", lwd=2)
+abline(v=log(satmodel.cv$lambda.min), col='black', lty=2, lwd=2)
+
+## Model.matrix
+x.train <- model.matrix(logBCF ~ ., trainData)[,-1]
+y.train <- logBCF
+
+set.seed(100)
+elanet.cv = cv.glmnet(x.train, y.train, alpha=0.5, nfolds=10)
+elanet = glmnet(x.train, y.train, alpha=0.5, nlambda = 100)
+
+index.elanet <- which(coef(elanet, elanet.cv$lambda.min) != 0)
+cat("\nVariables selected by Elastic Net regression : ",
+    names(coef(model1)[index.elanet])[-c(1)], "\n")
+
+cat("Numbers Variables selected : ", length(names(coef(model1)[index.elanet])) - 1, "\n")
+
+```
+
+```{r}
+## Correlation matrix plot
+library(corrplot)
+corr = cor(cbind(log(EDCost.pmpm), dataAdult[,-c(1, 2, 3, 18)]))
+corrplot(corr)
+```
+
+# Exploratory Data Analysis: Response Variable
+```{r}
+## Read the data using read.csv() R command
+dataAdult = read.csv("DataADULT.csv", header=TRUE)
+attach(dataAdult)
+
+## Rescale outcome/response variable
+EDCost.pmpm = EDCost/PMPM
+
+## Rescale utilization
+dataAdult$PO = PO/PMPM
+dataAdult$HO = HO/PMPM
+
+## Histogram of the response variable
+par(mfrow=c(2,1))
+hist(EDCost.pmpm, breaks=300, xlab="Emergency Department Cost", main="")
+hist(log(EDCost.pmpm), breaks=300, xlab="Log-Emergency Department Cost", main="")
+
+```
+
+# Exploratory Data Analysis: Response vs Qualitative Predictors
+```{r}
+log.EDCost.pmpm = log(EDCost.pmpm)
+## Response variable vs categorical predicating variables
+par(mfrow=c(2,1))
+boxplot(log.EDCost.pmpm ~ State, main = "Variation of log of ED costs by state")
+boxplot(log.EDCost.pmpm ~ Urbanicity, main = "Variation of log of ED costs by urbanicity")
+
+## Scatterplot matrix plots
+library(car)
+
+## Response vs Utilization
+scatterplotMatrix(~ log(EDCost.pmpm) + HO + PO, smooth=FALSE)
+
+## Response vs Population Characteristics
+scatterplotMatrix(~ log(EDCost.pmpm) + WhitePop + BlackPop + OtherPop + HealthyPop +
+        ChronicPop + ComplexPop, smooth=FALSE)
+
+## Response vs Socioeconomic and Environmental Characteristics
+scatterplotMatrix(~ log(EDCost.pmpm) + Unemployment + Income + Poverty + Education +
+        Accessibility + Availability + ProvDensity, smooth=FALSE)
+
+## Response vs County Health Rankings
+scatterplotMatrix(~ log(EDCost.pmpm) + RankingsPCP + RankingsFood + RankingsHousing +
+        RankingsExercise + RankingsSocial, smooth=FALSE)
+
+```
+
+# Residual Analysis: Outliers & Normality
+```{r}
+## Residuals versus individual predicting variables 
+full.resid = residuals(fullmodel)
+cook = cooks.distance(fullmodel)
+
+## Check outliers
+influencePlot(fullmodel)
+plot(cook, type="h", lwd=3, col="red", ylab="Cook's Distance")
+
+## Check Normality
+qqPlot(full.resid, ylab="Residuals", main = "")
+qqline(full.resid, col="red", lwd=2)
+hist(full.resid, xlab="Residuals", main = "", nclass=30, col="orange")
+```
+
+# Residual Analysis: Constant Variance and Uncorrelated Errors
+```{r}
+## Check Constant Variance & Uncorrelated Errors
+full.fitted = fitted(fullmodel)
+par(mfrow=c(1,1))
+plot(full.fitted, full.resid, xlab="Fitted Values", ylab="Residuals")
+```
+
+# Residual Analysis: Linearity
+```{r}
+## Check Linearity
+crPlots(fullmodel, ylab="")
+```
+
+# Stepwise Regression
+```{r}
+full = lm(log(EDCost.pmpm) ~ HealthyPop + ChronicPop + State + Urbanicity + HO + PO +
+              BlackPop + WhitePop + Unemployment + Income + Poverty+ Education +
+              Accessibility + Availability + ProvDensity +
+              RankingsPCP + RankingsFood + RankingsExercise + RankingsSocial, data=dataAdult)  
+minimum = lm(log(EDCost.pmpm) ~ HealthyPop + ChronicPop, data=dataAdult)
+# Forward Stepwise Regression
+forward.model = step(minimum, scope=list(lower=minimum, upper=full), direction="forward")
+summary(forward.model)
+# Backward Stepwise Regression
+backward.model = step(full, scope=list(lower=minimum, upper=full), direction = "backward")
+summary(backward.model)
+# Forward-Backward Stepwise Regression
+both.min.model = step(minimum, scope=list(lower=minimum, upper=full), direction = "both")
+summary(both.min.model)
+```
+
+# ANOVA Stepwise Regression Vs Full Models
+```{r}
+## Compare full model to selected model
+reg.step = lm(log(EDCost.pmpm) ~ HealthyPop + ChronicPop + State +  Urbanicity + HO       
+           + PO + BlackPop + WhitePop + Education +  Accessibility + Availability 
+                  + ProvDensity + RankingsPCP + RankingsFood, ,data=dataAdult)
+
+anova(reg.step, full)
+#      Res.Df   RSS      Df   Sum of Sq   F           Pr(>F)
+# 1   5001      269.56                           
+# 2   4996      269.46   5    0.10406       0.3859  0.8588
+
+# With GML
+a1 = anova(model2, model1, test = "F")
+
+1-pchisq( abs(a1$Deviance[2]), abs(a1$Df[2]))
+
+```
+
+# Residual Analysis: Outliers & Normality
+```{r}
+red.resid = rstandard(reg.step)
+red.cook = cooks.distance(reg.step)
+
+## Check outliers
+influencePlot(reg.step)
+plot(red.cook,type="h",lwd=3,col="red", ylab = "Cook's Distance")
+
+## Check normality
+qqPlot(red.resid, ylab="Residuals", main = "")
+qqline(red.resid, col="red", lwd=2)
+hist(red.resid, xlab="Residuals", main = "", nclass=30, col="orange")
+```
+
+
+#Model Comparison via Classification Evaluation Metrics 
+
+```{r}
+## Calculate the Accuracy, the Sensitivity and the Specificity metrics to evaluate these models at 0.5 threshold 
+pred_metrics = function(modelName, actualClass, predClass) {
+  cat(modelName, '\n')
+  conmat <- confusionMatrix(table(actualClass, predClass))
+  c(conmat$overall["Accuracy"], conmat$byClass["Sensitivity"],
+    conmat$byClass["Specificity"])
+}
+##Full model
+pred_metrics("Full Model",test$Churn.Value, predClass.full)
+##Stepwise selection model
+pred_metrics("Stepwise Regression Model",test$Churn.Value, predClass.step)
+##Lasso model
+pred_metrics("Lasso Regression Model",test$Churn.Value, predClass.lasso)
+##Elastic Net model
+pred_metrics("Elastic Regression Model",test$Churn.Value, predClass.elnet)
+```
+
+
+```{r}
+## Measure how well the Logistic Regression model (after variable selection through Stepwise Selection) fits on the training data
+# Removing variables not selected by stepwise regression
+step.predictors <-  names(coef(full.model.red)[index.step])
+x.train <- as.data.frame(x.train)
+train.final <- x.train[, - which(colnames(x.train) %in% step.predictors)]
+
+# Aggregating the data
+obdata.agg.n = aggregate(y.train ~ . , data = train.final, FUN = length)
+obdata.agg.y = aggregate(y.train ~ . , data = train.final, FUN = sum)
+dat.aggr <- cbind(obdata.agg.y, total = obdata.agg.n$y.train)
+
+## Fitting the model
+mod.aggr = glm(y.train / total ~ . , data = dat.aggr, weight = total, family = binomial)
+summary(mod.aggr)
+```
+
+```{r}
+# Find the Chi-square test statistics and the corresponding p-value to test the given null hypothesis.
+res = resid(mod.aggr, type="deviance")
+cbind(statistic = sum(res^2), pvalue = 1-pchisq(sum(res^2), mod.aggr$df.resid))
+# P-value is equal to 1, so our model reasonably fits the training data.
+```
+
+
+
+
+

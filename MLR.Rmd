@@ -1,0 +1,200 @@
+---
+title: "Untitled"
+author: "Pushkar Sinha"
+date: "7/30/2021"
+output: html_document
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE)
+```
+
+## R Markdown
+
+This is an R Markdown document. Markdown is a simple formatting syntax for authoring HTML, PDF, and MS Word documents. For more details on using R Markdown see <http://rmarkdown.rstudio.com>.
+
+When you click the **Knit** button a document will be generated that includes both content as well as the output of any embedded R code chunks within the document. You can embed an R code chunk like this:
+
+```{r cars}
+summary(cars)
+```
+
+## Including Plots
+
+You can also embed plots, for example:
+
+```{r pressure, echo=FALSE}
+plot(pressure)
+```
+
+## ##############################################################################################
+## Modeling  - MLR
+## ##############################################################################################
+```{r}
+# fit full model
+model1<-lm(Weight~., data=fish)
+# Display summary
+summary(model1)
+```
+
+## ##############################################################################################
+## Confidence bands
+## ##############################################################################################
+```{r}
+regplot.confbands.fun(Inflation.difference,Exchange.rate.change)
+```
+
+
+## ##############################################################################################
+## Corr Matrix
+## ##############################################################################################
+```{r}
+cor(buch,bush)
+```
+
+## ##############################################################################################
+## Obtain estimated coefficients
+## ##############################################################################################
+```{r}
+betas = coef(model)
+```
+
+Note that the `echo = FALSE` parameter was added to the code chunk to prevent printing of the R code that generated the plot.
+
+## ##############################################################################################
+## Linearity/Mean Zero, Independence and Constant Variance - X vs Y
+## ##############################################################################################
+
+```{r}
+## MLR scatterplots multiple Features
+par(mfrow=c(2,3))
+for (i in c(3:7)){
+  col_name = names(fish[i])
+  plot(fish[,i], fish$Weight, xlab= col_name, ylab = "Weight")
+  abline(h=0, col="red")
+  lines(lowess(fish2[,i], resids), col='blue')
+}
+
+```
+
+## ##############################################################################################
+## Linearity - scatterplots of the standardized residuals of model2 versus each quantitative predictor (X vs residuals)
+## ##############################################################################################
+```{r}
+# MLR
+resids =rstandard(model2)
+par(mfrow=c(2,3))
+for (i in c(3:7)){
+  col_name = names(fish2[i])
+  plot(fish2[,i], resids, xlab= col_name, ylab = "S. Residuals")
+  abline(h=0, col="red")
+  lines(lowess(fish2[,i], resids), col='blue')
+}
+```
+
+# ###############################################################################################
+# Independence (Uncorrelated errors) and Constant Variance (fitted vs residuals)
+# ###############################################################################################
+```{r}
+ggplot(data=data, aes(x=model1$fitted.values, y=model1$residuals)) +
+  geom_point(alpha=I(0.4),color='darkorange') +
+  xlab('Fitted Values') +
+  ylab('Residuals') +
+  ggtitle('Residual Plot') +
+  geom_hline(yintercept=0)
+
+# Plot of std. residuals versus fitted values
+plot(model2$fitted.values, resids, xlab="Fitted Values", ylab=" S. Residuals")
+lines(lowess(model2$fitted.values, resids), col='blue')
+abline(h=0, col="red")
+```
+
+## ##############################################################################################
+## Normality - Histogram and q-q plot of teh residuals
+## ##############################################################################################
+
+```{r}
+hp = qplot(model1$residuals,
+           geom="histogram",
+           bins=11,
+           main = "Histogram of Residuals",
+           xlab = "Residuals",
+           ylab = "Count",
+           fill=I("blue"),
+           alpha=I(0.2))
+qqp = ggplot(data, aes(sample=model1$residuals)) +
+stat_qq(alpha=I(0.2),color='darkorange') +
+  stat_qq_line() +
+  ggtitle("Q-Q Plot of Residuals")
+ggarrange(hp, qqp, ncol=2, nrow=1)
+
+## QQ plot
+qqPlot(model1$residuals)
+
+resids =rstandard(model2)
+qqPlot(resids)
+
+## Histogram Plots for normality
+resids =rstandard(model2)
+hist(resids, col="orange", nclass=15)
+
+```
+
+## Mean Response Estimation
+```{r}
+s2 = summary(model)$sigma^2 # Variance estimate
+X = model.matrix(model) # Design Matrix
+xstar = X[1,] # First office data for formula
+resp.var = s2*(xstar%*%solve(t(X)%*%X)%*%xstar) # Variance formula
+sqrt(resp.var)
+
+```
+
+## Box Plot
+```{r}
+library(ggplot2)
+ggplot(fish, aes(x=Species, y=Weight, color=Species), 
+       xlab = "Species", 
+       ylab = "Weight") + 
+  geom_boxplot() + 
+  theme(axis.text.x  = element_text(angle=90, vjust=0.5))+
+  ggtitle("Weight with Respect to Species")
+```
+
+## Plot Predior against  outcome
+```{r}
+library("grid")
+library("ggplot2")
+library("gridExtra")
+par(mfrow=c(2,3))
+plot(fish$Weight, fish$Body.Height)
+plot(fish$Weight, fish$Total.Length)
+plot(fish$Weight, fish$Diagonal.Length)
+plot(fish$Weight, fish$Height)
+plot(fish$Weight, fish$Width)
+plot1 = ggplot(data=fish, aes(x=Weight, y=Body.Height)) + geom_point(alpha=I(0.2),color='blue') + 
+  xlab('Weight') + ylab('Body.Height') + ggtitle('Body.Height vs Weight') + 
+  geom_smooth(method= "lm",color='gray', se=FALSE)
+plot2 = ggplot(data=fish, aes(x=Weight, y=Total.Length)) + geom_point(alpha=I(0.2),color='blue') + 
+  xlab('Weight') + ylab('Total.Length') + ggtitle('Total.Length vs Weight') + 
+  geom_smooth(method= "lm",color='gray', se=FALSE)
+plot3 = ggplot(data=fish, aes(x=Weight, y=Diagonal.Length)) + geom_point(alpha=I(0.2),color='blue') + 
+  xlab('Weight') + ylab('Diagonal.Length') + ggtitle('Diagonal.Length vs Weight') + 
+  geom_smooth(method= "lm",color='gray', se=FALSE)
+plot4 = ggplot(data=fish, aes(x=Weight, y=Height)) + geom_point(alpha=I(0.2),color='blue') + 
+  xlab('Weight') + ylab('Height') + ggtitle('Height vs Weight') + 
+  geom_smooth(method= "lm",color='gray', se=FALSE)
+plot5 = ggplot(data=fish, aes(x=Weight, y=Width)) + geom_point(alpha=I(0.2),color='blue') + 
+  xlab('Weight') + ylab('Width') + ggtitle('Width vs Weight') + 
+  geom_smooth(method= "lm",color='gray', se=FALSE)
+grid.arrange(plot1, plot2, plot3, plot4, plot5, ncol=3)
+
+library(GGally)
+
+ggpairs(fish[ ,!(colnames(fish) == "Species")])
+
+```
+
+
+
+

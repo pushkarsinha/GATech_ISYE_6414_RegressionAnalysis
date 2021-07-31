@@ -1,0 +1,249 @@
+---
+title: "Untitled"
+author: "Pushkar Sinha"
+date: "7/30/2021"
+output: html_document
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE)
+```
+
+```{r}
+## Fit a linear regression model
+model = lm(sales ~ adv)
+summary(model)
+
+```
+
+
+Coefficients:
+              Estimate Std. Error   t value    Pr(>|t|)    
+(Intercept)  -157.3301   145.1912    -1.084        0.29    
+adv             2.7721     0.2794     9.921    8.87e-10 
+Residual standard error: 101.4 on 23 degrees of freedom
+
+The estimate for b1 is 2.7721. The variance estimate is 0.27942. The sampling distribution is a t-distribution with 23 degrees of freedom.
+The estimate for b0 is -157.3301. The variance estimate is 145.19122.
+The estimate for b1 is statistically significant, as evidenced by a p-value of 8.87×10-10
+
+
+```{r}
+tvalue = 9.921
+##H0: b1 = 0 ; Ha: b1 != 0
+2 * pt(tvalue, 23, lower.tail = FALSE)
+2 * (1- pt(tvalue, 23))
+
+##H0: b1 = 1 ; Ha: b1 != 1
+t = (2.7721 - 1)/0.2794
+2 * pt(t, 23, lower.tail = FALSE)
+2 * (1- pt(t, 23))
+
+## Statistically Positive
+##H0: b1 <= 0 ; Ha - b1 > 0
+pt(tvalue, 23, lower.tail = FALSE)
+1- pt(tvalue, 23)
+
+## Statistically Negative
+##H0: b1 >= 0 ; Ha - b1 < 0
+pt(tvalue, 23, lower.tail = TRUE)
+pt(tvalue, 23)
+```
+
+## Confidence Interval for Coefficients
+
+```{r}
+confint(model, level=0.99)
+confint(model, level=0.95)
+
+```
+                   0.5 %         99.5 %
+(Intercept)  -564.930546      250.27032
+adv             1.987712        3.55652
+
+
+## Prediction
+```{r}
+new = data.frame(adv = 300)
+predict.lm(model, new, interval = "predict", level = 0.99)
+predict.lm(model, new, interval = "predict", level = 0.95)
+predict.lm(model, new, interval = "confidence", level = 0.99)
+predict.lm(model, new, interval = "confidence", level = 0.95)
+```
+
+       fit         lwr        upr
+1 674.3047     338.712   1009.897
+
+       fit         lwr        upr
+1 674.3047    427.0146    921.5948
+
+       fit         lwr        upr
+1 674.3047    496.6497   851.9596
+
+       fit        lwr         upr
+1 674.3047    543.395     805.2143
+
+
+## ##############################################################################################
+## Confidence bands
+## ##############################################################################################
+```{r}
+regplot.confbands.fun(Inflation.difference,Exchange.rate.change)
+```
+
+
+## ##############################################################################################
+## Corr Matrix
+## ##############################################################################################
+```{r}
+cor(buch,bush)
+```
+
+## ##############################################################################################
+## Obtain estimated coefficients
+## ##############################################################################################
+```{r}
+betas = coef(model)
+```
+
+## ##############################################################################################
+## Linearity/Mean Zero, Independence and Constant Variance - X vs Y
+## ##############################################################################################
+```{r}
+# SLR
+plot(adv, sales)
+
+ggplot(data=data, aes(x=chmax, y=performance)) +
+  geom_point(alpha=I(0.2),color='blue') +
+  xlab('Maximum Channels') +
+  ylab('CPU Performance') +
+  ggtitle('Maximum Channels vs CPU Performance') +
+  geom_smooth(method= "lm",color='gray', se=FALSE)
+
+```
+
+## ##############################################################################################
+## Linearity - scatterplots of the standardized residuals of model2 versus each quantitative predictor (X vs residuals)
+## ##############################################################################################
+```{r}
+#SLR
+plot(model$fitted, model$residuals)
+
+# MLR
+resids =rstandard(model2)
+par(mfrow=c(2,3))
+for (i in c(3:7)){
+  col_name = names(fish2[i])
+  plot(fish2[,i], resids, xlab= col_name, ylab = "S. Residuals")
+  abline(h=0, col="red")
+  lines(lowess(fish2[,i], resids), col='blue')
+}
+```
+
+# ###############################################################################################
+# Independence (Uncorrelated errors) and Constant Variance (fitted vs residuals)
+# ###############################################################################################
+```{r}
+ggplot(data=data, aes(x=model1$fitted.values, y=model1$residuals)) +
+  geom_point(alpha=I(0.4),color='darkorange') +
+  xlab('Fitted Values') +
+  ylab('Residuals') +
+  ggtitle('Residual Plot') +
+  geom_hline(yintercept=0)
+
+# Plot of std. residuals versus fitted values
+plot(model2$fitted.values, resids, xlab="Fitted Values", ylab=" S. Residuals")
+lines(lowess(model2$fitted.values, resids), col='blue')
+abline(h=0, col="red")
+```
+
+## ##############################################################################################
+## Normality - Histogram and q-q plot of teh residuals
+## ##############################################################################################
+
+```{r}
+hp = qplot(model1$residuals,
+           geom="histogram",
+           bins=11,
+           main = "Histogram of Residuals",
+           xlab = "Residuals",
+           ylab = "Count",
+           fill=I("blue"),
+           alpha=I(0.2))
+qqp = ggplot(data, aes(sample=model1$residuals)) +
+stat_qq(alpha=I(0.2),color='darkorange') +
+  stat_qq_line() +
+  ggtitle("Q-Q Plot of Residuals")
+ggarrange(hp, qqp, ncol=2, nrow=1)
+
+## QQ plot
+qqPlot(model1$residuals)
+
+resids =rstandard(model2)
+qqPlot(resids)
+
+## Histogram Plots for normality
+resids =rstandard(model2)
+hist(resids, col="orange", nclass=15)
+
+```
+
+## ##############################################################################################
+## Model Assumptions - One Variable 
+## ##############################################################################################
+```{r}
+# Get standardized residuals
+resids2 =rstandard(model3)
+# Residual plots
+par(mfrow=c(2,2))
+plot(fish2$Total.Length, resids2 , main="Lineartiy/Mean Zero",
+     xlab="Total.Length", ylab="Residuals")
+abline(h=0, col="red")
+lines(lowess(fish2$Total.Length, resids2), col='blue')
+plot(model3$fitted.values, resids2 , main="Constant Variance/Correlation",
+     xlab="Fitted Values", ylab="Residuals")
+abline(h=0, col="red")
+lines(lowess(model3$fitted.values, resids2), col='blue')
+# Normality
+hist(resids2 , col="orange", nclass=15)
+qqPlot(resids2)
+
+```
+
+## ##############################################################################################
+## Modeling  - SLR - Log transform
+## ##############################################################################################
+```{r}
+model2 = lm(log(performance) ~ log(chmax + 1), data=data)
+
+sp2 = ggplot(data=data, aes(x=log(chmax+1), y=log(performance))) +
+  geom_point(alpha=I(0.2),color='blue') +
+  xlab('Maximum Channels') +
+  ylab('Performance') +
+  ggtitle('Max Channels vs Performance') +
+  geom_line(data=data, aes(x=log(chmax+1), y=model2$fitted.values))
+rp2 = ggplot(data=data, aes(x=model2$fitted.values, y=model2$residuals)) +
+  geom_point(alpha=I(0.4),color='darkorange') +
+  xlab('Fitted Values') +
+  ylab('Residuals') +
+  ggtitle('Residual Plot') +
+  geom_hline(yintercept=0)
+hp2 = qplot(model2$residuals,
+            geom="histogram",
+            bins=11,
+            main = "Histogram of Residuals",
+            xlab = "Residuals",
+            ylab = "Count",
+            fill=I("blue"),
+            alpha=I(0.2))
+qqp2 = ggplot(data, aes(sample=model2$residuals)) +
+  stat_qq(alpha=I(0.2),color='darkorange') +
+  stat_qq_line() +
+  ggtitle("Q-Q Plot of Residuals")
+ggarrange(sp2, rp2, hp2, qqp2, ncol=2, nrow=2)
+
+```
+
+
+
+
