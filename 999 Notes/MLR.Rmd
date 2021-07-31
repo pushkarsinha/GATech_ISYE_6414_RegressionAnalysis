@@ -161,7 +161,7 @@ ggplot(fish, aes(x=Species, y=Weight, color=Species),
   ggtitle("Weight with Respect to Species")
 ```
 
-## Plot Predior against  outcome
+## Plot Predictor against  outcome
 ```{r}
 library("grid")
 library("ggplot2")

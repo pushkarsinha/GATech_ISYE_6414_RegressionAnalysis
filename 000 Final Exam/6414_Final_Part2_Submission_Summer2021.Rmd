@@ -1,0 +1,473 @@
+---
+title: "Final Exam Part 2"
+date: "Summer Semester 2021"
+output:
+  html_document: default
+  pdf_document: default
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE)
+```
+
+## Instructions 
+
+This R Markdown file includes the questions, the empty code chunk sections for your code, and the text blocks for your responses. Answer the questions below by completing this R Markdown file. You must answer the questions using this file. You may make slight adjustments to get the file to knit/convert but otherwise keep the formatting the same. Once you've finished answering the questions, submit your responses in a single knitted **HTML file**.
+
+There are 21 questions divided among 8 sections. The number of points for each question is provided. Partial credit may be given if your code is correct but your conclusion is incorrect or vice versa.
+
+*Next Steps:*
+
+1.  Save this .Rmd file in your R working directory - the same directory where you will download the "white_wine_quality.csv" and "brooklyn_bridge_bike_counts.csv" data files into. Having all files in the same directory will help in reading the .csv files.
+
+2.  Read the question and create the R code necessary within the code chunk section immediately below each question. Knitting this file will generate the output and insert it into the section below the code chunk. 
+
+3.  Type your answer to the questions in the text block provided immediately after the question prompt.
+
+4.  Once you've finished answering all questions, knit/convert this file and submit the knitted file as **HTML** on Canvas.
+
+
+*Example Question Format:*
+
+(8a) This will be the exam question - each question is already copied from Canvas and inserted into individual text blocks below, *you do not need to copy/paste the questions from the online Canvas exam.*
+
+```{r}
+# Example code chunk area. Enter your code below the comment and between the ```{r} and ```
+
+
+```
+
+**Response to question (8a)**
+This is the section where you type your written answer to the question. Depending on the question asked, your typed response may be a number, a list of variables, a few sentences, or a combination of these elements. 
+
+
+** Ready? Let's begin. We wish you the best of luck! **
+
+
+## Data Sets Background 
+
+For this exam, you will be using two data sets.
+
+*The first data set is "brooklyn_bridge_bike_counts.csv". You will use this data set to build a model which predicts the number of bikes crossing the Brooklyn Bridge on a given day based on the following characteristics.
+
+1. *month*: January, February, March, ... (categorical)
+
+2. *day*: Sunday, Monday, Tuesday, ... (categorical)
+
+3. *high_temp*: high temperature for the day in fahrenheit (numeric)
+
+4. *low_temp*: low temperature for the day in fahrenheit (numeric)
+
+5. *precipitation*: inches of precipitation for the day (numeric)
+
+The response variable is *bikes* (numeric), representing the number of bikes crossing the Brooklyn Bridge on a given day.
+
+*The second data set is "white_wine_quality.csv". You will use this data set to build a model which predicts whether a type of white wine is good quality or bad quality based on the following characteristics. 
+
+1. *fixed_acidity*: grams of tartaric acid per cubic decimeter (numeric)
+
+2. *volatile_acidity*: grams of acetic acid per cubic decimeter (numeric)
+
+3. *citric_acid*: grams of citric acid per cubic decimeter (numeric)
+
+4. *residual_sugar*: grams of residual sugar per cubic decimeter (numeric)
+
+5. *chlorides*: grams of sodium chloride per cubic decimeter (numeric)
+
+6. *free_sulfur_dioxide*: milligrams of free sulfur dioxide per cubic decimeter (numeric)
+
+7. *total_sulfur_dioxide*: milligrams of total sulfur dioxide per cubic decimeter (numeric)
+
+8. *density*: grams per cubic decimeter (numeric)
+
+9. *ph*: measure of acidity or basicity (scale from 0 to 14) (numeric)
+
+10. *sulphates*: grams of potassium sulphate per cubic decimeter (numeric)
+
+11. *alcohol*: percent alcohol by volume (numeric)
+
+The response variable is *quality*: 1 = good quality and 0 = bad quality (binary).
+
+## Read Data
+
+Read the data and answer the questions below. Assume a significance level of 0.05 for hypothesis tests unless stated otherwise.
+
+```{r}
+# Load relevant libraries (add here if needed)
+library(car)
+library(aod)
+library(bestglm)
+library(boot)
+library(corrplot)
+library(caret)
+library(glmnet)
+
+# Ensure that the sampling type is correct
+RNGkind(sample.kind="Rejection")
+
+# Set seed (please do not change for consistency of the results)
+set.seed(0)
+
+###### Read and process the data: Bike data #######
+
+# Read data
+bike_data_full = read.csv("brooklyn_bridge_bike_counts.csv", header=TRUE)
+
+# Convert month and day columns to categorical variables
+bike_data_full$month <- as.factor(bike_data_full$month)
+bike_data_full$day <- as.factor(bike_data_full$day)
+
+# Split data for training and testing
+bike_test_rows = sample(nrow(bike_data_full), 0.2*nrow(bike_data_full))
+bike_data_test = bike_data_full[bike_test_rows, ]
+bike_data_train = bike_data_full[-bike_test_rows, ]
+
+###### Read and process the data: Wine data #######
+
+# Read data
+wine_data_full = read.csv("white_wine_quality.csv", header=TRUE)
+
+# Convert response variable to binary
+wine_data_full$quality <- ifelse(wine_data_full$quality > 5, 1, 0)
+
+# Split data for training and testing
+wine_test_rows = sample(nrow(wine_data_full), 0.2*nrow(wine_data_full))
+wine_data_test = wine_data_full[wine_test_rows, ]
+wine_data_train = wine_data_full[-wine_test_rows, ]
+```
+
+**Note:** You will be using the bike data set first (Questions 1,2,3, and 4), followed by the wine data set (Questions 5,6,7, and 8). 
+
+**Note:** Don't change the data types of the variables. The month and day columns in the bike data set have already been converted to categorical variables. The quality column in the wine data set has already been converted to a binary variable.
+
+## Question 1: Bike Data - Exploratory Analysis
+
+(1a) 2 pts - Using *bike_data_train*, create a histogram of the variable *bikes*. Based on this plot, what generalized linear regression model(s) discussed in this course could be used to model this response variable? Explain.
+
+```{r}
+# Create histogram
+hist(bike_data_train$bikes, 30, xlab="Std residuals", main="")
+
+```
+
+**Response to question (1a)** Based on this it would make sense to use Poisson regression
+
+
+(1b) 2 pts - Using *bike_data_train*, create a scatterplot of *bikes* versus each numeric predicting variable (*high_temp*, *low_temp*, and *precipitation*) (3 scatterplots total). Do these variables appear useful in predicting the number of bikes crossing the Brooklyn Bridge on a given day? Include your reasoning.
+
+```{r}
+# Create scatterplots
+plot(bike_data_train$high_temp, bike_data_train$bikes, xlab="high_temp", ylab = "bikes")
+plot(bike_data_train$high_temp, bike_data_train$low_temp, xlab="low_temp", ylab = "bikes")
+plot(bike_data_train$high_temp, bike_data_train$precipitation, xlab="precipitation", ylab = "bikes")
+
+```
+
+**Response to question (1b)** The variables are good to use... High temperature shows a general linear trend, the low_temp shows a good linear trend and for precipitaion .. looks like more bikes cross the bridge when the precipitaion is low.. towards 0
+
+
+## Question 2: Bike Data - Full Model
+
+(2a) 2 pts - Using *bike_data_train*, fit a poisson regression model with *bikes* as the response variable and all other variables as predicting variables. Include an intercept. Call it *model1*. Display the summary table for the model. 
+
+```{r}
+# Fit model and display summary
+attach(bike_data_train)
+model1 = glm(bikes ~ ., data = bike_data_train, family = poisson)
+summary(model1)
+```
+
+(2b) 2 pts - Provide a meaningful interpretation of the estimated regression coefficient for *precipitation* for *model1*. *Note: Don't just list the value of the estimated coefficient.*
+
+**Response to question (2b)** for every unit of increase in precipitation, there is a decrease in log rate (of bikes crossing) by -0.7380845 . 
+
+
+(2c) 3 pts - Perform a test for the overall regression on *model1*. Is *model1* significant overall using an alpha of 0.05? Why/Why not? 
+
+```{r}
+# Perform test for overall regression
+1-pchisq((model1$null.deviance - model1$deviance), (model1$df.null - model1$df.resid))
+```
+
+**Response to question (2c)** the p-value of the model based on Chi Sq is 0.. so the model is statistically significant
+
+
+## Question 3: Bike Data - Goodness of Fit
+
+(3a) 3 pts - Evaluate whether the deviance residuals are approximately normally distributed by producing a QQ plot and histogram of the deviance residuals. Based on these plots, what assessment can you make about the goodness of fit of *model1*? *Hint: Use qqPlot() from the car package which adds a confidence band to the normal QQ-plot by default.*
+
+```{r}
+# Create QQ plot and histogram
+res = resid(model1,type="deviance")
+car::qqPlot(res, ylab="Std residuals")
+```
+
+**Response to question (3a)** the QQ plot shows a long left tail... this shows that the residuals are not normally. there are outliers and points outside the 95% confidence band. So I do think Normality Assumptions holds in this case
+
+
+(3b) 3 pts - Perform a goodness-of-fit statistical test for *model1* using the deviance residuals and an alpha of 0.05. Provide the null and alternative hypotheses, test statistic, p-value, and conclusion in the context of the problem. 
+
+```{r}
+# Perform GOF test
+model1$deviance
+cat("Deviance residuals test p-value:",
+1-pchisq(model1$deviance, model1$df.residual), end="\n")
+```
+
+**Response to question (3b)**
+
+$H_{0}:$ model 1 is a good fit
+$H_{a}:$ Model 1 is NOT a good fit
+**Deviance test statistic:** Deviance = 17917.92
+**p-value:**  = 0
+**Conclusion:** Sine p-value is 0... Reject Null Hypothesis of good fit.(thus model1 is NOT a good fit).
+
+(3c) 3 pts - Why might a poisson regression model not be a good fit? Provide two reasons. How can you try to improve the fit in each situation? **Do not apply the recommendations.**
+
+**Response to question (3c)**
+
+**Reason 1:** The residuals are not normally distributed..
+
+**How can you try to improve the fit?** We might try to do a Box cox transformation on the response variable.
+
+**Reason 2:** There might be a lot of variables and they might be correlated
+
+**How can you try to improve the fit?** We should run variable selections
+
+
+## Question 4: Bike Data - Prediction
+
+(4a) 2 pts - Predict *bikes* for the test set (*bike_data_test*) using *model1*. Display the first six predicted values.
+
+```{r}
+# Obtain predictions
+pred.test = predict.glm(model1,bike_data_test,type="response")
+
+# Display the first six predicted values
+head(pred.test, 6)
+```
+
+(4b) 2.5 pts - Calculate and display the mean squared prediction error (MSPE) for *model1*. List one limitation of using this metric to evaluate prediction accuracy.
+
+```{r}
+# Calculate MSPE
+# mse.model1 = mean((pred.test - bike_data_test$bikes ) ^ 2)
+mse.model1 = mean((pred.test-bike_data_test$bikes)^2)
+cat('mean squared prediction error (MSPE) for model1', mse.model1)
+```
+
+**Response to question (4b)** The data Metrics depends on scale and sensitive to outliers
+
+
+(4c) 1 pt - Refit *model1* on *bike_data_full*, and call it *model2*. Display the summary table for the model.
+
+```{r}
+# Fit model and display summary
+model2 = glm(bikes ~ ., data = bike_data_full, family = poisson)
+summary(model2)
+```
+
+(4c.1) 3 pts - Estimate the 10-fold and leave-one-out cross validation mean prediction squared error (MSPE) for *model2*. Display these values. *Hint:* cv.glm() from the boot package uses MSPE as the default cost function.
+
+```{r}
+# Perform cross validation and get and display MSPEs
+model2.10.fold = cv.glm(data = bike_data_full, model2, K=10)
+(model2.10.fold)$delta
+
+#leave one out cross-validation
+model2.loocv = cv.glm(bike_data_full, model2, K=nrow(bike_data_full))
+(model2.loocv)$delta
+
+```
+
+(4c.2) 1 pt - How do these two MSPEs compare to the *model1* MSPE from 4b? 
+
+**Response to question (4c.2)** model1 MSPE = 508712.6, where as MSPE for k-fold(10) = 318378.3 and for LOOCV = 318056.1. it looks like model with 10-Fold and LOOCV dis better if we look at MSPE as the have lower MSPE than model1
+
+
+## Question 5: Wine Data - Full Model
+
+(5a) 2 pts - Using *wine_data_train*, fit a logistic regression model with *quality* as the response variable and all other variables as predicting variables. Include an intercept. Call it *model3*. Display the summary table for the model. 
+
+```{r}
+# Fit model and display summary
+model3 = glm(quality ~ ., data = wine_data_train, family=binomial)
+summary(model3)
+```
+
+(5b) 2 pts - Conduct a multicollinearity test on *model3*. Using a VIF threshold of 10, what can you conclude? 
+
+```{r}
+# Obtain VIF values
+# VIF Threshold
+cat("VIF Threshold:", max(10, 1/(1-summary(model3)$r.squared)), "\n")
+# Calculate VIF
+car::vif(model3)
+```
+
+**Response to question (5b)** Using the VIF threshold of 10, there are 2 predictors (residual_sugar & density) that have VIF threshold > 10. Thus multicollinearity exists
+
+
+(5c) 2 pts - Estimate the dispersion parameter for *model3*. Does overdispersion seem to be a problem in this model?
+
+```{r}
+# Estimate dispersion parameter
+model3$deviance/model3$df.res
+```
+
+**Response to question (5c)** No.. since the oversespersion is close to 1.. overdispersion does NOT seem to be a problem in this model
+
+
+## Question 6: Wine Data - Variable Selection
+
+(6a) 3 pts - Using *wine_data_train*, conduct a complete search to find the submodel with the smallest BIC. Fit this model. Include an intercept. Call it *all_subsets_model*. Display the summary table for the model. *Note: Remember to set family to binomial.*
+
+```{r}
+# Conduct a complete search using BIC
+library(bestglm)
+all_subsets_model1 <- bestglm(wine_data_train, IC="BIC", family=binomial)
+all_subsets_model1
+
+# Fit the model and display summary 
+all_subsets_model = glm(quality~volatile_acidity+residual_sugar+free_sulfur_dioxide+density+sulphates+alcohol, data = wine_data_train, family=binomial)
+summary(all_subsets_model)
+```
+
+(6a.1) 0.5 pts - Which variables are in your *all_subsets_model*?
+
+**Responses to question (6a.1)**
+**Variables selected:** Variables selected - volatile_acidity, residual_sugar, free_sulfur_dioxide, density, sulphates, alcohol
+
+
+(6a.2) 1 pt - What is the BIC of *all_subsets_model*?
+
+```{r}
+# Calculate or extract BIC
+AIC(all_subsets_model, k=log(nrow(wine_data_train)))
+```
+
+**Responses to question (6a.2)**
+**BIC:** 3978.472
+
+
+(6b) 3 pts - Conduct backward stepwise regression on *wine_data_train* using AIC. Allow the minimum model to be a logistic model with *quality* as the response variable and only an intercept, and the full model to be *model3*. Call it *stepwise_model*. Display the summary table for the model. *Note: Remember to set family to binomial.*
+
+```{r}
+# Conduct Backward stepwise regression using AIC and display model summary 
+m1 = glm(quality ~ 1, family=binomial, data = wine_data_train)
+stepwise_model = step(model3, scope=list(lower=m1, upper=model3), direction="backward", data = wine_data_train, trace = FALSE, family=binomial)
+summary(stepwise_model)
+```
+
+(6b.1) 0.5 pts - Which variables are in your *stepwise_model*?
+
+**Responses to question (6b.1)**
+**Variables selected:** volatile_acidity, residual_sugar, free_sulfur_dioxide, density, ph, sulphates, alcohol
+
+
+(6b.2) 0.5 pts - What is the AIC of *stepwise_model*?
+
+```{r}
+# Calculate or extract AIC
+AIC(stepwise_model)
+```
+
+**Responses to question (6b.2)**
+**AIC:** 3929.286
+
+
+## Question 7: Wine Data - Regularized Regression
+
+(7a) Using *wine_data_train*, conduct ridge regression with *quality* as the binary response variable and all other variables in *wine_data_train* as the predicting variables. 
+
+(7a.1) 3 pts - Use 10-fold cross validation on the *misclassification error* to select the optimal lambda value. What optimal lambda value did you obtain? *Hint: Make sure to set type.measure="class" in order to perform cross validation on the misclassification error. If needed, you can take a look at the help file by typing ?cv.glmnet.*
+
+```{r}
+# Conduct cross validation and display optimal lambda
+x.train <- model.matrix(quality ~ ., wine_data_train)[,-1]
+y.train <- wine_data_train$quality
+
+ridge.cv = cv.glmnet(x.train, y.train, alpha=0, nfolds = 10, type.measure = "class", family = "binomial")
+
+ridge.cv$lambda.min
+
+# ridge = glmnet(x.train, y.train, alpha=0, nlambda=100)
+# coef(ridge, s=ridge.cv$lambda.min)
+
+```
+
+**Response to question (7a.1):**
+**Optimal lambda:** 0.01817872
+
+(7a.2) 1.5 pts - Fit a glmnet object with nlambda = 100. Call it *ridge_model*. 
+
+```{r}
+# Fit the model
+ridge_model = glmnet(x.train, y.train, alpha=0, nlambda=100)
+
+```
+
+(7a.3) 1 pt - Display the estimated coefficients at the optimal lambda value.
+
+```{r}
+# Display coefficients at optimal lambda 
+coef(ridge_model, s=ridge.cv$lambda.min)
+```
+
+## Question 8: Wine Data - Prediction
+
+(8a) 6 pts - Using *model3*, *all_subsets_model*, *stepwise_model*, and *ridge_model*, give a binary classification to each of the rows in *wine_data_test*, with 1 indicating a good quality wine. Use 0.5 as your classification threshold. 
+
+```{r}
+model3.pred = predict(model3, newdata = wine_data_test)
+predClass.model3 = ifelse(model3.pred > 0.5, 1, 0)
+
+all_subsets_model.pred = predict(all_subsets_model, newdata = wine_data_test)
+predClass.all_subsets_model = ifelse(all_subsets_model.pred > 0.5, 1, 0)
+
+stepwise_model.pred = predict(stepwise_model, newdata = wine_data_test)
+predClass.stepwise_model = ifelse(stepwise_model.pred > 0.5, 1, 0)
+
+new_test <- model.matrix(quality ~ ., wine_data_test)[,-1]
+# Obtain predicted probabilities for the test set
+ridge.pred = predict(ridge_model, newx = new_test, s=ridge.cv$lambda.min)
+predClass.ridge = ifelse(ridge.pred > 0.5, 1, 0)
+
+```
+
+(8b) 2 pts - For each model, display its accuracy. *Hint: Remember that accuracy is the proportion of all responses in the test set that are correctly classified.*
+
+```{r}
+# Calculate accuracy for each model
+
+# Give a binary classification to each of the rows in the test data
+pred_metrics = function(modelName, actualClass, predClass) {
+  conmat <- confusionMatrix(table(actualClass, predClass))
+  cat(modelName, '     ',conmat$overall["Accuracy"], '\n')
+}
+
+##model3
+pred_metrics("model3",wine_data_test$quality, predClass.model3)
+##all_subsets_model
+pred_metrics("all_subsets_model",wine_data_test$quality, predClass.all_subsets_model)
+##stepwise_model
+pred_metrics("stepwise_model",wine_data_test$quality, predClass.stepwise_model)
+##ridge_model
+pred_metrics("ridge_model",wine_data_test$quality, predClass.ridge)
+
+
+```
+
+(8c) 1 pt - Based on 8b, which model performed the best? 
+
+**Response to question (8c)** According the accuracy.. stepwise_model model performed the best.. with accuracy of 0.7385087. But the accuracy of all the models are very close.
+
+
+(8d) 1.5 pts - If you were to consider other metrics such as sensitivity or specificity, should sensitivity or specificity matter more in the context of this problem? Explain. *Note:* Don't calculate these metrics. *Hint: Remember that sensitivity is the proportion of all 1s in the test set that are correctly classified as 1s, while specificity is the proportion of all 0s in the test set that are correctly classified as 0s.*
+
+**Response to question (8d)** In this case.. it is important to identify the quality of wine and since the Accuracy are so clone, we can use Sensitivity.
+
+
+**This is the End of Final Exam Part 2 **
+
+*We hope you enjoyed the course - and we wish you the best in your future coursework!*

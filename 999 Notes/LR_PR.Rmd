@@ -44,9 +44,12 @@ m.ins = glm(Claims ~ District + Group + Age + offset(log(Holders)), data = Insur
 # Test for overall regression
 ```{r}
 gstat = model$null.deviance - deviance(model)
-cbind(gstat, 1-pchisq(gstat,length(coef(model))-1))
+# cbind(gstat, 1-pchisq(gstat,length(coef(model))-1))
 
 1 - pchisq(smoke1$null.deviance-smoke1$deviance, 1)
+
+# Is model1 significant overall
+1-pchisq((model1$null.dev - model1$deviance), (model1$df.null - model1$df.resid))
 ```
 
 ## #########
@@ -69,13 +72,22 @@ with(model1, cbind(res.deviance = deviance, df = df.residual,
                p = pchisq(deviance, df.residual, lower.tail=FALSE)))
 ```
      
-## Deviance Test for GOF using deviance residuals
+## Deviance Test for GOF using residuals
 ```{r}
-c(deviance(smoke2), 1-pchisq(deviance(smoke2),11))
+# Deviance residuals test
+cat("Deviance residuals test p-value:",
+1-pchisq(model1$deviance, model1$df.residual), end="\n")
 
-pearres2 = residuals(smoke2,type="pearson")
-pearson.tvalue = sum(pearres2^2)
-c(pearson.tvalue, 1-pchisq(pearson.tvalue,11))
+# c(deviance(smoke2), 1-pchisq(deviance(smoke2),11))
+
+# Pearson residuals test
+pResid <- resid(model1, type = "pearson")
+cat("Pearson residuals test p-value:",
+1-pchisq(sum(pResid^2), model1$df.residual))
+
+# pearres2 = residuals(smoke2,type="pearson")
+# pearson.tvalue = sum(pearres2^2)
+# c(pearson.tvalue, 1-pchisq(pearson.tvalue,11))
 
 ```
 
@@ -155,32 +167,46 @@ hist(res, 10, xlab="Std residuals", main="")
 
 ## Residual Plots
 ```{r}
-#Linearity Assumptions
+#Linearity Assumptions - We can assess the linearity assumption by plotting the Y of Staying against the predictors.
+# Grid the plots
 par(mfrow=c(2,3))
-plot(Age.Group,log((Staying)/(1-Staying)), ylab="Logit of Staying", xlab = "Age.Group", 
-     main="logit staying vs Age.Group", col=c("red","blue"),lwd=3)
-plot(Gender,log((Staying)/(1-Staying)), ylab="Logit of Staying",xlab = "Gender",
-     main="logit staying vs Gender", col=c("red","blue"),lwd=3)
-plot(Tenure,log((Staying)/(1-Staying)), ylab="Logit of Staying",xlab = "Tenure",
-     main="logit staying vs Tenure", col=c("red","blue"),lwd=3)
-plot(Num.Of.Products,log((Staying)/(1-Staying)), ylab="Logit of Staying",xlab = "Num.Of.Products",
-     main="logit staying vs Num of Products", col=c("red","blue"),lwd=3)
-plot(Is.Active.Member,log((Staying)/(1-Staying)), ylab="Logit of Staying",xlab = "Is.Active.Member",
-     main="logit staying vs Is.Active.Member", col=c("red","blue"),lwd=3)
+# Plot the Log-Odds Staying against the predictor Age.Group
+plot(data$Age.Group, log(data$Staying/(1-data$Staying)),ylab="Log-Odds Staying",
+xlab="Age.Group")
+# Plot the Log-Odds Staying against the predictor Gender
+plot(data$Gender, log(data$Staying/(1-data$Staying)),
+ylab="Log-Odds Staying", xlab="Gender")
+# Plot the Log-Odds Staying against the predictor Tenure
+plot(data$Tenure, log(data$Staying/(1-data$Staying)),
+ylab="Log-Odds Staying", xlab="Tenure")
+# Plot the Log-Odds Staying against the predictor Num.Of.Products
+plot(data$Num.Of.Products, log(data$Staying/(1-data$Staying)),
+ylab="Log-Odds Staying", xlab="Num.Of.Products")
+# Plot the Log-Odds Staying against the predictor Is.Active.Member
+plot(data$Is.Active.Member, log(data$Staying/(1-data$Staying)),
+ylab="Log-Odds Staying", xlab="Is.Active.Member")
 
-par(mfrow=c(2,3))
+##### Independence assumption - We can evaluate whether the residuals are uncorrelated or not by plotting the deviance residuals against the five predictors
+# Store the deviance residuals
 res2 = resid(model2,type="deviance")
+# Grid the plots
+par(mfrow=c(2,3))
+# Plot the residuals against the predictor Age.Group
+plot(data$Age.Group,res2,ylab="Deviance residuals",xlab="Age.Group")
+abline(0,0, col="red")
+# Plot the residuals against the predictor Gender
+plot(data$Gender,res2,ylab="Deviance residuals",xlab="Gender")
+abline(0,0, col="red")
+# Plot the residuals against the predictor Tenure
+plot(data$Tenure,res2,ylab="Deviance residuals",xlab="Tenure")
+abline(0,0, col="red")
+# Plot the residuals against the predictor Num.Of.Products
+plot(data$Num.Of.Products,res2,ylab="Deviance residuals",xlab="Num.Of.Products")
+abline(0,0, col="red")
+# Plot the residuals against the predictor Is.Active.Member
+plot(data$Is.Active.Member,res2,ylab="Deviance residuals",xlab="Is.Active.Member")
+abline(0,0, col="red")
 
-plot(Age.Group,res2,ylab="Std residuals",xlab="Age.Group", col=c("red","blue"))
-abline(0,0,col="blue",lwd=2)
-plot(Gender,res2,ylab="Std residuals",xlab="Gender", col=c("red","blue"))
-abline(0,0,col="blue",lwd=2)
-plot(Tenure,res2,ylab="Std residuals",xlab="Tenure", col=c("red","blue"))
-abline(0,0,col="blue",lwd=2)
-plot(Num.Of.Products,res2,ylab="Std residuals",xlab="Num.Of.Products", col=c("red","blue"))
-abline(0,0,col="blue",lwd=2)
-plot(Is.Active.Member,res2,ylab="Std residuals",xlab="Is.Active.Member", col=c("red","blue"))
-abline(0,0,col="blue",lwd=2)
 
 par(mfrow=c(2,3))
 boxplot(res2~Age.Group,ylab = "Std residuals", xlab = "Age.Group")
@@ -216,8 +242,19 @@ hist(res2,10,xlab="Std residuals", main="")
 
 #dispersion parameter for this model.
 ```{r}
-model1$deviance/model1$df.residual
+# dispersion parameter
+model2$deviance/model2$df.res
 
+dp <- model1$deviance/model1$df.residual
+dp <- sum(residuals(model3,type="deviance")^2)/model3$df.res
+```
+
+# C Log Log Example with dispersion
+```{r}
+model3 = glm(Staying ~ Age.Group + Gender + Tenure + Num.Of.Products + Is.Active.Member,
+data=data,family=binomial(link="cloglog"), weights=Employees)
+dp <-sum(residuals(model3,type="deviance")^2)/model3$df.res
+summary(model3, dispersion=dp)
 ```
 
 
@@ -251,6 +288,9 @@ coef(model4)
 library(rsq)
 rsq(model1,adj=TRUE,type="sse")
 
+# Adj-R2
+summary(model1)$adj.r.squared
+
 #AIC
 summary(model1)$aic
 
@@ -259,6 +299,18 @@ AIC(model1, k=log(n))
 
 #Cp
 c(Cp(model1, S2=sigma(model1)^2), length(model1$coefficients) - 1)
+
+#standard error
+sigma(model3)
+
+#degrees of freedom of residual
+model3$df.residual
+
+#Sum of Squared Error (SSE)
+sum((fitted.values(model3)-atlanta_flights_new$DEPARTURE_DELAY)^2)
+
+#R-squared
+summary(model3)$r.squared
 
 ```
 
@@ -277,12 +329,12 @@ cbind(as.matrix(out$which), out$Cp)[best.model,]
 
 # Forward Stepwise Regression
 # Controlling Var models
-step(lm(sat~log(takers)+rank), 
+fstep = step(lm(sat~log(takers)+rank), 
      scope=list(lower=sat~log(takers)+rank,upper=sat~log(takers)+rank+expend+years+income+public), 
-     direction="forward")
+     direction="forward", trace=FALSE)
 
 # Null Model
-fstep = step(glm(logBCF ~ 1), scope=list(upper=model1), direction="forward")
+fstep = step(glm(logBCF ~ 1), scope=list(upper=model1), direction="forward", trace=FALSE)
 summary(fstep)
 fstep$anova
 fstep$coefficients
@@ -472,6 +524,81 @@ cat("Numbers Variables selected : ", length(names(coef(model1)[index.elanet])) -
 
 ```
 
+## ##################################
+## Goodness of Fit
+## ##################################
+
+```{r}
+# Code to perform Goodness of Fit Analysis...
+par(mfrow=c(2,2))
+# Linearity Assumption
+plot(atlanta_flights_new$DAY_OF_WEEK,atlanta_flights_new$DEPARTURE_DELAY,
+ylab = "Departure Delay", xlab = "Day of the Week")
+plot(atlanta_flights_new$SCHEDULED_DEPARTURE,atlanta_flights_new$DEPARTURE_DELAY,
+ylab = "Departure Delay", xlab = "Scheduled Departure")
+
+# Constant Variance and Independence Assumptions
+standardized.residuals = rstandard(model3)
+fitted.values = model3$fitted.values
+plot(fitted.values,standardized.residuals, main="Standard Residuals vs. Fitted Values",
+xlab="Fitted Values", ylab="Standardized Residuals", col= "gray", pch = 16)
+abline(h=0, col="Red")
+
+# Normality Assumption
+par(mfrow=c(1,2))
+# histogram
+hist(standardized.residuals, col = 'orange', main = 'Histogram of St. Residuals',
+xlab = "Standardized Residuals")
+# q-q plot
+library(car)
+qqPlot(standardized.residuals, main = 'Normal QQ Plot', ylab = "Standardized Residuals",
+col = 'gray', col.line = 'red', pch = 16)
+
+#Confidence Interval
+confint(model3, parm="DAY_OF_WEEK", level=0.99, type="confidence")
+
+```
+
+## ##################################
+## Prediction
+## ##################################
+
+```{r}
+set.seed(100)
+# Full Model
+fullmodel.predict = predict(model1, newdata = testData)
+head(fullmodel.predict, 3)
+
+# backward stepwise regression with BIC
+bstep.bic.predict = predict(model4, newdata = testData)
+head(bstep.bic.predict, 3)
+
+# # ridge regression
+new_test <- model.matrix(logBCF ~ ., testData)[,-1]
+# Obtain predicted probabilities for the test set
+pred.ridge = predict(ridge, newx = new_test, s=ridge.cv$lambda.min)
+head(pred.ridge, 3)
+
+# lasso regression
+new_test <- model.matrix(logBCF ~ ., testData)[,-1]
+pred.lasso = predict(lasso, newx = new_test, s=lasso.cv$lambda.min)
+head(pred.lasso, 3)
+
+# elastic net
+new_test <- model.matrix(logBCF ~ ., testData)[,-1]
+pred.elnet = as.vector(predict(elanet, newx = new_test,s = elanet.cv$lambda.min))
+head(pred.elnet, 3)
+
+MSE_full <- mean((fullmodel.predict - testData$logBCF)^2)
+MSE_bstep <- mean((bstep.bic.predict - testData$logBCF)^2)
+MSE_ridge <- mean((pred.ridge - testData$logBCF)^2)
+MSE_lasso <- mean((pred.lasso - testData$logBCF)^2)
+
+
+```
+
+
+
 ```{r}
 ## Correlation matrix plot
 library(corrplot)
@@ -532,6 +659,14 @@ scatterplotMatrix(~ log(EDCost.pmpm) + RankingsPCP + RankingsFood + RankingsHous
 ## Residuals versus individual predicting variables 
 full.resid = residuals(fullmodel)
 cook = cooks.distance(fullmodel)
+
+# find outlier
+which(cook > 1)
+which(cook > (4/nrow(atlanta_flights)))
+
+# Remove Outlier
+atlanta_flights_new <- atlanta_flights[-578,]
+
 
 ## Check outliers
 influencePlot(fullmodel)
